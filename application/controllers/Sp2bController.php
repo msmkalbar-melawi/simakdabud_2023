@@ -252,10 +252,10 @@ class Sp2bController extends CI_Controller
         // $saldoawal = "SELECT SUM(sld_awal + sld_awal_bank) as saldo FROM ms_skpd_jkn WHERE kd_skpd='$lcskpd'";
         // $sldawal = $this->db->query($saldoawal);
 
-        $ha2 = 0;
-        $tox_awal = "SELECT SUM(ISNULL(nilai,0)) AS jumlah FROM jkn_saldo_awal_sp2b where kd_skpd='$lcskpd'";
-        $ha2 = $this->db->query($tox_awal);
-        $ha2 = $ha2->row('jumlah');
+        // $ha2 = 0;
+        // $tox_awal = "SELECT SUM(ISNULL(nilai,0)) AS jumlah FROM jkn_saldo_awal_sp2b where kd_skpd='$lcskpd'";
+        // $ha2 = $this->db->query($tox_awal);
+        // $ha2 = $ha2->row('jumlah');
 
         // $ha2 = $this->db->query($nilaisebelumnya);
         // $trh4 = $ha2->row();
