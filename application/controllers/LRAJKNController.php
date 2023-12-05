@@ -271,6 +271,7 @@ class LRAJKNController extends CI_Controller
         <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">6</td>
         </tr>
         </thead>";
+
         $persen = 0;
         $totalanggaran = 0;
         $totalrealisasi = 0;
@@ -278,7 +279,8 @@ class LRAJKNController extends CI_Controller
         // $hasill=0;
         // $dataaaaaaa=0;
         foreach ($dataisian->result_array() as $resulte) {
-            $persen = $resulte['realisasi'] / $resulte['anggaran'] * 100;
+            //$persen = $resulte['realisasi'] / $resulte['anggaran'] * 100;
+            $persen=($resulte['realisasi']!=0)?($resulte['realisasi']/$resulte['anggaran']) * 100:0;
             $hasill = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['realisasi'], 2, ",", ".");
             // " . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . "
             $hasill1 = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".");
@@ -464,12 +466,11 @@ class LRAJKNController extends CI_Controller
 
 
         $cRet = '';
-
         $cRet = "<TABLE style=\"border-collapse:collapse;font-size:12px;font-family:Bookman Old Style\" width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"1\" align=\"center\">
 						<tr>
 						<td rowspan=\"4\" align=\"center\" style=\"border-right:hidden\">
 							<img src=\"" . base_url() . "/image/logoHP.png\"  width=\"50\" height=\"50\" />
-							</td>
+						</td>
 						<td align=\"center\" style=\"border-left:hidden;border-bottom:hidden\"><strong>PEMERINTAH KABUPATEN MELAWI </strong></td>
                         </tr>";
 
@@ -489,7 +490,6 @@ class LRAJKNController extends CI_Controller
                     </TABLE>";
 						
 		$cRet .= "<table style=\"border-collapse:collapse;font-family:Arial;font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"3\" cellpadding=\"3\">
-					<thead>
 					<tr>
 						<td rowspan=\"2\" width=\"7%\" align=\"center\" bgcolor=\"#CCCCCC\" ><b>KD REK</b></td>
 						<td rowspan=\"2\" width=\"32%\" align=\"center\" bgcolor=\"#CCCCCC\" ><b>URAIAN</b></td>
@@ -510,41 +510,8 @@ class LRAJKNController extends CI_Controller
 					   <td align=\"center\" bgcolor=\"#CCCCCC\" >5</td> 
 					   <td align=\"center\" bgcolor=\"#CCCCCC\" >6</td> 
 					</tr>
-					</thead>
-                    </TABLE>";
+					</thead>";
 
-        
-        $cRet .= "<tr>
-            <td align=\"left\" colspan=\"12\" style=\"font-size:12px;border: solid 1px white;\">&nbsp;</td>
-            <td align=\"left\" colspan=\"4\" style=\"font-size:12px;border: solid 1px white;\"></td>
-        </tr>
-        <tr>
-            <td align=\"left\" colspan=\"12\" style=\"font-size:12px;border: solid 1px white;\">&nbsp;</td>
-            <td align=\"left\" colspan=\"4\" style=\"font-size:12px;border: solid 1px white;\"></td>
-        </tr>
-        </table>
-        <table style=\"border-collapse:collapse; border-color: black;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"1\" >
-        <thead> 
-        <tr>
-        <td align=\"center\" width=\"20%\" style=\"font-size:12px;font-weight:bold;\">Sub Kegiatan</td>
-            <td align=\"center\" width=\"10%\" style=\"font-size:12px;font-weight:bold;\">Kode Rekening</td>
-            <td align=\"center\" width=\"28%\" style=\"font-size:12px;font-weight:bold\">Nama Rekening</td>
-
-            <td align=\"center\" width=\"12%\" style=\"font-size:12px;font-weight:bold\">Jumlah Anggaran(Rp)</td>
-            <td align=\"center\" width=\"12%\" style=\"font-size:12px;font-weight:bold\">Jumlah Realisasi(Rp)</td>
-            <td align=\"center\" width=\"10%\" style=\"font-size:12px;font-weight:bold\">Selisih/Kurang</td>
-            <td align=\"center\" width=\"5%\" style=\"font-size:12px;font-weight:bold\">%</td>
-        </tr>
-        <tr>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">1</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">1</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">2</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">3</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">4</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">5</td>
-        <td align=\"center\"  style=\"font-size:12px;border-top:solid 1px black\">6</td>
-        </tr>
-        </thead>";
         $persen = 0;
         $totalanggaran = 0;
         $totalrealisasi = 0;
@@ -556,32 +523,38 @@ class LRAJKNController extends CI_Controller
             $hasill = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['realisasi'], 2, ",", ".");
             // " . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . "
             $hasill1 = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".");
-            $hasil = ($resulte['urut'] == '1') ? $resulte['kd_sub_kegiatan'] . '<br>' . $resulte['nm_sub_kegiatan'] : null;
+            // $hasil = ($resulte['urut'] == '1') ? $resulte['kd_sub_kegiatan'] . '<br>' . $resulte['nm_sub_kegiatan'] : null;
             if ($resulte['urut'] == '1' && substr($resulte['kd_rek6'], 0, 1) == '5') {
                 $totalanggaran += $resulte['anggaran'];
                 $totalrealisasi += $resulte['realisasi'];
                 $persentot = $totalrealisasi / $totalanggaran * 100;
             }
             $cRet .= "<tr>
-            <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\"> $hasil</td>
+            
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . $resulte['kd_rek6'] . "</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . $resulte['nm_rek6'] . "</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($resulte['anggaran'], 2, ",", ".") . "</td>
-            <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill1</td>
+            <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill</td>
+           
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($persen, 2, ",", ".") . "</td>
             </tr>";
         }
         $cRet .= "<tr>
-        <td align=\"left\" colspan=\"3\" style=\"font-size:12px;border-top:solid 1px black\">Total</td>
+        <td align=\"left\" colspan=\"2\" style=\"font-size:12px;border-top:solid 1px black\">Total</td>
         <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($totalanggaran, 2, ",", ".") . "</td>
-        <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($totalrealisasi, 2, ",", ".") . "</td>
         <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($totalanggaran - $totalrealisasi, 2, ",", ".") . "</td>
+        <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($totalrealisasi, 2, ",", ".") . "</td>
+       
         <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($persentot, 2, ",", ".") . "</td>
+        
         </tr>";
         $cRet .= " </table>";
 
 
+                    
+
+      
         if ($print == 0) {
             $data['prev'] = $cRet;
             echo ("<title>LRA</title>");
@@ -594,7 +567,5 @@ class LRAJKNController extends CI_Controller
         }
     }
 
-
-    //END
 
 }
