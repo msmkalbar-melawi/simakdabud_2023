@@ -513,13 +513,16 @@ class LRAJKNController extends CI_Controller
 					</thead>";
 
         $persen = 0;
+       // $pend = 0;
         $totalanggaran = 0;
         $totalrealisasi = 0;
         $persentot = 0;
         // $hasill=0;
         // $dataaaaaaa=0;
         foreach ($dataisian->result_array() as $resulte) {
-            $persen = $resulte['realisasi'] / $resulte['anggaran'] * 100;
+            //$pend = ($resulte['nilai'] < $resulte['nilai']) ?  '(' . number_format($resulte['nilai'], 2, ",", ".") . ')' : number_format($resulte['nilai'], 2, ",", ".");
+            //$persen = $resulte['realisasi'] / $resulte['anggaran'] * 100;
+            $persen=($resulte['realisasi']!=0)?($resulte['realisasi']/$resulte['anggaran']) * 100:0;
             $hasill = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['realisasi'], 2, ",", ".");
             // " . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . "
             $hasill1 = ($resulte['anggaran'] < $resulte['realisasi']) ?  '(' . number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".") . ')' : number_format($resulte['anggaran'] - $resulte['realisasi'], 2, ",", ".");
@@ -534,9 +537,8 @@ class LRAJKNController extends CI_Controller
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . $resulte['kd_rek6'] . "</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . $resulte['nm_rek6'] . "</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($resulte['anggaran'], 2, ",", ".") . "</td>
-            <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill1</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill</td>
-           
+            <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">$hasill1</td>
             <td align=\"left\"  style=\"font-size:12px;border-top:solid 1px black\">" . number_format($persen, 2, ",", ".") . "</td>
             </tr>";
         }
