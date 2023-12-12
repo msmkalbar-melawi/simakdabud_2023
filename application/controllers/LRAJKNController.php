@@ -486,7 +486,7 @@ class LRAJKNController extends CI_Controller
                             </tr>";
                         }
 
-					$cRet .="<tr><td align=\"center\" style=\"border-left:hidden;border-top:hidden\" ><b>PERIODE " . strtoupper($this->tukd_model->tanggal_format_indonesia($periode1)) . " S.D " . strtoupper($this->tukd_model->tanggal_format_indonesia($periode1)). "<br>TAHUN ANGGARAN $tahun</b></td></tr>;
+					$cRet .="<tr><td align=\"center\" style=\"border-left:hidden;border-top:hidden\" ><b>PERIODE " . strtoupper($this->tukd_model->tanggal_format_indonesia($periode1)) . " S.D " . strtoupper($this->tukd_model->tanggal_format_indonesia($periode2)). "<br>TAHUN ANGGARAN $tahun</b></td></tr>;
                     </TABLE>";
 						
 		$cRet .= "<table style=\"border-collapse:collapse;font-family:Arial;font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"3\" cellpadding=\"3\">

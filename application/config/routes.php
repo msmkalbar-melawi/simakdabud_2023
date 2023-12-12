@@ -250,6 +250,7 @@ $route['lrabludakuntansi'] = "LRABLUDController/index";
 // LRA KHUSUS BLUD
 $route['rincian/blud'] = 'BludController';
 $route['rincian/blud/cetak?(:any)'] = 'BludController/cetak';
+$route['rincian/blud/cetak?(:any)'] = 'BludController/cetak2';
 
 //MAPPING
 $route['map_skpd']               = "mapping/map_skpd"; //OK

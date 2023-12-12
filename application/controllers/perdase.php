@@ -9413,6 +9413,321 @@ class Perdase extends CI_Controller
 		}
 	}
 
+	// function cetak_perda_lampI_4_SE($bulan = '', $anggaran = '', $ctk = '', $tglttd = '', $ttd = '', $ttdperda = '',$tanggal_ttd = '')
+	// {
+	// 	$lntahunang = $this->session->userdata('pcThang');
+	// 	$lntahunangg = $lntahunang + 1;
+	// 	$ttd1 = str_replace('n', ' ', $ttdperda);
+
+	// 	$lntahunangn = $lntahunang + 1;
+
+	// 	$sqlsc = "SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
+	// 	$sqlsclient = $this->db->query($sqlsc);
+	// 	foreach ($sqlsclient->result() as $rowsc) {
+	// 		$kab     = $rowsc->kab_kota;
+	// 		$prov     = $rowsc->provinsi;
+	// 		$daerah  = $rowsc->daerah;
+	// 		$thn     = $rowsc->thn_ang;
+	// 	}
+        
+	// 	$tanggal = $tglttd == '-' ? '' : $daerah . ', ' . $this->tukd_model->tanggal_format_indonesia($tglttd);
+	// 	$cRet = '<TABLE style="border-collapse:collapse; font-size:12px" font-family: Bookman Old Style; width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+	// 				<TR>
+	// 					<TD width="70%" align="center" ><b>&nbsp;</TD>
+	// 					<TD width="30%" align="left" >LAMPIRAN I.4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/> PERATURAN DAERAH KABUPATEN MELAWI <br/> 
+    //                     NOMOR &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TAHUN ' . $lntahunangg . ' <br/>TENTANG PERTANGGUNGJAWABAN PELAKSANAAN <br/> ANGGARAN PENDAPATAN DAN BELANJA DAERAH<br/>KABUPATEN MELAWI TAHUN ANGGARAN ' . $lntahunang . '
+    //                     </TD>
+	// 				</TR>
+    //                 <TR>
+	// 					<TD width="70%" align="center" ><b>&nbsp;</TD>
+	// 					<TD width="30%" align="center" ><b>&nbsp;</TD>
+	// 				</TR>
+	// 				</TABLE><br/>';
+    //     // $cRet = '<TABLE style="border-collapse:collapse;font-size:12px;font-family:Bookman Old Style" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
+    //     //                 <tr>
+    //     //                     <td width="63%" align="center" >&nbsp;</td>
+    //     //                     <td width="10%" valign="top" align="left" >LAMPIRAN I.4</td>
+    //     //                     <td>:</td>
+    //     //                     <td>RANCANGAN PERATURAN DAERAH MELAWI</td>
+    //     //                 </tr>
+    //     //                 <tr>
+    //     //                     <td width="63%" align="center" >&nbsp;</td>
+    //     //                     <td>NOMOR</td>
+    //     //                     <td>:</td>
+    //     //                     <td> </td>
+    //     //                 </tr>
+    //     //                 <tr>
+    //     //                     <td width="63%" align="center" >&nbsp;</td>
+    //     //                     <td>TANGGAL</td>
+    //     //                     <td>:</td>
+    //     //                     <td></td>
+    //     //                 </tr>
+    //     //                 <tr>
+    //     //                     <td>&nbsp;</td>
+    //     //                     <td>&nbsp;</td>
+    //     //                     <td>&nbsp;</td>
+    //     //                     <td>&nbsp; </td>
+    //     //                 </tr>
+	// 	// 			</TABLE><br/>';
+
+	// 	$cRet .= "<TABLE style=\"border-collapse:collapse;font-size:12px;font-family:Bookman Old Style\" width=\"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"2\" align=\"center\">
+	// 				<tr>
+	// 				<td rowspan=\"3\" align=\"center\" style=\"border-right:hidden\">
+    //                     &nbsp;
+    //                     </td>
+	// 				<td align=\"center\" style=\"border-left:hidden;border-bottom:hidden\"><strong></strong></td></tr>
+    //                 <tr><td align=\"center\" style=\"border-left:hidden;border-bottom:hidden;border-top:hidden\"><b>$kab <br>REKAPITULASI REALISASI BELANJA MENURUT URUSAN PEMERINTAHAN DAERAH, ORGANISASI, PROGRAM, <br>KEGIATAN, DAN SUB KEGIATAN<br>TAHUN ANGGARAN " . $lntahunang . "</b></tr>
+	// 				<tr><td align=\"center\" style=\"border-left:hidden;border-top:hidden\" ><b></b></tr>
+	// 				</TABLE>";
+
+	// 	$cRet .= "<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"2\" cellpadding=\"8\">
+    //             <thead>
+	// 			<tr>
+    //                 <td rowspan = \"3\" colspan = \"6\" width=\"8%\" align=\"center\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Kode</td>
+    //                 <td rowspan = \"3\" width=\"20%\" align=\"center\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Uraian Urusan, Organisasi, Program, Kegiatan dan Sub Kegiatan</td>
+    //                 <td colspan = \"8\" width=\"35%\" align=\"center\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Kelompok Belanja</td>
+    //             </tr>
+				
+	// 			<tr>
+	// 				<td align=\"center\" width=\"11%\" colspan=\"2\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Operasi</td> 
+	// 				<td align=\"center\" width=\"11%\" colspan=\"2\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Modal</td> 
+	// 				<td align=\"center\" width=\"11%\" colspan=\"2\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Tidak Terduga</td> 
+	// 				<td align=\"center\" width=\"11%\" colspan=\"2\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Transfer</td>
+	// 		 	</tr>
+	// 			 <tr>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Anggaran</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Realisasi</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Anggaran</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Realisasi</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Anggaran</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Realisasi</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Anggaran</td>
+	// 				<td align=\"center\" width=\"11%\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Realisasi</td>
+					
+	// 			</tr>
+	// 			</thead>";
+
+
+	// 	$sql = "SELECT kd_sub_kegiatan as kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY kode";
+		
+	// 	$hasil = $this->db->query($sql);
+	// 	foreach ($hasil->result() as $row) {
+	// 		$kode = $row->kode;
+	// 		$no_urus = $row->no_urusan;
+	// 		$no_bid  = $row->no_bid;
+	// 		$no_skpd = $row->no_skpd;
+	// 		$no_prog = $row->no_program;
+	// 		$no_keg  = $row->no_kegiatan;
+	// 		$no_sub  = $row->no_sub_kegiatan;
+	// 		$nm_rek = $row->nm_rek;
+	// 		$ang_opr = $row->ang_opr;
+	// 		$ang_btt = $row->ang_btt;
+	// 		$ang_mod = $row->ang_mod;
+	// 		$ang_trf = $row->ang_trf;
+	// 		$real_opr = $row->real_opr;
+	// 		$real_btt = $row->real_btt;
+	// 		$real_mod = $row->real_mod;
+	// 		$real_trf = $row->real_trf;
+
+	// 		$cRet .= '<tr>
+	// 						   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_urus . '</td> 
+	// 						   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_bid . '</td> 
+	// 						   <td align="center" valign="top" width="12%" style="font-size:12px">' . $no_skpd . '</td> 
+	// 						   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_prog . '</td> 
+	// 						   <td align="center" valign="top" width="4%" style="font-size:12px">' . $no_keg . '</td> 
+	// 						   <td align="center" valign="top" width="4%" style="font-size:12px">' . $no_sub . '</td> 
+	// 						   <td align="left"  valign="top" style="font-size:12px">' . $nm_rek . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
+	// 						</tr>';
+	// 	}
+
+	// 	$sql = " select sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf from(
+	// 					select kd_sub_kegiatan kode,nm_rek,sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf
+	// 					FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') where len(kd_sub_kegiatan)=1
+	// 					group by kd_sub_kegiatan ,nm_rek
+	// 					)a 
+	// 				";
+	// 	$hasil = $this->db->query($sql);
+	// 	foreach ($hasil->result() as $row) {
+
+	// 		$ang_opr = $row->ang_opr;
+	// 		$ang_btt = $row->ang_btt;
+	// 		$ang_mod = $row->ang_mod;
+	// 		$ang_trf = $row->ang_trf;
+	// 		$real_opr = $row->real_opr;
+	// 		$real_btt = $row->real_btt;
+	// 		$real_mod = $row->real_mod;
+	// 		$real_trf = $row->real_trf;
+		
+	// 		$cRet .= '<tr>
+	// 						   <td align="center" colspan="7" valign="top" style="font-size:12px">TOTAL</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
+	// 						   <td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
+	// 						</tr>';
+	// 	}
+	// 	$cRet .= "</table>";
+
+	// 	if ($ttd == "1") {
+
+	// 		$sqlttd1 = "SELECT nama as nm,nip as nip,jabatan as jab,pangkat FROM ms_ttd where nip='$ttd1' and (kode ='PA' or kode='PPKD' or kode='SETDA' or kode ='BUPATI')";
+	// 		$sqlttd = $this->db->query($sqlttd1);
+	// 		foreach ($sqlttd->result() as $rowttd) {
+	// 			$nip = $rowttd->nip;
+	// 			$nama = $rowttd->nm;
+	// 			$jabatan  = $rowttd->jab;
+	// 			$pangkat  = $rowttd->pangkat;
+	// 		}
+
+	// 		if ($ttd1 != '1') {
+	// 			$xx = "<u>";
+	// 			$xy = "</u>";
+	// 			$nipxx = $nip;
+	// 			$nipx = "NIP. ";
+	// 		} else {
+	// 			$xx = "";
+	// 			$xy = "";
+	// 			$nipxx = "";
+	// 			$nipx = "";
+	// 		}
+
+	// 		if ($tglttd == 1) {
+	// 			$tgltd = '';
+	// 		} else {
+	// 			$tgltd = $this->custom->tanggal_format_indonesia($tglttd);
+	// 		}
+
+	// 		if ($nip == '00000000 000000 0 000'){
+	// 			$cRet .= '<br><br>
+	// 				<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+								
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" > MELAWI , ' . $tgltd . '</TD>
+	// 							</TR>
+								
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" ><b>' . $jabatan . '</b></TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>   
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>                       
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" >' . $xx . '<b>' . $nama . '</b>' . $xy . '</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" >' . $pangkat . '</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" > </TD>
+	// 							</TR>
+	// 							</TABLE><br/>';
+		
+	// 			} else {
+	// 			$cRet .= '<br><br>
+	// 				<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+								
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" > MELAWI , ' . $tgltd . '</TD>
+	// 							</TR>
+								
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" ><b>' . $jabatan . '</b></TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>   
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 							</TR>                       
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" >' . $xx . '<b>' . $nama . '</b>' . $xy . '</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" >' . $pangkat . '</TD>
+	// 							</TR>
+	// 							<TR>
+	// 								<TD width="50%" align="center" ><b>&nbsp;</TD>
+	// 								<TD align="center" >' . $nipx . '' . $nipxx . '</TD>
+	// 							</TR>
+	// 							</TABLE><br/>';
+	// 			}
+	// 	}
+
+	// 	//ok
+
+
+	// 	$data['prev'] = $cRet;
+	// 	$judul = 'Perda_LampI';
+	// 	switch ($ctk) {
+	// 		case 0;
+	// 			echo ("<title>$judul</title>");
+	// 			echo $cRet;
+	// 			break;
+	// 		case 1;
+	// 			$this->_mpdf_down_lan('', $cRet, 10, 10, 10, 'L');
+	// 			break;
+	// 		case 2;
+	// 			header("Cache-Control: no-cache, no-store, must-revalidate");
+	// 			header("Content-Type: application/vnd.ms-excel");
+	// 			header("Content-Disposition: attachment; filename= $judul.xls");
+	// 			$this->load->view('anggaran/rka/perkadaII', $data);
+	// 			break;
+	// 	}
+	// }
+	
+
 	function cetak_perda_lampI_4_SE($bulan = '', $anggaran = '', $ctk = '', $tglttd = '', $ttd = '', $ttdperda = '',$tanggal_ttd = '')
 	{
 		$lntahunang = $this->session->userdata('pcThang');
@@ -9448,7 +9763,7 @@ class Perdase extends CI_Controller
         //                     <td width="63%" align="center" >&nbsp;</td>
         //                     <td width="10%" valign="top" align="left" >LAMPIRAN I.4</td>
         //                     <td>:</td>
-        //                     <td>RANCANGAN PERATURAN DAERAH MELAWI</td>
+        //                     <td>RANCANGAN PERATURAN DAERAH SANGGAU</td>
         //                 </tr>
         //                 <tr>
         //                     <td width="63%" align="center" >&nbsp;</td>
@@ -9480,7 +9795,7 @@ class Perdase extends CI_Controller
 					<tr><td align=\"center\" style=\"border-left:hidden;border-top:hidden\" ><b></b></tr>
 					</TABLE>";
 
-		$cRet .= "<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"2\" cellpadding=\"8\">
+		$cRet .= "<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"2\" cellpadding=\"2\">
                 <thead>
 				<tr>
                     <td rowspan = \"3\" colspan = \"6\" width=\"8%\" align=\"center\" bgcolor=\"#CCCCCC\" style=\"font-size:12px\">Kode</td>
@@ -9508,8 +9823,8 @@ class Perdase extends CI_Controller
 				</thead>";
 
 
-		$sql = "SELECT kd_sub_kegiatan as kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY kode";
-		
+		$sql = "SELECT kd_sub_kegiatan kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,			SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY kode";
+
 		$hasil = $this->db->query($sql);
 		foreach ($hasil->result() as $row) {
 			$kode = $row->kode;
@@ -9550,8 +9865,8 @@ class Perdase extends CI_Controller
 
 		$sql = " select sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf from(
 						select kd_sub_kegiatan kode,nm_rek,sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf
-						FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') where len(kd_sub_kegiatan)=1
-						group by kd_sub_kegiatan ,nm_rek
+						FROM [perda_lampI.3_sub_2_c]($bulan,'$anggaran') where len(kd_sub_kegiatan)=1
+						group by kd_sub_kegiatan , nm_rek
 						)a 
 					";
 		$hasil = $this->db->query($sql);
@@ -9582,7 +9897,7 @@ class Perdase extends CI_Controller
 
 		if ($ttd == "1") {
 
-			$sqlttd1 = "SELECT nama as nm,nip as nip,jabatan as jab,pangkat FROM ms_ttd where nip='$ttd1' and (kode ='PA' or kode='PPKD' or kode='SETDA' or kode ='BUPATI')";
+			$sqlttd1 = "SELECT nama as nm,nip as nip,jabatan as jab,pangkat FROM ms_ttd where nip='$ttd1' and (kode ='PA' or kode='PPKD' or kode='SETDA' or kode ='BUP')";
 			$sqlttd = $this->db->query($sqlttd1);
 			foreach ($sqlttd->result() as $rowttd) {
 				$nip = $rowttd->nip;
@@ -9615,7 +9930,7 @@ class Perdase extends CI_Controller
 								
 								<TR>
 									<TD width="50%" align="center" ><b>&nbsp;</TD>
-									<TD align="center" > MELAWI , ' . $tgltd . '</TD>
+									<TD align="center" > Melawi , ' . $tgltd . '</TD>
 								</TR>
 								
 								<TR>
@@ -9662,7 +9977,7 @@ class Perdase extends CI_Controller
 								
 								<TR>
 									<TD width="50%" align="center" ><b>&nbsp;</TD>
-									<TD align="center" > MELAWI , ' . $tgltd . '</TD>
+									<TD align="center" > Melawi , ' . $tgltd . '</TD>
 								</TR>
 								
 								<TR>
@@ -9726,7 +10041,9 @@ class Perdase extends CI_Controller
 				break;
 		}
 	}
-	
+
+	//================================================ End Lamp Perda I.4 SE 2022
+
 
 	function cetak_perda_lampI_4_SE_rincian($bulan = '', $anggaran = '', $ctk = '', $tglttd = '', $ttd = '', $ttdperda = '',$tanggal_ttd = '')
 	{

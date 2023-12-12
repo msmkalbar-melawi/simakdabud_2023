@@ -3215,6 +3215,7 @@ class Perda extends CI_Controller
 		$totalnetto = $totnilnetto + $totnilllnetto;
 
 		$sisa_netto = $totangnetto - $totalnetto;
+		//$sisa_netto = $totangnetto - $totnilnetto1;
 		if (($totangnetto == 0) || ($totangnetto == '')) {
 			$persen_netto = 0;
 		} else {
@@ -3486,7 +3487,7 @@ class Perda extends CI_Controller
 									break;
 								default:
 									# code...
-									break;
+									//break;
 							}
 						}
 					}
@@ -3494,7 +3495,7 @@ class Perda extends CI_Controller
 
 					break;
 
-					break;
+					//break;
 				case 4:
 					$cRet .= '<tr>
 							   <td align="left" valign="top" ><b>' . $kode . '</b></td> 
@@ -3522,7 +3523,7 @@ class Perda extends CI_Controller
 							   <td align="left" valign="top" ><b>' . $kode . '</b></td> 
 							   <td colspan="7" align="right"  valign="top" style="border-left:none"><b>' . $nama . '</b></td> 
 							   <td align="right" valign="top" ><b>' . number_format($totangnetto, "2", ",", ".") . '</b></td> 
-							   <td align="right" valign="top" ><b>' . $ef . '' . number_format($totnilnetto1, "2", ",", ".") . '' . $gh . '</b></td> 
+							   <td align="right" valign="top" ><b>' . number_format($totnilnetto1, "2", ",", ".") . '</b></td> 
 							   <td align="right" valign="top"><b>' . $k . '' . number_format($sisa_netto1, "2", ",", ".") . '' . $l . '</b></td> 
 							   <td align="right" valign="top"><b>' . number_format($persen_netto, "2", ",", ".") . '</b></td> 
 							</tr>';

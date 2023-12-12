@@ -63,6 +63,14 @@
             </td>
         </tr>
         <tr>
+            <td><b>LRA</b></td>
+            <td>
+                <button class="button-kuning" plain="true" onclick="javascript:submit1(0);"><i class="fa fa-print"></i> Cetak Layar</a></button>
+                <button class="button-hitam" plain="true" onclick="javascript:submit1(1);"><i class="fa fa-pdf"></i> Cetak PDF</a></button>
+                <button class="button-biru" plain="true" onclick="javascript:submit1(2);"><i class="fa fa-excel"></i> Cetak Excel</a></button>
+            </td>
+        </tr>
+        <tr>
             <td><b>Rincian BLUD</b></td>
             <td>
                 <button class="button-kuning" plain="true" onclick="javascript:submit(0);"><i class="fa fa-print"></i> Cetak Layar</a></button>
@@ -186,6 +194,38 @@
         window.focus();
 
     }
+
+    // andika
+    function submit1(type) {
+        const print = printType(type);
+
+        const jenis = $("input[type=radio]:checked").val()
+        const bulan = $('#bulan').val()
+        var periode1 = $('#periode1').datebox('getValue');
+        var periode2 = $('#periode2').datebox('getValue');
+        const jenisAnggaran = $('#jenisAnggaran').val()
+
+        if (jenis === undefined) {
+            return alert('Pilih tipe cetak terlebih dahulu')
+        } else if (jenis === 'bulan' && bulan === '') {
+            return alert('Pilih bulan terlebih dahulu')
+        } else if (jenis === 'periode' && (periode1 === '' && periode2 === '')) {
+            return alert('Periode tidak boleh kosong')
+        } else if (jenis === 'periode' && periode1 > periode2) {
+            return alert('Pastikan tanggal awal lebih kecil dari tanggal akhir');
+        } else if (jenisAnggaran === '') {
+            return alert('Jenis anggaran tidak boleh kosong')
+        }
+
+        const baseUrl = '<?= site_url('rincian/blud/cetak2') ?>'
+
+        const url = `${baseUrl}?jenis=${jenis}&tipeCetak=${print}&${jenis === 'bulan' ? `bulan=${bulan}` : `tanggalAwal=${periode1}&tanggalAkhir=${periode2}`}&jenisAnggaran=${jenisAnggaran}`
+
+        window.open(url, '_blank');
+        window.focus();
+
+    }
+
 </script>
 
 <script type="text/javascript" src="<?php echo base_url(); ?>easyui/jquery-1.8.0.min.js"></script>
