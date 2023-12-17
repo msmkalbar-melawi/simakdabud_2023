@@ -9423,7 +9423,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
             $nilaiRKPPKD_lalu  = $row005->thn_m1;
         }
 
-        $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
+        // $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
+        $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
 		/*      
         $sql51 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='9'";
         $query51 = $this->db->query($sql51);
@@ -10262,7 +10263,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
             $nilaiRKPPKD_lalu  = $row005->thn_m1;
         }
 
-        $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
+        // $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
+        $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
 		/*      
         $sql51 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='9'";
         $query51 = $this->db->query($sql51);
