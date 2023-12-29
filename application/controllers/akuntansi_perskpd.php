@@ -323,7 +323,7 @@ class akuntansi_perskpd extends CI_Controller
             $q = '';
             $r = '';
         }
-        $sql = "SELECT kode, nama, kode1, kode2, kode3,kode4,kode5,spasi, jenis FROM map_lra_sap_baru";
+        $sql = "SELECT kode, nama, kode1, kode2, kode3,kode4,kode5,spasi, jenis FROM map_lra_sap_baru_copy1";
         $no = 0;
         $tot_peg = 0;
         $tot_brg = 0;
@@ -1937,7 +1937,7 @@ class akuntansi_perskpd extends CI_Controller
 								<td width="1%" align="left" valign="top" style="border-right:none"></td>
 								<td colspan="5" align="left"  valign="top" style="border-left:none"><b>' . $nama . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($nil_ang, "2", ",", ".") . '</b></td> 
-								<td align="right" valign="top"><b>' . number_format($nilai, "2", ",", ".") . '</b></td> 
+								<td align="right" valign="top"><b>UUU' . number_format($nilai, "2", ",", ".") . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($sel, "2", ",", ".") . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($persen, "2", ",", ".") . '</b></td> 
 							</tr>';
@@ -1947,7 +1947,7 @@ class akuntansi_perskpd extends CI_Controller
 							<td align="left" valign="top" ><b>' . $kode . '</b></td> 
 							<td colspan="6" align="right" valign="top"><b>' . $nama . '</b></td> 
 							<td align="right" valign="top"><b>' . $a . '' . number_format($ang_surplus1, "2", ",", ".") . '' . $b . '</b></td> 
-							<td align="right" valign="top"><b>' . $c . '' . number_format($nil_surplus1, "2", ",", ".") . '' . $d . '</b></td> 
+							<td align="right" valign="top"><b>XY' . $c . '' . number_format($nil_surplus1, "2", ",", ".") . '' . $d . '</b></td> 
 							<td align="right" valign="top"><b>' . $e . '' . number_format($sisa_surplus1, "2", ",", ".") . '' . $f . '</b></td> 
 							<td align="right" valign="top"><b>' . number_format($persen_surplus, "2", ",", ".") . '</b></td> 
 						</tr>';
