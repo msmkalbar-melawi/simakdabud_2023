@@ -83,7 +83,7 @@ class LRAJKNController extends CI_Controller
         if ($kd_skpd == 'Keseluruhan') {
             if ($jenis == 'jkn') {
                 $judul = 'KAPITASI JKN';
-                $dataisian = $this->db->query("SELECT * FROM (
+                $dataisian = $this->db->query("XSELECT * FROM (
                     SELECT '1' as urut, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM(
                     -- ms rek 2
                     SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, c.nm_rek2 as nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek2 c ON c.kd_rek2=LEFT(a.kd_rek6,2) WHERE a.jenis IN('1') GROUP BY LEFT(a.kd_rek6,2), c.nm_rek2,a.nm_sub_kegiatan,a.kd_sub_kegiatan)a LEFT JOIN( SELECT a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY LEFT(a.kd_rek6,2),a.kd_sub_kegiatan
@@ -113,10 +113,8 @@ class LRAJKNController extends CI_Controller
                     ) x ON x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan
                     -- ms rek 6
                     UNION ALL
-                    SELECT '5'as urut,  a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM(SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6 )a LEFT JOIN (SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6
-                    UNION ALL
-                    SELECT a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_rek6,a.kd_sub_kegiatan
-                    ) x ON x.kd_sub_kegiatan=a.kd_sub_kegiatan AND x.kd_rek6=a.kd_rek6) s ORDER BY s.kd_sub_kegiatan,s.kd_rek6");
+                    SELECT '5'as urut, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6, SUM(a.nilai) as anggaran, SUM(ISNULL(x.nilai,0)) as realisasi FROM(SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6 )a LEFT JOIN (SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '2023-12-1' AND '2023-12-31' GROUP BY a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6 UNION ALL 
+SELECT a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '2023-12-1' AND '2023-12-31' GROUP BY a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_sub_kegiatan=a.kd_sub_kegiatan AND x.kd_rek6=a.kd_rek6 GROUP BY a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6) s ORDER BY s.kd_sub_kegiatan,s.kd_rek6");
                 $nm_skpd = '';
             } else if ($jenis == 'bok') {
                 $judul = 'BOK';
@@ -196,7 +194,7 @@ class LRAJKNController extends CI_Controller
                 $nm_skpd = $this->db->query("SELECT nm_skpd FROM ms_skpd_jkn WHERE kd_skpd='$kd_skpd'")->row();
             } else if ($jenis == 'bok') {
                 $judul = 'BOK';
-                $dataisian = $this->db->query("SELECT * FROM ( SELECT '1' as urut, a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                $dataisian = $this->db->query("SELECT * FROM ( SELECT '1' as urut, a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
                     -- ms rek 2 
                     SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan as nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, c.nm_rek2 as nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek2 c ON c.kd_rek2=LEFT(a.kd_rek6,2) WHERE a.jenis IN('3') GROUP BY LEFT(a.kd_rek6,2), c.nm_rek2, a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,LEFT(a.kd_rek6,2),a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan
                     -- ms rek 3 
