@@ -83,7 +83,7 @@ class LRAJKNController extends CI_Controller
         if ($kd_skpd == 'Keseluruhan') {
             if ($jenis == 'jkn') {
                 $judul = 'KAPITASI JKN';
-                $dataisian = $this->db->query("XSELECT * FROM (
+                $dataisian = $this->db->query("SELECT * FROM (
                     SELECT '1' as urut, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM(
                     -- ms rek 2
                     SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, c.nm_rek2 as nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek2 c ON c.kd_rek2=LEFT(a.kd_rek6,2) WHERE a.jenis IN('1') GROUP BY LEFT(a.kd_rek6,2), c.nm_rek2,a.nm_sub_kegiatan,a.kd_sub_kegiatan)a LEFT JOIN( SELECT a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, LEFT(a.kd_rek6,2) as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY LEFT(a.kd_rek6,2),a.kd_sub_kegiatan
