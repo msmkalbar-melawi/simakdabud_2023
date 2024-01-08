@@ -1937,7 +1937,7 @@ class akuntansi_perskpd extends CI_Controller
 								<td width="1%" align="left" valign="top" style="border-right:none"></td>
 								<td colspan="5" align="left"  valign="top" style="border-left:none"><b>' . $nama . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($nil_ang, "2", ",", ".") . '</b></td> 
-								<td align="right" valign="top"><b>UUU' . number_format($nilai, "2", ",", ".") . '</b></td> 
+								<td align="right" valign="top"><b>' . number_format($nilai, "2", ",", ".") . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($sel, "2", ",", ".") . '</b></td> 
 								<td align="right" valign="top"><b>' . number_format($persen, "2", ",", ".") . '</b></td> 
 							</tr>';
