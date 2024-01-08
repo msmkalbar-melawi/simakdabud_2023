@@ -4245,7 +4245,7 @@ class Akuntansi extends CI_Controller
 		$user     = $this->session->userdata('pcNama');
 		$skpd     = $this->session->userdata('kdskpd');
 		$thn	  = $this->session->userdata('pcThang');
-		$this->db->query("jurnal_rekap_pemkot");
+		$this->db->query("jurnal_rekap_pemkot '$thn'");
 		echo '1';
 	}
 	//============================================================= End Mapping
