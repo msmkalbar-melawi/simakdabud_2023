@@ -2936,7 +2936,6 @@ rekomendasi APIP dan/atau rekomendasi BPK"
             <td align=\"center\" width=\"50%\" style=\"border-collapse:collapse;font-weight:bold; font-size:12px\">" . $client->pem . " " . $client->nm_kab . "</td>
             <td align=\"center\" width=\"50%\">
                 <table style=\"border-collapse:collapse;font-size:12px; font-weight: bold;\" width=\"100%\" align=\"center\" cellspacing=\"4\" cellpadding=\"0\">
-                    
                     <tr>
                         <td align=\"center\">
                             SURAT PERINTAH PENCAIRAN DANA (SP2D)
@@ -3058,9 +3057,9 @@ where a.no_spp='$lcnospp' AND a.kd_skpd='$lckd_skpd' and b.jns_spp not in ('1','
                     <td valign=\"top\" >&nbsp;Keperluan Untuk</td>
                     <td valign=\"top\" >:</td>
                     <td height=\"$tinggi\" valign=\"top\" style=\"border-collapse:collapse;font-family: Tahoma;font-size:12px\" >$lcperlu 
-                    <br>" . $this->right($kd_prog, 2) . "$nm_prog
-                    <br>" . $this->right($kd_kegi, 2) . "$nm_kegi
                     </td>
+
+                  
 
                 </tr>
                 <tr>

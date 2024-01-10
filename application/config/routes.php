@@ -200,6 +200,8 @@ $route['daftar_penguji']            = "sp2d/daftar_penguji";
 
 //sp2b
 $route['sp2bControllerr'] = 'Sp2bController/index';
+//sp2b blud
+$route['sp2bblud'] = 'blud/SP2BBludController/index';
 
 
 //TUKD
