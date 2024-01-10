@@ -767,7 +767,7 @@ class Tukd_pusk extends CI_Controller {
                         </TR>
                         <TR>
                             <TD width="50%" align="center" ></TD>
-                            <TD width="50%" align="center" >Sanggau, '.$tgl_sp2b.'</TD>
+                            <TD width="50%" align="center" >Melawi, '.$tgl_sp2b.'</TD>
                         </TR>
                         <TR>
                             <TD width="50%" align="center" ></TD>
