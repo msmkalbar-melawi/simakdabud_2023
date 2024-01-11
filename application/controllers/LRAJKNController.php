@@ -437,7 +437,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -446,14 +446,14 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
 
                     case 2:
                         $cRet .= "<tr>
-                        <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px; border-right:none;\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -477,7 +477,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -486,13 +486,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 4:
                         $cRet .= "<tr>
-                            <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                            <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -510,7 +510,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -519,7 +519,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -533,7 +533,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -542,7 +542,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -556,7 +556,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -565,7 +565,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -582,7 +582,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -592,7 +592,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -607,7 +607,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -616,7 +616,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -633,7 +633,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -643,7 +643,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -658,7 +658,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -667,7 +667,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -684,7 +684,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -694,7 +694,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -709,7 +709,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -718,7 +718,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -735,7 +735,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -745,7 +745,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -760,7 +760,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -769,7 +769,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -786,7 +786,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -796,7 +796,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -811,7 +811,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -820,7 +820,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -837,7 +837,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -847,7 +847,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -862,7 +862,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -871,13 +871,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 14:
                         $cRet .= "<tr>
-                                <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                                <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -895,7 +895,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -904,7 +904,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -918,7 +918,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -927,7 +927,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -944,7 +944,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -954,7 +954,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -969,7 +969,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -978,7 +978,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -995,7 +995,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1005,7 +1005,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1020,7 +1020,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1029,7 +1029,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
@@ -1045,7 +1045,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1055,7 +1055,7 @@ class LRAJKNController extends CI_Controller
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                 </tr>";
                         }
@@ -1070,7 +1070,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1079,7 +1079,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1096,7 +1096,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1106,7 +1106,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1121,7 +1121,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1130,7 +1130,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1147,7 +1147,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1157,7 +1157,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1172,7 +1172,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1181,7 +1181,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1198,7 +1198,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1208,7 +1208,7 @@ class LRAJKNController extends CI_Controller
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                 </tr>";
                         }
@@ -1223,7 +1223,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1232,13 +1232,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 23:
                         $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:12px;\"></td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:14px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
@@ -1256,7 +1256,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1265,7 +1265,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -1305,7 +1305,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1314,14 +1314,14 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
 
                     case 2:
                         $cRet .= "<tr>
-                        <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -1345,7 +1345,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1354,13 +1354,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 4:
                         $cRet .= "<tr>
-                            <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                            <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                             <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -1378,7 +1378,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1387,7 +1387,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -1401,7 +1401,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1410,7 +1410,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -1424,7 +1424,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1433,7 +1433,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1450,7 +1450,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1460,7 +1460,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1475,7 +1475,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1484,7 +1484,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1501,7 +1501,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1511,7 +1511,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1526,7 +1526,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1535,7 +1535,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1552,7 +1552,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1562,7 +1562,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1577,7 +1577,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1586,7 +1586,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1603,7 +1603,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1613,7 +1613,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1628,7 +1628,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1637,7 +1637,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1654,7 +1654,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1664,7 +1664,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1679,7 +1679,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1688,7 +1688,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1705,7 +1705,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1715,7 +1715,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1730,7 +1730,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1739,13 +1739,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 14:
                         $cRet .= "<tr>
-                                <td style=\"font-size:12px;border-top:solid 1px black; height:12px;\"></td>
+                                <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                                 <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -1763,7 +1763,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1772,7 +1772,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
@@ -1786,7 +1786,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1795,7 +1795,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1812,7 +1812,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1822,7 +1822,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1837,7 +1837,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1846,7 +1846,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1863,7 +1863,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1873,7 +1873,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1888,7 +1888,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1897,7 +1897,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
@@ -1913,7 +1913,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1923,7 +1923,7 @@ class LRAJKNController extends CI_Controller
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                 </tr>";
                         }
@@ -1938,7 +1938,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1947,7 +1947,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -1964,7 +1964,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -1974,7 +1974,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -1989,7 +1989,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -1998,7 +1998,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -2015,7 +2015,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -2025,7 +2025,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                     </tr>";
                         }
@@ -2040,7 +2040,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -2049,7 +2049,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
@@ -2066,7 +2066,7 @@ class LRAJKNController extends CI_Controller
                             $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
                             $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
                             $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $nil_anggaran - $nil_realisasi;
+                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
                             $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
                         if ($rincian_nil_anggaran == '0') {
@@ -2076,7 +2076,7 @@ class LRAJKNController extends CI_Controller
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_selisih, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
                 <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
                 </tr>";
                         }
@@ -2091,7 +2091,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -2100,13 +2100,13 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 23:
                         $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:12px;\"></td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:14px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
@@ -2124,7 +2124,7 @@ class LRAJKNController extends CI_Controller
                         foreach ($dataisian->result() as $row) {
                             $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
                             $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran - $nil_realisasi;
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
                             $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
                         }
 
@@ -2133,7 +2133,7 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($selisih, 2, ",", ".")  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
