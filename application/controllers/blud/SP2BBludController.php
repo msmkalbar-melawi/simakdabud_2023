@@ -1020,7 +1020,7 @@ class SP2BBludController extends CI_Controller {
     function load_ttd($ttd){
         $kd_skpd = $this->session->userdata('kdskpd');
 		//$kode_skpd = $this->input->post('kdskpd');
-		$sql = "SELECT * FROM ms_ttd WHERE kd_skpd= '1.02.0.00.0.00.01.0001' and kode in ('$ttd','PA')";
+		$sql = "SELECT * FROM ms_ttd WHERE kd_skpd= '5.02.0.00.0.00.02.0000' and kode in ('$ttd','PA')";
 		
         $mas = $this->db->query($sql);
         $result = array();
