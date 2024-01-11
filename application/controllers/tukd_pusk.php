@@ -661,7 +661,7 @@ class Tukd_pusk extends CI_Controller {
                         <TR>
                             <TD align="left" width="10%">Tanggal</TD>                        
                             <TD align="left" width="1%">: </TD>
-                            <TD align="left" width="38%" style="border-right:solid 1px black;">'.$tgl_sp2b.'</TD> 
+                            <TD align="left" width="38%" style="border-right:solid 1px black;">'.$tgl_sp3b1.'</TD> 
                             <TD align="left" width="15%">&nbsp;&nbsp;Nomor</TD>
                             <TD align="left">: '.$no_sp2b.'</TD>                       
                         </TR>
