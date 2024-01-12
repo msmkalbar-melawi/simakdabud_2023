@@ -112,6 +112,7 @@ class Cetak_b9 extends CI_Controller
             $where9 = "AND a.tgl_kas <= '$tgl'";
             $whereA = "AND a.tgl_kas_bud <='$tgl'";
             $whereB = "AND a.tgl_kas <= '$tgl'";
+            $whereC = "a.tanggal <= '$tgl'";
         } else {
             $tanggal1 = $this->tanggal_format_indonesia($tgl1);
 
@@ -139,6 +140,7 @@ class Cetak_b9 extends CI_Controller
             $where9 = "AND a.tgl_kas <= '$tgl2'";
             $whereA = "AND a.tgl_kas_bud <= '$tgl2'";
             $whereB = "AND a.tgl_kas <= '$tgl2'";
+            $whereC = "a.tanggal <= '$tgl2'";
         }
 
 
@@ -456,13 +458,13 @@ class Cetak_b9 extends CI_Controller
                     SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
                     ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
                     FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus<>3 AND $where AND a.rek_bank='$st_renk'
+                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus<>3 AND jns_trans!='1' AND $where AND a.rek_bank='$st_renk'
                     group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan
                     UNION ALL
                     SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
                     ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
                     FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') AND pot_khusus<>3 AND $where AND a.rek_bank='$st_renk'
+                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') AND jns_trans!='1' AND pot_khusus<>3 AND $where AND a.rek_bank='$st_renk'
                     $masuknonsp2d
                         
                     $masuknonsp2d2
@@ -644,7 +646,11 @@ class Cetak_b9 extends CI_Controller
              SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.jns_trans='1' $whereB  GROUP BY a.no_kas,keterangan,rek_bank
              UNION ALL
              -- Pengeluaran lain lain
-             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.pot_khusus='0' AND a.jns_trans='6' $whereB  GROUP BY a.no_kas,keterangan,rek_bank ) a ";
+             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.pot_khusus='0' AND a.jns_trans='6' $whereB  GROUP BY a.no_kas,keterangan,rek_bank
+             UNION ALL
+            -- Penerimaan Non Sp2d
+            SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+              ) a ";
         } else if ($st_renk == '4501002886') {
             $sebelumharini = "SELECT SUM(CASE WHEN jenis IN('1') THEN terima ELSE 0 END) as trm_sbl,
             SUM(CASE WHEN jenis IN('2') THEN keluar ELSE 0 END) as klr_sbl
@@ -663,7 +669,10 @@ class Cetak_b9 extends CI_Controller
             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.jns_trans='1' $whereB  GROUP BY a.no_kas,keterangan,rek_bank 
             UNION ALL
             -- Pengeluaran lain lain
-            SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.pot_khusus='0' AND a.jns_trans='1' $whereB  GROUP BY a.no_kas,keterangan,rek_bank) a ";
+            SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.pot_khusus='0' AND a.jns_trans='1' $whereB  GROUP BY a.no_kas,keterangan,rek_bank
+            UNION ALL
+            -- Penerimaan Non Sp2d
+            SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan ) a ";
         }
 
         // Penjabaran
@@ -734,7 +743,7 @@ class Cetak_b9 extends CI_Controller
             </tr>
             
             <tr>
-                <TD style="border-top:hidden;" align="left" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
+                <TD style="border-top:hidden;" align="left" colspan="5">XJumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
                 <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
