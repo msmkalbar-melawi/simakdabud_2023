@@ -8310,7 +8310,7 @@ and kd_skpd='$lcskpd'";
                 when jns_ang='P2' then 'Penyempurnaan II'
                 when jns_ang='P3' then 'Penyempurnaan III'
                 when jns_ang='U1' then 'Ubah I' 
-                else 'Ubah II' end) as nm_ang from trhrka where kd_skpd='$lcskpd'' AND tgl_dpa in (SELECT MAX(tgl_dpa) from trhrka where kd_skpd=trhrka.kd_skpd)";
+                else 'Ubah II' end) as nm_ang from trhrka where kd_skpd='$lcskpd' AND tgl_dpa in (SELECT MAX(tgl_dpa) from trhrka where kd_skpd=trhrka.kd_skpd)";
         $sqlanggaran = $this->db->query($sqlanggaran1);
         foreach ($sqlanggaran->result() as $rowttd) {
             $anggaran = $rowttd->anggaran;
