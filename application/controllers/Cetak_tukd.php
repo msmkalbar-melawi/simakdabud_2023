@@ -118,7 +118,9 @@ class cetak_tukd extends CI_Controller
       SELECT '2022-01-01' AS tgl, null AS bku,
 	    'Saldo Awal' AS ket, sld_awal_bank AS jumlah, '1' as jns, kd_skpd AS kode FROM ms_skpd WHERE kd_skpd = '$lcskpd'
                 union
-      SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM TRHINLAIN WHERE pay='BANK' union
+    --   SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM TRHINLAIN WHERE pay='BANK' 
+    SELECT TGL_BUKTI AS tgl,NO_BUKTI AS bku,KET as ket, nilai AS jumlah,'1' AS jns_beban, KD_SKPD AS kode FROM TRHINLAIN WHERE KD_SKPD='$lcskpd'
+    union
             select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on 
             c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd='$lcskpd' and  d.pay='BANK' union all
              select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'1' [jns],a.kd_skpd [kode] from trhtrmpot a 
@@ -180,7 +182,9 @@ class cetak_tukd extends CI_Controller
                 SELECT '2022-01-01' AS tgl, null AS bku,
 	    'Saldo Awal' AS ket, sld_awal_bank AS jumlah, '1' as jns, kd_skpd AS kode FROM ms_skpd WHERE kd_skpd = '$lcskpd'
         union 
-                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' union
+                -- SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' 
+                SELECT TGL_BUKTI AS tgl,NO_BUKTI AS bku,KET as ket, nilai AS jumlah,'1' AS jns_beban, KD_SKPD AS kode FROM TRHINLAIN WHERE KD_SKPD='$lcskpd'
+                union
             select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on 
             c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd='$lcskpd' and  d.pay='BANK' union all
              -- select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'1' [jns],a.kd_skpd [kode] from trhtrmpot a 
