@@ -422,7 +422,7 @@ class LRAJKNController extends CI_Controller
 
                 switch ($urut) {
                     case 1:
-                        $dataisian = $this->db->query("SELECT s.anggaran, s.realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
                             SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
                             SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             UNION ALL
@@ -450,10 +450,9 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
-
                     case 2:
                         $cRet .= "<tr>
-                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px; border-right:none;\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
                         <td style=\"font-size:12px;border-top:solid 1px black\"></td>
@@ -462,7 +461,7 @@ class LRAJKNController extends CI_Controller
                         </tr>";
                         break;
                     case 3:
-                        $dataisian = $this->db->query("SELECT s.anggaran, s.realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
                             SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
                             SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             UNION ALL
@@ -501,7 +500,13 @@ class LRAJKNController extends CI_Controller
                             </tr>";
                         break;
                     case 5:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -524,7 +529,13 @@ class LRAJKNController extends CI_Controller
                     </tr>";
                         break;
                     case 6:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -542,12 +553,18 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
                     case 7:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -565,40 +582,18 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 8:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -620,36 +615,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
-                        break;
+                }
+                break;
                     case 9:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -671,36 +697,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 10:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -718,40 +775,71 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 11:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -772,37 +860,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 12:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -824,36 +890,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 13:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -874,19 +971,150 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 14:
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
                         $cRet .= "<tr>
-                                <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                </tr>";
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 15:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -907,9 +1135,68 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 16:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -931,36 +1218,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 17:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -981,87 +1299,25 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
-                        break;
+                    break;
                     case 18:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $nil_anggaran = 0;
-                        $nil_realisasi = 0;
-                        $selisih = 0;
-                        $persen = 0;
-                        foreach ($dataisian->result() as $row) {
-                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
-                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-
-                        $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                </tr>";
-                        }
+                       $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        </tr>";
                         break;
                     case 19:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1082,37 +1338,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 20:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1133,37 +1367,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 21:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1185,36 +1397,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                </tr>";
-                        }
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 22:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1237,17 +1480,13 @@ class LRAJKNController extends CI_Controller
                     </tr>";
                         break;
                     case 23:
-                        $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:14px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    </tr>";
-                        break;
-                    case 24:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1268,9 +1507,1495 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
-                    default:
+                    case 24:
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
+                        case 25:
+                           $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
+                            break;
+                              case 26:
+                           $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
+                break;
+                case 27:
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                        SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                        UNION ALL
+                        SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                        ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                        ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+
+                    $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+
+                // Rincian kd rekening 5
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $kd_kelompok = $row->kelompok;
+                    $nm_rek5 = $row->nm_rek5;
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+                if($nil_anggaran != 0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";  
+                }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $kd_rek6 = $row->kelompok;
+                    $nm_rek6 = $row->nm_rek6;
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+                break;
+            case 28:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+                // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 29:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 30:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;   
+            case 31:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 32:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 33:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 34:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 35:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 36:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 37:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 38:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 39:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;  
+            case 40:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 41:
+            $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; height:14px\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            </tr>";
+            break; 
+            case 42:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM jkn_trdrka a INNER JOIN jkn_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('1') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_trdtransout a INNER JOIN jkn_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+            break;                                                                               
+            default:
+            break;
                 }
             }
         } else if ($jenis == 'bok') {
@@ -1290,11 +3015,11 @@ class LRAJKNController extends CI_Controller
 
                 switch ($urut) {
                     case 1:
-                        $dataisian = $this->db->query("SELECT s.anggaran, s.realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
                             SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
                             SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             UNION ALL
-                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
                             ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
 
@@ -1318,7 +3043,6 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
                         break;
-
                     case 2:
                         $cRet .= "<tr>
                         <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
@@ -1330,11 +3054,11 @@ class LRAJKNController extends CI_Controller
                         </tr>";
                         break;
                     case 3:
-                        $dataisian = $this->db->query("SELECT s.anggaran, s.realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
                             SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
                             SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             UNION ALL
-                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
                             ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
                             ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
 
@@ -1369,7 +3093,13 @@ class LRAJKNController extends CI_Controller
                             </tr>";
                         break;
                     case 5:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1392,7 +3122,13 @@ class LRAJKNController extends CI_Controller
                     </tr>";
                         break;
                     case 6:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1415,7 +3151,13 @@ class LRAJKNController extends CI_Controller
                     </tr>";
                         break;
                     case 7:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1436,37 +3178,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 8:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1488,36 +3208,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
-                        break;
+                }
+                break;
                     case 9:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1539,36 +3290,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 10:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1590,36 +3372,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 11:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1640,37 +3453,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 12:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1692,36 +3483,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 13:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1742,19 +3564,150 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 14:
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
                         $cRet .= "<tr>
-                                <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                <td style=\"font-size:12px;border-top:solid 1px black\"></td>
-                                </tr>";
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 15:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1775,9 +3728,68 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 16:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1799,36 +3811,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-                        }
+                }
                         break;
                     case 17:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1849,87 +3892,25 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
-                        break;
+                    break;
                     case 18:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $nil_anggaran = 0;
-                        $nil_realisasi = 0;
-                        $selisih = 0;
-                        $persen = 0;
-                        foreach ($dataisian->result() as $row) {
-                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
-                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-
-                        $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                </tr>";
-                        }
+                       $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; height:14px;\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+                        </tr>";
                         break;
                     case 19:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -1950,37 +3931,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 20:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -2001,37 +3960,15 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
-
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
-
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                    </tr>";
-                        }
                         break;
                     case 21:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -2053,36 +3990,67 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
 
-                        $data_rincian = $this->db->query("SELECT s.anggaran as anggaran, s.realisasi as realisasi, s.kelompok, s.nm_rek6 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6,a.nm_rek6 as nm_rek6,c.kelompok, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY c.kelompok,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,a.nm_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
 
-                        $rincian_nil_anggaran = 0;
-                        $rincian_nil_realisasi = 0;
-                        $rincian_nmrek6 = '';
-                        $rincian_klmpk_kdrek6 = '';
-                        $rincian_selisih = 0;
-                        $rincian_persen = '';
-                        foreach ($data_rincian->result() as $row) {
-                            $rincian_nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
-                            $rincian_nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
-                            $rincian_klmpk_kdrek6 = $row->kelompok != null || '' ? $row->kelompok : '';
-                            $rincian_nmrek6 = $row->nm_rek6 != null || '' ? $row->nm_rek6 : '';
-                            $rincian_selisih = $rincian_nil_anggaran < $rincian_nil_realisasi ? "(" . number_format(($rincian_nil_anggaran - $rincian_nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($rincian_nil_anggaran - $rincian_nil_realisasi, 2, ",", ".");
-                            $rincian_persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
-                        }
-                        if ($rincian_nil_anggaran == '0') {
-                        } else {
-                            $cRet .= "<tr>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_klmpk_kdrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_nmrek6 . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_anggaran, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_nil_realisasi, 2, ",", ".") . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $rincian_selisih . "</td>
-                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($rincian_persen, 2, ",", ".") . "</td>
-                </tr>";
-                        }
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
                     case 22:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,2) IN ($kode2) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,4) IN ($kode3) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -2105,17 +4073,13 @@ class LRAJKNController extends CI_Controller
                     </tr>";
                         break;
                     case 23:
-                        $cRet .= "<tr>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px; height:14px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\"></td>
-                    </tr>";
-                        break;
-                    case 24:
-                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
 
                         $nil_anggaran = 0;
                         $nil_realisasi = 0;
@@ -2136,12 +4100,1499 @@ class LRAJKNController extends CI_Controller
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
                     <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
                     </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
-                    default:
+                    case 24:
+                        $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
                         break;
+                        case 25:
+                           $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
+                            break;
+                              case 26:
+                           $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                            SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            UNION ALL
+                            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                            ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                            ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                        $nil_anggaran = 0;
+                        $nil_realisasi = 0;
+                        $selisih = 0;
+                        $persen = 0;
+                        foreach ($dataisian->result() as $row) {
+                            $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                            $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                            $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                            $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                        }
+
+                        $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+
+                    // Rincian kd rekening 5
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_kelompok = $row->kelompok;
+                        $nm_rek5 = $row->nm_rek5;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                    if($nil_anggaran != 0){
+                        $cRet .= "<tr>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                        <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                        </tr>";  
+                    }
+                // Rincian rekening 6
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+                )a LEFT JOIN( 
+                SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $kd_rek6 = $row->kelompok;
+                        $nm_rek6 = $row->nm_rek6;
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+                if($nil_anggaran!=0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";
+                }
+                break;
+                case 27:
+                    $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                        SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                        SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                        UNION ALL
+                        SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                        ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                        ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                    $nil_anggaran = 0;
+                    $nil_realisasi = 0;
+                    $selisih = 0;
+                    $persen = 0;
+                    foreach ($dataisian->result() as $row) {
+                        $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                        $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                        $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                        $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                    }
+
+                    $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+
+                // Rincian kd rekening 5
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $kd_kelompok = $row->kelompok;
+                    $nm_rek5 = $row->nm_rek5;
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+                if($nil_anggaran != 0){
+                    $cRet .= "<tr>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                    <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                    </tr>";  
+                }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $kd_rek6 = $row->kelompok;
+                    $nm_rek6 = $row->nm_rek6;
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+                break;
+            case 28:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+                // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 29:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 30:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;   
+            case 31:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 32:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 33:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 34:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 35:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 36:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 37:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 38:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break; 
+            case 39:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;  
+            case 40:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,6) IN ($kode4) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+
+            // Rincian kd rekening 5
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kelompok, s.nm_rek5 FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.kelompok,a.nm_rek5, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, c.nm_rek5, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek5 c ON c.kd_rek5=LEFT(a.kd_rek6,8) WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,c.kelompok,c.nm_rek5)a LEFT JOIN( SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kelompok, s.nm_rek5");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_kelompok = $row->kelompok;
+                $nm_rek5 = $row->nm_rek5;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran != 0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_kelompok . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek5 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";  
+            }
+            // Rincian rekening 6
+            $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi,s.kd_rek6, s.nm_rek6,s.kelompok FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.kelompok, a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, c.kelompok, a.nm_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis LEFT JOIN ms_rek6 c ON c.kd_rek6=a.kd_rek6 WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6,a.nm_rek6,c.kelompok
+            )a LEFT JOIN( 
+            SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan UNION ALL SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan ) s WHERE LEFT(s.kd_rek6,8) IN ($kode5) $where1 GROUP BY s.kd_rek6, s.nm_rek6,s.kelompok");
+
+            $nil_anggaran = 0;
+            $nil_realisasi = 0;
+            $selisih = 0;
+            $persen = 0;
+            foreach ($dataisian->result() as $row) {
+                $kd_rek6 = $row->kelompok;
+                $nm_rek6 = $row->nm_rek6;
+                $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+            }
+            if($nil_anggaran!=0){
+                $cRet .= "<tr>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kd_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nm_rek6 . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+                <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+                </tr>";
+            }
+            break;
+            case 41:
+            $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; height:14px\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            <td style=\"font-size:12px;border-top:solid 1px black\"></td>
+            </tr>";
+            break; 
+            case 42:
+                $dataisian = $this->db->query("SELECT SUM(s.anggaran) as anggaran, SUM(s.realisasi) as realisasi FROM (SELECT a.kd_skpd, a.kd_sub_kegiatan ,a.nm_sub_kegiatan,a.kd_rek6,  a.nilai as anggaran, ISNULL(x.nilai,0) as realisasi FROM( 
+                    SELECT a.kd_skpd as kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan nm_sub_kegiatan, a.kd_rek6 as kd_rek6, SUM(a.nilai) as nilai FROM bok_trdrka a INNER JOIN bok_trhrka b ON b.kd_skpd=a.kd_skpd AND b.no_bukti=a.no_bukti AND a.jenis=b.jenis WHERE a.jenis IN('3') GROUP BY a.kd_rek6,a.kd_skpd,a.nm_sub_kegiatan,a.kd_sub_kegiatan, a.kd_rek6)a LEFT JOIN( 
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan, a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM bok_trdtransout a INNER JOIN bok_trhtransout b ON b.kd_skpd=a.kd_skpd AND a.no_bukti=b.no_bukti AND a.no_sp2d=b.no_sp2d WHERE b.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    UNION ALL
+                    SELECT a.kd_skpd, a.kd_sub_kegiatan as kd_sub_kegiatan, '' nm_sub_kegiatan,a.kd_rek6 as kd_rek6, '' as nm_rek6,SUM(a.nilai) as nilai FROM jkn_tr_terima a WHERE a.tgl_terima BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd,a.kd_rek6,a.kd_sub_kegiatan 
+                    ) x ON x.kd_skpd=a.kd_skpd AND x.kd_rek6=a.kd_rek6 AND x.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                    ) s WHERE LEFT(s.kd_rek6,1) IN ($kode1) $where1");
+
+                $nil_anggaran = 0;
+                $nil_realisasi = 0;
+                $selisih = 0;
+                $persen = 0;
+                foreach ($dataisian->result() as $row) {
+                    $nil_anggaran = $row->anggaran != null || '' ? $row->anggaran : '0';
+                    $nil_realisasi = $row->realisasi != null || '' ? $row->realisasi : '0';
+                    $selisih = $nil_anggaran < $nil_realisasi ? "(" . number_format(($nil_anggaran - $nil_realisasi) * -1, 2, ",", ".")  . ")" : number_format($nil_anggaran - $nil_realisasi, 2, ",", ".");
+                    $persen = $nil_anggaran == 0 ? 0 : $nil_realisasi / $nil_anggaran * 100;
+                }
+
+                $cRet .= "<tr>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $kode . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $nama . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_anggaran, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($nil_realisasi, 2, ",", ".") . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . $selisih  . "</td>
+            <td style=\"font-size:12px;border-top:solid 1px black; padding-left:4px;\">" . number_format($persen, 2, ",", ".") . "</td>
+            </tr>";
+            break;                                                                               
+            default:
+            break;
                 }
             }
         }
+    
 
         $cRet .= " </table>";
         // End
