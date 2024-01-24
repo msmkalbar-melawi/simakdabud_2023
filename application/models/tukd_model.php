@@ -256,7 +256,7 @@ class Tukd_model extends CI_Model
     function _mpdf($judul = '', $isi = '', $lMargin = '', $rMargin = '', $font = 0, $orientasi = '')
     {
 
-        ini_set("memory_limit", "512M");
+        ini_set("memory_limit", "100000M");
         $this->load->library('mpdf');
 
         /*
