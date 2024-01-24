@@ -258,6 +258,7 @@ class Tukd_model extends CI_Model
 
         ini_set("memory_limit", "100000M");
         $this->load->library('mpdf');
+        ini_set('MAX_EXECUTION_TIME', '-1');
 
         /*
         $this->mpdf->progbar_altHTML = '<html><body>
