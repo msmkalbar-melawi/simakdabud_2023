@@ -374,7 +374,7 @@ class SP2BBludController extends CI_Controller {
             $cRet .='<TABLE style="font-size:13px;" width="100%" align="center">
                     <TR>
                         <TD width="50%" align="center" ></TD>
-                        <TD width="50%" align="center" >Sanggau, '.$tanggal_ttd.'</TD>
+                        <TD width="50%" align="center" >Melawi, '.$tanggal_ttd.'</TD>
                     </TR>
                     <TR>
                         <TD width="50%" align="center" ></TD>
@@ -549,16 +549,11 @@ class SP2BBludController extends CI_Controller {
                    }
         }
         
-        function cetak_sp2b_fktp(){        
-            $nomor1 = str_replace('123456789','/',$this->uri->segment(6));
-            $nomor2 = str_replace('123456789','/',$this->uri->segment(8));
-            // $no_sp2b = $this->uri->segment(8);
-            $no_sp2b  = str_replace('123456789',' ',$nomor2);
-            $nomorsp3b  = str_replace('123456789',' ',$nomor1);
-            $pusk  = $this->uri->segment(4);
-            $lcskpd = substr($pusk,0,7).".00";
-            $ttd1   = str_replace('a',' ',$this->uri->segment(3));        
-            $ctk    =   $this->uri->segment(5);
+        function cetak_sp2b_fktp(){ 
+            $pusk = $this->input->get('skpd');
+            $ttd1 = urldecode($this->input->get('ttd1'));
+            $no_sp2b = $this->input->get('sp2b');
+            $ctk = $this->input->get('cetak');
             $sclient = $this->akuntansi_model->get_sclient();
             $ketsaldo = ''; 
             $nilai_saldo = 0;                                       
@@ -583,7 +578,7 @@ class SP2BBludController extends CI_Controller {
                         $pangkat  = $rowttd->pangkat;
                     }       
                     
-            $tgll = $this->db->query("select tgl_sp2b,no_lpj,no_sp3b,no_sp2b,tgl_sp3b,tgl_awal,tgl_akhir,bulan from trhsp2b_blud where kd_skpd='$pusk' and no_sp2b = '$nomorsp3b'")->row();            
+            $tgll = $this->db->query("select tgl_sp2b,no_lpj,no_sp3b,no_sp2b,tgl_sp3b,tgl_awal,tgl_akhir,bulan from trhsp2b_blud where kd_skpd='$pusk' and no_sp2b = '$no_sp2b'")->row();            
                 $tgl_sp2b = $tgll->tgl_sp2b;
                 $tgl_sp2b = $this->tukd_model->tanggal_format_indonesia($tgl_sp2b);
                 $no_lpjj =  $tgll->no_lpj;
@@ -629,7 +624,7 @@ class SP2BBludController extends CI_Controller {
                                <img src=\"".base_url()."/image/logo-kabupaten.png\"  width=\"45\" height=\"65\" />
                               </td>
   
-                        <TD align=\"center\" ><b>PEMERINTAH KABUPATEN SANGGAU<br>
+                        <TD align=\"center\" ><b>PEMERINTAH KABUPATEN MELAWI<br>
                                                 SURAT PENGESAHAN PENDAPATAN DAN BELANJA FKTP</b>
                         </TD>
                     </TR>                   
@@ -641,7 +636,7 @@ class SP2BBludController extends CI_Controller {
                          <img src=\"" . FCPATH . "/image/logo-kabupaten.png\"  width=\"40\" height=\"60\" />
                               </td>
   
-                        <TD align=\"center\" ><b>PEMERINTAH KABUPATEN SANGGAU<br>
+                        <TD align=\"center\" ><b>PEMERINTAH KABUPATEN MELAWI<br>
                                                 SURAT PENGESAHAN PENDAPATAN DAN BELANJA FKTP</b>
                         </TD>
                     </TR>                   
@@ -668,14 +663,14 @@ class SP2BBludController extends CI_Controller {
                         <TR>
                             <TD align="left" width="10%">SKPD</TD>                       
                             <TD align="left" width="1%">: </TD>
-                            <TD align="left" width="38%" style="border-right:solid 1px black;">RSUD M.Th.Djaman</TD>
+                            <TD align="left" width="38%" style="border-right:solid 1px black;">RSUD Melawi</TD>
                             <TD align="left" width="15%">&nbsp;&nbsp;Tanggal</TD>
                             <TD align="left">: '.$tgl_sp2b.'</TD>
                         </TR>   
                         <TR>
                             <TD align="left" width="10%">FKTP</TD>                       
                             <TD align="left" width="1%">: </TD>
-                            <TD align="left" width="38%" style="border-right:solid 1px black;">RSUD M.Th.Djaman</TD>
+                            <TD align="left" width="38%" style="border-right:solid 1px black;">RSUD Melawi</TD>
                             <TD align="left" width="15%">&nbsp;&nbsp;Tahun Anggaran</TD>
                             <TD align="left">: '.$thn.'</TD>
                         </TR>
@@ -767,7 +762,7 @@ class SP2BBludController extends CI_Controller {
                         </TR>
                         <TR>
                             <TD width="50%" align="center" ></TD>
-                            <TD width="50%" align="center" >Sanggau, '.$tgl_sp2b.'</TD>
+                            <TD width="50%" align="center" >Melawi, '.$tgl_sp2b.'</TD>
                         </TR>
                         <TR>
                             <TD width="50%" align="center" ></TD>
@@ -1042,6 +1037,34 @@ class SP2BBludController extends CI_Controller {
     	   
 	}
 
+    // andika no sp3blud
+
+    function load_no_sp3b_blud(){
+        $kd_skpd = $this->session->userdata('kdskpd');
+
+		// $sql = "SELECT * FROM ms_ttd WHERE kd_skpd= '5.02.0.00.0.00.02.0000' and kode in ('$ttd','PA')";
+        $sql = "select no_sp3b, tgl_sp3b from trhsp3b_blud";
+		
+        $mas = $this->db->query($sql);
+        $result = array();
+        $ii = 0;        
+        foreach($mas->result_array() as $resulte)
+        { 
+           
+            $result[] = array(
+                        'id' => $ii,        
+                        'no_sp3b' => $resulte['no_sp3b'],
+                        'tgl_sp3b' => $resulte['tgl_sp3b'],
+                        // 'jabatan' => $resulte['jabatan']
+                        );
+                        $ii++;
+        }           
+           
+        echo json_encode($result);
+        $mas->free_result();
+        
+    }
+
     function load_sp3b_blud() {
         $kd_skpd     = $this->session->userdata('kdskpd');         
         $par = "a.skpd='$kd_skpd'";
@@ -1154,6 +1177,7 @@ class SP2BBludController extends CI_Controller {
 
 
     function cek_simpan(){
+        $nomorsp3b = $this->input->post('nosp3b');
 	    $nomor    = $this->input->post('nosp2b');
 	    $tabel   = $this->input->post('tabel');
 	    $field    = $this->input->post('field');
@@ -1177,7 +1201,7 @@ class SP2BBludController extends CI_Controller {
 		
         $nosp3b      = $this->input->post('nosp3b');
         $nosp2b      = $this->input->post('nosp2b');
-        // $tglsp3b     = $this->input->post('tglsp3b');
+        $tglsp3b     = $this->input->post('tglsp3b');
         $tglsp2b     = $this->input->post('tglsp2b');
         $bulan       = (int) explode('-', $tglsp2b)[1];
         $kdskpd      = $this->input->post('kd');
@@ -1190,7 +1214,7 @@ class SP2BBludController extends CI_Controller {
         $usernm      = $this->session->userdata('pcNama');
         $last_update =  date('d-m-y H:i:s');
 
-    	 $sql = "INSERT INTO trhsp2b_blud (no_sp3b,kd_skpd,keterangan,tgl_sp3b,status,tgl_awal,tgl_akhir,no_lpj,total,skpd,bulan,username,tgl_update,status_bud,no_sp2b,tgl_sp2b,number_sp2b, revisi_ke) values ('$nosp3b','$kdskpd','$cket','$tglsp2b','1','$tgl1','$tgl2','-','$tot','$kdskpd','$bulan','$usernm','$last_update','1','$nosp2b','$tglsp2b','5', $revisi)";
+    	 $sql = "INSERT INTO trhsp2b_blud (no_sp3b,kd_skpd,keterangan,tgl_sp3b,status,tgl_awal,tgl_akhir,no_lpj,total,skpd,bulan,username,tgl_update,status_bud,no_sp2b,tgl_sp2b,number_sp2b, revisi_ke) values ('$nosp3b','$kdskpd','$cket','$tglsp3b','1','$tgl1','$tgl2','-','$tot','$kdskpd','$bulan','$usernm','$last_update','1','$nosp2b','$tglsp2b','5', $revisi)";
     	$query1 = $this->db->query($sql);
     					
                 if($query1){
@@ -1207,9 +1231,9 @@ class SP2BBludController extends CI_Controller {
 		$user =  $this->session->userdata('pcNama'); 
         // $nosp2b      = $this->input->post('nosp2b'); 		
     
-        $sql = "INSERT INTO trsp2b_blud (nosp2b,kd_rek6,nm_rek6,nilai,kd_skpd,kd_sub_kegiatan)";
+        $sql = "INSERT INTO trsp2b_blud (nosp2b,kd_rek6,nm_rek6,nilai,kd_skpd,kd_sub_kegiatan) $csql ";
 
-        $asg = $this->db->query($sql . $csql);
+        $asg = $this->db->query($sql);
 
                 if($asg){
                     $msg = array('pesan' => '1');

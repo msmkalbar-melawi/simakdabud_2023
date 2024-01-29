@@ -68,7 +68,7 @@
     
     $(function(){
 
-   	     $('#dd').datebox({  
+   	     $('#dd_sp3b').datebox({  
             required:true,
             formatter :function(date){
             	var y = date.getFullYear();
@@ -152,6 +152,22 @@
                 ]],  
            onSelect:function(rowIndex,rowData){
                $("#nm_ttd1").attr("value",rowData.nama);
+           } 
+            });
+
+        // andika no sp3b blud 
+            $('#no_sp3b').combogrid({  
+                panelWidth:600,  
+                idField:'no_sp3b',  
+                textField:'no_sp3b',  
+                mode:'remote',
+                url:'<?php echo base_url(); ?>index.php/blud/SP2BBludController/load_no_sp3b_blud',  
+                columns:[[  
+                    {field:'no_sp3b',title:'No SP3B',width:200},
+                    {field:'tgl_sp3b',title:'TGL SP3B',width:400}
+                ]],  
+           onSelect:function(rowIndex,rowData){
+               $("#tgl_sp3b").attr("value",rowData.nama);
            } 
             });
 		
@@ -369,7 +385,7 @@
            
         $("#dn").attr("setValue",kode);
         $("#nmskpd").attr("Value",nmskpd);		
-        // $("#dd").datebox("setValue",tglsp3b);
+        $("#dd_sp3b").datebox("setValue",tglsp3b);
         $("#dd_sp2b").datebox("setValue",tglsp2b);
         $("#keterangan").attr("Value",cket);
         $("#dd1").datebox("setValue",tglawl);
@@ -405,7 +421,7 @@
         document.getElementById("revisi").checked = false;
         // $("#no_sp3b").attr("value",'');
         $("#dd_sp2b").datebox("setValue",'');
-        // $("#dd").datebox("setValue",'');
+        $("#dd_sp3b").datebox("setValue",'');
         $("#dd1").datebox("setValue",'');
         $("#dd2").datebox("setValue",'');
         $("#keterangan").attr("value",'');
@@ -529,10 +545,11 @@
      } 
      
      function cetakup(cetak){
+        
         var no_sp2b = document.getElementById('no_sp2b').value;
-        var no_sp2b1 = no_sp2b.split("/").join("123456789");   	
 		// var no_sp3b = document.getElementById('no_sp3b').value;    
-        // var no_sp3b1 = no_sp3b.split("/").join("123456789");   
+        // var no_sp3b1 = no_sp3b.split("/").join("123456789"); 
+        var tgl_sp3b = document.getElementById('dd_sp3b').value;  
         var tgl_sp2b  = document.getElementById('dd_sp2b').value;		
 		var skpd   = kode; 
 		var ttd1   = $("#ttd1").combogrid('getValue');
@@ -544,17 +561,17 @@
 		var ttd_1 =ttd1.split(" ").join("a");
 		//var ttd_2 =ttd2.split(" ").join("a");
 		
-			var url    = "<?php echo site_url(); ?>tukd_pusk/cetak_sp2b_fktp";  
-			window.open(url+'/'+ttd_1+'/'+skpd+'/'+cetak+'/'+'/'+tgl_sp2b+'/'+no_sp2b1, '_blank');
+			var url    = "<?php echo site_url(); ?>blud/SP2BBludController/cetak_sp2b_fktp";  
+			window.open(`${url}?sp2b=${no_sp2b}&tgl_sp2b=${tgl_sp2b}&tgl_sp3b=${tgl_sp3b}&skpd=${skpd}&ttd1=${ttd1}&cetak=${cetak}`, '_blank');
 			window.focus();
 		
      }	 
 	 
      function simpan(){        
+        var nosp3b = $('#no_sp3b').combogrid('getValue');
         var nosp2b    = document.getElementById('no_sp2b').value;
-        // var nosp3b    = document.getElementById('no_sp3b').value;
+        var tglsp3b   = $('#dd_sp3b').datebox('getValue');
         var tglsp2b   = $('#dd_sp2b').datebox('getValue'); 
-        // var tglsp3b   = $('#dd').datebox('getValue'); 
    		var nket      = document.getElementById('keterangan').value;
         var kdskpd    = document.getElementById('dn').value;
         var nmskpd    = document.getElementById('nmskpd').value;
@@ -566,13 +583,17 @@
         var ctgl1     = $('#dd1').datebox('getValue');
         var ctgl2     = $('#dd2').datebox('getValue');
         var total     = angka(document.getElementById('rektotal').value);
-        var a = nosp2b.substr(0,4);
-        var b = nosp2b.substr(9,15);
-        var nosp3b = a+'SP3B/'+b;
+        // var a = nosp3b.substr(0,4);
+        // var b = nosp3b.substr(9,15);
+        // var nosp3b = a+'SP3B/'+b;
         // var tahun_input = tglsp3b.substring(0, 4);
 		if (!nosp2b){
 			alert('Silahkan Isi No SP2B !');
 			exit();
+		}
+		if (!nosp3b){
+			return alert('Silahkan Isi No SP3B !');
+			
 		}
         if (!tglsp2b) {
             alert('Silahkan Pilih Tanggal SP2B!');
@@ -602,8 +623,8 @@
                 $.ajax({
                     type: "POST",   
                     dataType : 'json',                 
-                    data: ({nosp2b:nosp2b,kode:kdskpd,tabel:'trhsp2b_blud',field:'no_sp2b'}),
-                    url: '<?php echo base_url(); ?>/index.php/tukd_pusk/cek_simpan',
+                    data: ({nosp3b,nosp2b:nosp2b,kode:kdskpd,tabel:'trhsp2b_blud',field:'no_sp2b'}),
+                    url: '<?php echo base_url(); ?>/index.php/blud/SP2BBludController/cek_simpan',
                     success:function(data){                        
                         status_cek = data.pesan;
 						if(status_cek==1){
@@ -622,8 +643,8 @@
 			$.ajax({
 				type: "POST",       
 				dataType : 'json',         
-				 url      : "<?php  echo base_url(); ?>index.php/tukd_pusk/simpan_hsp2b",
-				data     : ({nosp2b:nosp2b,nosp3b:nosp3b,ket:nket,tglsp2b:tglsp2b,kd:kdskpd,nm:nmskpd,revisi:revisi,tgl1:ctgl1,tgl2:ctgl2,total1:total}),
+				 url      : "<?php  echo base_url(); ?>index.php/blud/SP2BBludController/simpan_hsp2b",
+				data     : ({nosp2b:nosp2b,nosp3b:nosp3b,ket:nket,tglsp2b:tglsp2b,tglsp3b:tglsp3b,kd:kdskpd,nm:nmskpd,revisi:revisi,tgl1:ctgl1,tgl2:ctgl2,total1:total}),
 				beforeSend:function(xhr){
                 $("#loading").dialog('open');
 					},
@@ -640,16 +661,17 @@
 				for(var i=0;i<rows.length;i++){            
 						cidx      = rows[i].idx;
 						ckdgiat   = rows[i].kd_sub_kegiatan;
-						cnosp3b   = nosp2b;
+						cnosp3b   = nosp3b;
+                        cnosp2b   = nosp2b;
                         ckdskpd   = rows[i].kd_skpd;
 						ckdrek    = rows[i].kd_rek6;
 						cnmrek    = rows[i].nm_rek6;
 						cnilai    = angka(rows[i].nilai);
 						no        = i + 1 ; 
 						if (i>0) {
-							csql = csql+","+"('"+cnosp3b+"','"+ckdrek+"','"+cnmrek+"','"+cnilai+"','"+ckdskpd+"','"+ckdgiat+"')";
+							csql = csql+","+"('"+cnosp2b+"','"+ckdrek+"','"+cnmrek+"','"+cnilai+"','"+ckdskpd+"','"+ckdgiat+"')";
 						} else {
-							csql = "values('"+cnosp3b+"','"+ckdrek+"','"+cnmrek+"','"+cnilai+"','"+ckdskpd+"','"+ckdgiat+"')";                                            
+							csql = "values('"+cnosp2b+"','"+ckdrek+"','"+cnmrek+"','"+cnilai+"','"+ckdskpd+"','"+ckdgiat+"')";                                            
 							}                                             
 						}   	                  
 						$(document).ready(function(){
@@ -659,7 +681,7 @@
 								type: "POST",   
 								dataType : 'json',                 
 								data: ({sql:csql}),
-								url: '<?php echo base_url(); ?>/index.php/tukd_pusk/dsimpan_lpj',
+								url: '<?php echo base_url(); ?>/index.php/blud/SP2BBludController/dsimpan_lpj',
 								success:function(data){                        
 									status = data.pesan;   
 									 if (status=='1'){
@@ -1127,6 +1149,8 @@
 			});
 	}
 
+    
+
   function cetaksp3b(ctk)
         { 
       var nosp3b = document.getElementById('no_sp3b').value;//$('#cmb_sp3b').combogrid('getValue');
@@ -1209,20 +1233,32 @@
 	
    <tr style="border-bottom-style:hidden;border-spacing:0px;padding:3px 3px 3px 3px;border-collapse:collapse;">
    <td  width='20%'>No SP2B</td>
+
    <td width='80%'><input type="text"  maxlength="23" name="no_sp2b" id="no_sp2b" style="width:300px" value ="/SP2B/RSUD-BLUD/2023"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    Tanggal SP2B 
    &nbsp;<input id="dd_sp2b" name="dd_sp2b" type="text" style="width:95px"/>
    <font color="red"> 002/SP2B/RSUD-BLUD/2023</font>
    </td>
-   
    </tr>
-   <!-- <tr style="border-bottom-style:hidden;border-spacing:0px;padding:3px 3px 3px 3px;border-collapse:collapse;">
+
+   <tr style="border-bottom-style:hidden;border-spacing:0px;padding:3px 3px 3px 3px;border-collapse:collapse;">
    <td  width='20%'>No SP3B</td>
-   <td width='80%'><input type="text" maxlength="23" value ="/SP3B/RSUD-BLUD/2023" name="no_sp3b" id="no_sp3b" style="width:300px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <td width='80%'><input type="text" maxlength="23" name="no_sp3b" id="no_sp3b" style="width:300px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    Tanggal SP3B
-   &nbsp;<input id="dd" name="dd" type="text" style="width:95px"/>
+   &nbsp;<input id="dd_sp3b" name="dd_sp3b" type="text" style="width:95px"/>   
    <font color="red"> XXX/SP3B/RSUD-BLUD/2023</font>
-   </td> -->
+   </td>
+
+   <!-- <tr >
+				<td>No SP3B:</td>
+				<td><input type="text" id="no_sp3b" style="width:200px" /></td>&nbsp;&nbsp;
+				<td><input type="text" id="tgl_sp3b" readonly="true" style="width:150px;border:0"/></td>
+                <td>Tanggal SP3B:</td>
+				<td><input type="text" id="tgl_sp3b2" style="width:200px" /></td>&nbsp;&nbsp;
+				<td><input type="text" id="tgl_sp3b2" readonly="true" style="width:150px;border:0"/></td>
+
+			</tr>	 -->
+
    	<tr style="border-bottom-style:hidden;border-spacing:0px;padding:3px 3px 3px 3px;border-collapse:collapse;">
    <td width='20%'>SKPD</td>
    <td width="80%">     

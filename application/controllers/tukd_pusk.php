@@ -583,7 +583,7 @@ class Tukd_pusk extends CI_Controller {
                         $pangkat  = $rowttd->pangkat;
                     }       
                     
-            $tgll = $this->db->query("select tgl_sp2b,no_lpj,no_sp3b,no_sp2b,tgl_sp3b,tgl_awal,tgl_akhir,bulan from trhsp2b_blud where kd_skpd='$pusk' and no_sp2b = '$nomorsp3b'")->row();            
+            $tgll = $this->db->query("select tgl_sp2b,no_lpj,no_sp3b,no_sp2b,tgl_sp3b,tgl_awal,tgl_akhir,bulan from trhsp2b_blud where kd_skpd='$pusk' and no_sp2b = '$no_sp2b'")->row();            
                 $tgl_sp2b = $tgll->tgl_sp2b;
                 $tgl_sp2b = $this->tukd_model->tanggal_format_indonesia($tgl_sp2b);
                 $no_lpjj =  $tgll->no_lpj;
@@ -1172,6 +1172,32 @@ class Tukd_pusk extends CI_Controller {
 		}
 		
 	}
+
+    function load_no_sp3b_blud(){
+        $kd_skpd = $this->session->userdata('kdskpd');
+
+		// $sql = "SELECT * FROM ms_ttd WHERE kd_skpd= '5.02.0.00.0.00.02.0000' and kode in ('$ttd','PA')";
+        $sql = "select no_sp3b, tgl_sp3b from trhsp3b_blud";
+		
+        $mas = $this->db->query($sql);
+        $result = array();
+        $ii = 0;        
+        foreach($mas->result_array() as $resulte)
+        { 
+           
+            $result[] = array(
+                        'id' => $ii,        
+                        'no_sp3b' => $resulte['no_sp3b'],
+                        'tgl_sp3b' => $resulte['tgl_sp3b'],
+                        // 'jabatan' => $resulte['jabatan']
+                        );
+                        $ii++;
+        }           
+           
+        echo json_encode($result);
+        $mas->free_result();
+        
+    }
 
     function simpan_hsp2b(){
 		
