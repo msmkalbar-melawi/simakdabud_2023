@@ -650,9 +650,9 @@ class Cetak_b9 extends CI_Controller
              UNION ALL
             -- Penerimaan Non Sp2d
             SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
-            UNION ALL
+            -- UNION ALL
             --Pengeluaran Non Sp2d
-            SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+            -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
               ) a ";
         } else if ($st_renk == '4501002886') {
             $sebelumharini = "SELECT SUM(CASE WHEN jenis IN('1') THEN terima ELSE 0 END) as trm_sbl,
@@ -676,9 +676,9 @@ class Cetak_b9 extends CI_Controller
             UNION ALL
             -- Penerimaan Non Sp2d
             SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
-            UNION ALL
+            -- UNION ALL
             --Pengeluaran Non Sp2d
-            SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+            -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
             ) a ";
         }
 
