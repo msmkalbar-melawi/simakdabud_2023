@@ -465,6 +465,8 @@ class Cetak_b9 extends CI_Controller
                     ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
                     FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
                     WHERE LEFT(b.kd_rek6,1) IN ('5','1') AND jns_trans!='1' AND pot_khusus<>3 AND $where AND a.rek_bank='$st_renk'
+                    $keluarnonsp2d
+
                     $masuknonsp2d
                         
                     $masuknonsp2d2
@@ -650,6 +652,7 @@ class Cetak_b9 extends CI_Controller
              UNION ALL
             -- Penerimaan Non Sp2d
             SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+            $keluarnonsp2d
             -- UNION ALL
             --Pengeluaran Non Sp2d
             -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
@@ -676,9 +679,10 @@ class Cetak_b9 extends CI_Controller
             UNION ALL
             -- Penerimaan Non Sp2d
             SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+            $keluarnonsp2d
             -- UNION ALL
-            --Pengeluaran Non Sp2d
-            -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
+            -- --Pengeluaran Non Sp2d
+            -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 2 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
             ) a ";
         }
 
@@ -698,7 +702,7 @@ class Cetak_b9 extends CI_Controller
             $tot_saldo      = $nilai_ax + $smp_dgntrm - $smp_dgnklr;
         } else if ($st_renk == '4501002886') {
             $smp_dgntrm     = $trm_sbl1;
-            $smp_dgnklr     = 0;
+            $smp_dgnklr     = $klr_sbl1;
             $saldo_awal     = $nilai_ax;
             $tot_saldo      = $nilai_ax + $smp_dgntrm;
         }
@@ -740,7 +744,7 @@ class Cetak_b9 extends CI_Controller
                 <TD align="left" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
                 
                 <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
-                <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
+                <TD align="right">MM' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
@@ -752,7 +756,7 @@ class Cetak_b9 extends CI_Controller
             <tr>
                 <TD style="border-top:hidden;" align="left" colspan="5">XJumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
-                <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
+                <TD style="border-top:hidden;" align="right">LY' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
                 <tr>
                 <TD  align="right" colspan="5">Sisa Kas</TD>
