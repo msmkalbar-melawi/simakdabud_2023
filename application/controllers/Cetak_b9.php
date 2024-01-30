@@ -744,7 +744,7 @@ class Cetak_b9 extends CI_Controller
                 <TD align="left" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
                 
                 <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
-                <TD align="right">MM' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
+                <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
@@ -756,7 +756,7 @@ class Cetak_b9 extends CI_Controller
             <tr>
                 <TD style="border-top:hidden;" align="left" colspan="5">XJumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
-                <TD style="border-top:hidden;" align="right">LY' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
+                <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
                 <tr>
                 <TD  align="right" colspan="5">Sisa Kas</TD>
