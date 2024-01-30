@@ -465,8 +465,7 @@ class Cetak_b9 extends CI_Controller
                     ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
                     FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
                     WHERE LEFT(b.kd_rek6,1) IN ('5','1') AND jns_trans!='1' AND pot_khusus<>3 AND $where AND a.rek_bank='$st_renk'
-                    $keluarnonsp2d
-
+                    
                     $masuknonsp2d
                         
                     $masuknonsp2d2
@@ -480,6 +479,7 @@ class Cetak_b9 extends CI_Controller
                     SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank 
                     UNION ALL 
                     SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,'01' as kode, 'Pengembalian tahun lalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk'
+                   
                     ) a order by urut,kode,jenis";
         }
 
@@ -743,8 +743,8 @@ class Cetak_b9 extends CI_Controller
                 
                 <TD align="left" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
                 
-                <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
-                <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
+                <td align="right">MM' . number_format($totalnet, "2", ",", ".") . '</td>
+                <TD align="right">uu' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
