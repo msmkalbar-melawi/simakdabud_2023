@@ -593,7 +593,7 @@ class SP2BBludController extends CI_Controller {
                     $n = $this->db->query("SELECT sum(sld_awal) sld_awal from (
                         SELECT ISNULL(saldo_lalu,0) as sld_awal from ms_skpd_blud where kd_skpd='$pusk' 
                         union all
-                        select 0 ) okei")->row();            
+                        select 0 ) okei")->row();           
                 $saldo = $n->sld_awal;
                     $sql1 = $this->db->query("SELECT sum(isnull(c.terima,0))-sum(isnull(c.keluar,0)) nilai from(
                         SELECT
