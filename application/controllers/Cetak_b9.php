@@ -1011,6 +1011,7 @@ class Cetak_b9 extends CI_Controller
             $whereA = "AND a.tgl_kas_bud <= '$tgl2'";
             $whereB = "AND a.tgl_kas <= '$tgl2'";
             $whereC = "a.tanggal <= '$tgl2'";
+            //$whereD = "a.tanggal between '$tgl1' AND '$tgl2'";
         }
 
 
@@ -1642,12 +1643,12 @@ class Cetak_b9 extends CI_Controller
             UNION ALL
             -- Penerimaan Non Sp2d
             SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 1 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM penerimaan_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
-            $keluarnonsp2d
+            UNION ALL
+           -- Pengeluaran Non Sp2d
+            SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 2 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $whereC GROUP BY a.nomor,a.keterangan
             -- UNION ALL 
-            -- SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut, keterangan+'. Rp. ' as ket,'' kode, 'PENGELUARAN NON SP2D' as nmrek,0 as terima, isnull(SUM(x.nilai), 0) AS keluar, 2 jenis, isnull(SUM(x.nilai), 0) as netto, '' as sp, '' as rek_bank FROM pengeluaran_non_sp2d x WHERE $whereC group by nomor,keterangan
-            -- UNION ALL
-            --Pengeluaran Non Sp2d
-            -- SELECT CAST(a.nomor as VARCHAR) as no_kas,CAST(a.nomor as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(a.nilai) terima, 0 as keluar, 2 jenis, SUM(a.nilai) netto, ''as sp,'' as rek_bank FROM pengeluaran_non_sp2d a WHERE $where3 GROUP BY a.nomor,a.keterangan
+            -- SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut, keterangan+'. Rp. ' as ket,'' kode, 'PENGELUARAN NON SP2D' as nmrek,0 as terima, isnull(SUM(x.nilai), 0) AS keluar, 2 jenis, isnull(SUM(x.nilai), 0) as netto, '' as sp, '' as rek_bank FROM pengeluaran_non_sp2d x WHERE $where3 group by nomor,keterangan
+           
             ) a ";
         }
 
@@ -1671,7 +1672,7 @@ class Cetak_b9 extends CI_Controller
             $saldo_awal     = $nilai_ax;
             //$tot_saldo    = $nilai_ax + $smp_dgntrm;
             //$tot_saldo      = $nilai_ax + $smp_dgntrm - $smp_dgnklr;
-            $tot_saldo = $totalnet + $saldo_awal - $totalnet_luar;
+            $tot_saldo = $saldo_awal + $smp_dgntrm - $smp_dgnklr;
         }
         // End
         //--------------------------------------------------------------------
@@ -1710,20 +1711,20 @@ class Cetak_b9 extends CI_Controller
                 
                 <TD align="left" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
                 
-                <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
-                <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
+                <td align="right">UUU' . number_format($totalnet, "2", ",", ".") . '</td>
+                <TD align="right">YYY' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
                 <TD style="border-top:hidden;" align="left" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggalsbl . '</TD>
-                <td style="border-top:hidden;" align="right">' . number_format($saldo_awal , "2", ",", ".") . '</td>
+                <td style="border-top:hidden;" align="right">ZZZ' . number_format($saldo_awal , "2", ",", ".") . '</td>
                 <TD style="border-top:hidden;" align="right" >' . number_format($saldo_awal , "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
                 <TD style="border-top:hidden;" align="left" colspan="5">XJumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
-                <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
-                <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
+                <td style="border-top:hidden;" align="right">KKK' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
+                <TD style="border-top:hidden;" align="right">NNN' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
                 <tr>
                 <TD  align="right" colspan="5">Sisa Kas</TD>
