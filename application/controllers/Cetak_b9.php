@@ -1725,7 +1725,7 @@ class Cetak_b9 extends CI_Controller
             <tr>
                 <TD style="border-top:hidden;" align="left" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
-                <TD style="border-top:hidden;" align="right">UYY' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
+                <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
                 <tr>
                 <TD  align="right" colspan="5">Sisa Kas</TD>
