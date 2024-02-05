@@ -14,7 +14,7 @@ class Perda extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->library("custom");
+		$this->load->library("custom","support");
 	}
 
 	//================================================ LRA
@@ -2794,7 +2794,7 @@ class Perda extends CI_Controller
 							switch ($spasi3) {
 								case 8:
 									$cRet .= '<tr>
-												<td align="left" valign="top">' . $this->custom->dotrek($row1->kd_rek) . '</b></td> 
+												<td align="left" valign="top">' . $this->support->dotrek($row1->kd_rek) . '</b></td> 
 												<td colspan="3" align="left"  width="3%" valign="top" style="border-right:none">&nbsp;</td>
 												<td colspan="3" align="left"  width="30%" valign="top" style="border-left:none">' . $row1->nm_rek . '</td> 
 												<td align="right" valign="top">' . number_format($nilai_anggaran, "2", ",", ".") . '</td> 
@@ -2805,7 +2805,7 @@ class Perda extends CI_Controller
 									break;
 								case 9:
 									$cRet .= '<tr>
-													<td align="left" valign="top">' . $this->custom->dotrek($row1->kd_rek) . '</b></td> 
+													<td align="left" valign="top">' . $this->support->dotrek($row1->kd_rek) . '</b></td> 
 													<td colspan="4" align="left"  width="4%" valign="top" style="border-right:none"></td>
 													<td colspan="2" align="left"  width="29%" valign="top" style="border-left:none">' . $row1->nm_rek . '</td> 
 													<td align="right" valign="top">' . number_format($nilai_anggaran, "2", ",", ".") . '</td> 
@@ -2816,7 +2816,7 @@ class Perda extends CI_Controller
 									break;
 								case 10:
 									$cRet .= '<tr>
-														<td align="left" valign="top">' . $this->custom->dotrek($row1->kd_rek) . '</b></td> 
+														<td align="left" valign="top">' . $this->support->dotrek($row1->kd_rek) . '</b></td> 
 														<td colspan="5" align="left"  width=\"5%\" valign="top" style="border-right:none"></td>
 														<td align="left"  valign="top" width="28%" style="border-left:none">' . $row1->nm_rek . '</td> 
 														<td align="right" valign="top">' . number_format($nilai_anggaran, "2", ",", ".") . '</td> 
