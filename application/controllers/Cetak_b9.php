@@ -944,7 +944,7 @@ class Cetak_b9 extends CI_Controller
 
     function cetakb9($ctk = '', $ttd = '', $tgl = '', $number = '', $no_halaman = '')
     {
-
+        $print = $this->uri->segment(3);
         $sebelumharini = '';
 
         $klr_sbl1 = 0;
@@ -1532,8 +1532,8 @@ class Cetak_b9 extends CI_Controller
                 $cRet .= "<td width=\"15%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$kode</TD>
                             <td width=\"25%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$nama</TD>
                             <td width=\"10%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\"></TD>
-                            <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($t_terima, 2, ',', '.') . "</TD>
-                            <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($t_luar, 2, ',', '.') . " </TD>
+                            <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($t_terima, 2, ',', $print <= 1 ? '.' :'') . "</TD>
+                            <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($t_luar, 2, ',', $print <= 1 ? '.' :'') . " </TD>
                         </tr>
                         ";
             } else {
@@ -1542,7 +1542,7 @@ class Cetak_b9 extends CI_Controller
                     $cRet .= "<td width=\"23%\" align=\"left\" style=\"font-size:12px;border-bottom:none;border-top:none\"></TD>";
                     $cRet .= "<td width=\"15%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$kode</TD>
                             <td width=\"25%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$nama</TD>
-                            <td width=\"10%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($nilaiterima, 2, ',', '.') . "</TD>
+                            <td width=\"10%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($nilaiterima, 2, ',', $print <= 1 ? '.' :'') . "</TD>
                                 <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\"></TD>
                                 <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\"></TD>
                                 </tr>";
@@ -1550,7 +1550,7 @@ class Cetak_b9 extends CI_Controller
                     $cRet .= "<td width=\"23%\" align=\"left\" style=\"font-size:12px;border-bottom:none;border-top:none\"></TD>";
                     $cRet .= "<td width=\"15%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$kode</TD>
                                 <td width=\"25%\" align=\"left\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">$nama</TD>
-                                <td width=\"10%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($nilaikeluar, 2, ',', '.') . "</TD>
+                                <td width=\"10%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\">" . number_format($nilaikeluar, 2, ',', $print <= 1 ? '.' :'') . "</TD>
                                     <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\"></TD>
                                     <td width=\"15%\" align=\"right\" style=\"font-size:12px;border-bottom:solid 1 px black;border-top:none\"></TD>
                                     </tr>";
