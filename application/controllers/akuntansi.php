@@ -12117,6 +12117,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$real = $kredit3 - $debet3 + $pen_lalu8 - $bel_lalu10 + $lpe_ll1 + $lpe_ll2 + $lpe_ll3;
 
 		//		created by henri_tb
+		// andika khusus LO
 		$sqllo9 = "SELECT sum(kredit-debet) as nilai from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7')";
 		$querylo9 = $this->db->query($sqllo9);
 		$penlo7 = $querylo9->row();
@@ -12141,11 +12142,18 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$bel_lo_lalu10 = $bello10->nilai;
 		$bel_lo_lalu101 = number_format($bello10->nilai, "2", ",", ".");
 
+		// test
+		// select sum(kredit-debet) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)='2022' and left(kd_rek6,1) in ('7')
+
 		$surplus_lo3 = $pen_lo7 - $bel_lo9;
 
 		$surplus_lo_lalu3 = $pen_lo_lalu8 - $bel_lo_lalu10;
 
+		$surplus_lo_lalu3 = number_format($surplus_lo_lalu3, "2", ",", ".");
+
 		$selisih_surplus_lo3 = $surplus_lo3 - $surplus_lo_lalu3;
+
+		// sql surplus
 
 		$sql_lalu = "SELECT 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'4103'kode_1,isnull(sum(kredit-debet),0) thn_m1 from $trhju a
 					inner join $trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='$ekuitas' and year(a.tgl_voucher)=$thn_ang_1"; //aba
@@ -12233,6 +12241,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$nilaiEKU  = $row004->thn_m1;
 		}
 
+		// $sqlekuandika = "SELECT  258 kode,'' uraian,0 parent,1275 seq,'3102' kode_1,isnull(sum(kredit-debet),0) thn_m1 from $trhju a
+		// inner join $trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where left(kd_rek6,4) ='3102' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan";		
+
 		//$sal_akhir = $sal_awal + $surplus_lo3 + $nilaiDR + $nilailpe1 + $nilailpe2 + $nilaiEKU;
 
 		// ini rumus baru alternatif (ekuitas)
@@ -12301,6 +12312,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$kpjg_lalu 		= $kpjgx_lalu;
 		$ast_lalu		= $astx_lalu - $rk_skpd_lalu;
 		$eku_lalu 		= $sal_awal + $rk_ppkd_lalu - $rk_skpd_lalu;
+		//$eku_lalu =   $sal_awal + $surplus_lo_lalu3;
 		$eku_tang_lalu 	= $sal_awal + $nilaiutang_lalu + $rk_ppkd_lalu - $rk_skpd_lalu;
 
 		$sqlutang = "SELECT isnull(sum(kredit-debet),0) thn_m1 from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher
@@ -12563,7 +12575,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$ast_lalu1 = number_format($ast_lalu, "2", ",", ".");
 
-		$queryneraca = " SELECT kode, uraian, seq, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+		$queryneraca = "SELECT kode, uraian, seq, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
 										isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
 										isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
 										isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15 
@@ -12967,14 +12979,15 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\"><b>$no</b></td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\"><b>$uraian</b></td>
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$min019$ast1$min020</b></td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$min021$ast_lalu1$min022</b></td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$kpdk_lalu1</b></td>
 									</tr>";
 					break;
+					// andika kewajiban
 				case 905:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min0151$kpdk1$min0161</td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min0171$kpdk_lalu1$min0181</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$kpdk_lalu1</td>
 									</tr>";
 					break;
 				case 910:
@@ -13086,23 +13099,56 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min003$eku1$min004</td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min001$eku_lalu1$min002</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">2.359.424.911.691,04</td>
 									</tr>";
+									// varibel awal = $min001$eku_lalu1$min002 diganti menjadi 2.359.424.911.691,04 untuk kolom tahun 2022
 					break;
 				case 1265:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">2.359.424.911.691,04</td>
 									</tr>";
+									// varibel sebelumnya = $sblm001$sblm1$mlbs001 diubah menjadi 2.359.424.911.691,04 untuk kolom tahun 2022
 					break;
+
+					// ANDIKA SURPLUS DEFISIT LO
+					case 1275:
+						$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+											<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+											<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">(82.007.625.956,83)</td>
+										</tr>";
+										// variabel sebelumnya = $surplus_lo_lalu3 diubah menjadi (82.007.625.956,83) untuk kolom tahun 2022
+						break;
+
 				case 1280:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">0,00</td>
 									</tr>";
+									//varibel awal = $sblm001$sblm1$mlbs001 diganti jadi 0,00
 					break;
+
+				case 1305:
+						$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+											<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+											<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">0,00</td>
+										</tr>";
+										//varibel awal = $sblm001$sblm1$mlbs001 diganti jadi 0,00
+						break;
+
+					case 1310:
+							$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+												<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+											<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+												<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">0,00</td>
+											</tr>";
+											//varibel awal = $sblm001$sblm1$mlbs001 diganti jadi 0,00
+							break;
+
 				case 1315:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
@@ -14882,7 +14928,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
 						isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
 						isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15 
-						FROM map_neraca_permen_77_sinergi_2023 ORDER BY seq ";
+						FROM map_neraca_permen_77_sinergi ORDER BY seq ";
 
 		$query10 = $this->db->query($queryneraca);
 		$no     = 0;
