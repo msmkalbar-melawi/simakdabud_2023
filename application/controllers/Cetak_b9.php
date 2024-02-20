@@ -1093,6 +1093,7 @@ class Cetak_b9 extends CI_Controller
         }
         $cRet .= "<tr>
                     <td width=\"5%\" align=\"center\" style=\"font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black;\">No. Kas</TD>
+                    <td width=\"5%\" align=\"center\" style=\"font-size:12px;border-bottom: solid 1px black;border-top:solid 1px black;\">Tanggal</TD>
                     <td width=\"23%\" align=\"center\" style=\"font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black;\">Uraian <br>Penerimaan Dan Pengeluaran</TD>
                     <td width=\"15%\" align=\"center\" style=\"font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black;\">Kode Rekening</TD>
                     <td width=\"25%\" align=\"center\" style=\"font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black;\">Sub Rincian Objek <br>Penerimaan Dan Pengeluaran</TD>
@@ -1206,193 +1207,283 @@ class Cetak_b9 extends CI_Controller
         // }
 
         if ($st_renk == '1') {
-         $sql = "SELECT * from(
-                    SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
-                        ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where 
-                        GROUP BY a.no_kas,keterangan,rek_bank
-                        UNION ALL
-                        SELECT '',CAST(a.no_kas as VARCHAR) as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
-                        ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
-                        WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where
-                        UNION ALL
-                        -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
-                        SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
-                        ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where  
-                        GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-                        UNION ALL
-                        SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
-                        ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where 
-                        UNION ALL
-                        -- CONTRA POST
-                        SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
-                        ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where 
-                        group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan
-                        UNION ALL
-                        SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
-                        ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
-                        FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                        WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where
-                        UNION ALL
-                        SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
-                        '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis,
-                        (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
-                        '' as sp, '' as rek_bank
-                        FROM trhsp2d a 
-                        INNER JOIN trdspp b ON a.no_spp=b.no_spp
-                        WHERE a.status_bud = '1' $where2
-                        AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
-                        GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
-                        UNION ALL
-                        SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6)
-                        END  AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank
-                        FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' $where2
-                        AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+
+          $sql = "SELECT * from( SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut, a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas between '$tgl1' AND '$tgl2' GROUP BY a.no_kas,keterangan,rek_bank, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as no_kas,CAST(a.no_kas as VARCHAR) as urut, '' as tanggal,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6 WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas between '$tgl1' AND '$tgl2' UNION ALL 
+          -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6 ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas between '$tgl1' AND '$tgl2' GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas between '$tgl1' AND '$tgl2'
+          UNION ALL 
+          -- CONTRA POST 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND a.tgl_kas between '$tgl1' AND '$tgl2' group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND a.tgl_kas between '$tgl1' AND '$tgl2' 
+          UNION ALL 
+          SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,a.tgl_sp2d as tanggal ,'No.SP2D :'+' '+a.no_sp2d+'
+          '+a.keperluan+'Netto Rp. ' AS ket, '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis, (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto, '' as sp, '' as rek_bank FROM trhsp2d a INNER JOIN trdspp b ON a.no_spp=b.no_spp WHERE a.status_bud = '1' AND a.tgl_kas_bud between '$tgl1' AND '$tgl2' AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL) GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm, a.tgl_kas, a.tgl_sp2d 
+          UNION ALL
+          SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' as tanggal,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6) END AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' AND a.tgl_kas_bud between '$tgl1' AND '$tgl2' AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+          UNION ALL 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_sts as tanggal,'RESTITUSI
+          '+keterangan+'. Rp. ','' as kode, '' as nm_rek6, 0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and a.tgl_kas between '$tgl1' AND '$tgl2' group by a.no_kas,keterangan,a.tgl_sts
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima, isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts left join ms_rek6 c on b.kd_rek6=c.kd_rek6 WHERE a.jns_trans=3 and a.tgl_kas between '$tgl1' AND '$tgl2'
+          UNION ALL 
+          SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,w.tanggal as tanggal,'KOREKSI PENERIMAAN
+          '+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek, isnull(SUM(w.nilai),0) as terima,0 as keluar, 1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank FROM trkasout_ppkd w WHERE w.tanggal between '$tgl1' AND '$tgl2' group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek ,w.tanggal
+          UNION ALL 
+          -- PENERIMAAN NON SP2D
+          SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut,w.tanggal as tanggal,keterangan as ket,'-'kode,'Penerimaan NON SP2D' as nmrek, isnull(SUM(w.nilai), 0) AS terima,0 as keluar, 2 jenis, 0 netto, ''sp,'' as rek_bank FROM penerimaan_non_sp2d w WHERE w.tanggal between '$tgl1' AND '$tgl2' AND w.jenis='2' group by nomor,keterangan, w.tanggal
+          UNION ALL 
+          -- UYHD
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank,a.tgl_kas
+          UNION ALL 
+          SELECT '' no_kas,a.no_kas as urut,'' as tanggal,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='1' 
+          UNION ALL
+          -- PENGELUARAN NON SP2D
+          --   SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut, w.tanggal as tanggal, keterangan+'. Rp. ' as ket,'-' kode, 'PENGELUARAN NON SP2D' as nmrek,0 as terima, isnull(SUM(w.nilai), 0) AS keluar, 2 jenis, isnull(SUM(w.nilai), 0) as netto, '' as sp, '' as rek_bank FROM pengeluaran_non_sp2d w WHERE w.tanggal between '$tgl2' AND '$tgl2' group by nomor,keterangan, w.tanggal
+          SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut,w.tanggal as tanggal,keterangan as ket,'-'kode,'Pengeluaran NON SP2D' as nmrek, 0 AS terima,isnull(SUM(w.nilai), 0) as keluar, 2 jenis, 0 netto, ''sp,'' as rek_bank FROM pengeluaran_non_sp2d w WHERE w.tanggal between '$tgl1' AND '$tgl2' group by nomor,keterangan, w.tanggal
+          UNION ALL
+          -- PENGELUARAN LAIN LAIN 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank , a.tgl_kas
+          UNION ALL 
+          SELECT '' no_kas,a.no_kas as urut,'' as tanggal,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' 
+          ) a order by urut,kode,jenis";
+          
+        //  $sql = "SELECT * from(
+        //             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
+        //                 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where 
+        //                 GROUP BY a.no_kas,keterangan,rek_bank
+        //                 UNION ALL
+        //                 SELECT '',CAST(a.no_kas as VARCHAR) as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
+        //                 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where
+        //                 UNION ALL
+        //                 -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+        //                 SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
+        //                 ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where  
+        //                 GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+        //                 UNION ALL
+        //                 SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
+        //                 ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where 
+        //                 UNION ALL
+        //                 -- CONTRA POST
+        //                 SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
+        //                 ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where 
+        //                 group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan
+        //                 UNION ALL
+        //                 SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
+        //                 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
+        //                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+        //                 WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where
+        //                 UNION ALL
+        //                 SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
+        //                 '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis,
+        //                 (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
+        //                 '' as sp, '' as rek_bank
+        //                 FROM trhsp2d a 
+        //                 INNER JOIN trdspp b ON a.no_spp=b.no_spp
+        //                 WHERE a.status_bud = '1' $where2
+        //                 AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+        //                 GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
+        //                 UNION ALL
+        //                 SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6)
+        //                 END  AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank
+        //                 FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' $where2
+        //                 AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
                 
-                        $keluarnonsp2d
-                        UNION ALL
-                        SELECT
-                        CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
-                        0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank
-                        FROM
-                        trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-                        WHERE a.jns_trans=3 and $where
-                        group by a.no_kas,keterangan   
-                        UNION ALL
-                        SELECT
-                        '' as nokas,CAST(a.no_kas as VARCHAR) as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
-                        isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank
-                        FROM
-                        trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-                        left join ms_rek6 c on b.kd_rek6=c.kd_rek6 
-                        WHERE a.jns_trans=3
-                        and $where
-                        UNION ALL 
-                        SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
-                        isnull(SUM(w.nilai),0) as terima,0 as keluar,
-                        1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank
-                        FROM trkasout_ppkd w
-                        WHERE
-                        $where4
-                        group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
+        //                 $keluarnonsp2d
+        //                 UNION ALL
+        //                 SELECT
+        //                 CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
+        //                 0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank
+        //                 FROM
+        //                 trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+        //                 WHERE a.jns_trans=3 and $where
+        //                 group by a.no_kas,keterangan   
+        //                 UNION ALL
+        //                 SELECT
+        //                 '' as nokas,CAST(a.no_kas as VARCHAR) as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
+        //                 isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank
+        //                 FROM
+        //                 trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+        //                 left join ms_rek6 c on b.kd_rek6=c.kd_rek6 
+        //                 WHERE a.jns_trans=3
+        //                 and $where
+        //                 UNION ALL 
+        //                 SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
+        //                 isnull(SUM(w.nilai),0) as terima,0 as keluar,
+        //                 1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank
+        //                 FROM trkasout_ppkd w
+        //                 WHERE
+        //                 $where4
+        //                 group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
                         
-                        $masuknonsp2d
+        //                 $masuknonsp2d
                         
-                        $masuknonsp2d2
-                        UNION ALL
-                    -- UYHD
-                    SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank 
-                    UNION ALL 
-                    SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1'
-                    UNION ALL
-                    -- PENGELUARAN LAIN LAIN
-                    SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank 
-                    UNION ALL 
-                    SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk'
-                    ) a order by urut,kode,jenis";
+        //                 $masuknonsp2d2
+        //                 UNION ALL
+        //             -- UYHD
+        //             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank 
+        //             UNION ALL 
+        //             SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1'
+        //             UNION ALL
+        //             -- PENGELUARAN LAIN LAIN
+        //             SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank 
+        //             UNION ALL 
+        //             SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk'
+        //             ) a order by urut,kode,jenis";
         } else if ($st_renk == '4501002886') {
-            $sql = "SELECT * from(
-                SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
-                    ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where 
-                    GROUP BY a.no_kas,keterangan,rek_bank
-                    UNION ALL
-                    SELECT '',CAST(a.no_kas as VARCHAR) as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
-                    ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
-                    WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where
-                    UNION ALL
-                    -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
-                    SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
-                    ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where  
-                    GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-                    UNION ALL
-                    SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
-                    ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where 
-                    UNION ALL
-                    -- CONTRA POST
-                    SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
-                    ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where 
-                    group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan
-                    UNION ALL
-                    SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
-                    ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
-                    FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-                    WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where
-                    UNION ALL
-                    SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
-                    '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis,
-                    (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
-                    '' as sp, '' as rek_bank
-                    FROM trhsp2d a 
-                    INNER JOIN trdspp b ON a.no_spp=b.no_spp
-                    WHERE a.status_bud = '1' $where2
-                    AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
-                    GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
-                    UNION ALL
-                    SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6)
-                    END  AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank
-                    FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' $where2
-                    AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+            $sql = "SELECT * from( SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut, a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas between '$tgl1' AND '$tgl2' GROUP BY a.no_kas,keterangan,rek_bank, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as no_kas,CAST(a.no_kas as VARCHAR) as urut, '' as tanggal,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6 WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas between '$tgl1' AND '$tgl2' UNION ALL 
+          -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6 ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas between '$tgl1' AND '$tgl2' GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas between '$tgl1' AND '$tgl2'
+          UNION ALL 
+          -- CONTRA POST 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND a.tgl_kas between '$tgl1' AND '$tgl2' group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan, a.tgl_kas 
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND a.tgl_kas between '$tgl1' AND '$tgl2' 
+          UNION ALL 
+          SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,a.tgl_sp2d as tanggal ,'No.SP2D :'+' '+a.no_sp2d+'
+          '+a.keperluan+'Netto Rp. ' AS ket, '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis, (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto, '' as sp, '' as rek_bank FROM trhsp2d a INNER JOIN trdspp b ON a.no_spp=b.no_spp WHERE a.status_bud = '1' AND a.tgl_kas_bud between '$tgl1' AND '$tgl2' AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL) GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm, a.tgl_kas, a.tgl_sp2d 
+          UNION ALL
+          SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' as tanggal,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6) END AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' AND a.tgl_kas_bud between '$tgl1' AND '$tgl2' AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+          UNION ALL 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_sts as tanggal,'RESTITUSI
+          '+keterangan+'. Rp. ','' as kode, '' as nm_rek6, 0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and a.tgl_kas between '$tgl1' AND '$tgl2' group by a.no_kas,keterangan,a.tgl_sts
+          UNION ALL 
+          SELECT '' as nokas,CAST(a.no_kas as VARCHAR) as urut,'' as tanggal,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima, isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts left join ms_rek6 c on b.kd_rek6=c.kd_rek6 WHERE a.jns_trans=3 and a.tgl_kas between '$tgl1' AND '$tgl2'
+          UNION ALL 
+          SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,w.tanggal as tanggal,'KOREKSI PENERIMAAN
+          '+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek, isnull(SUM(w.nilai),0) as terima,0 as keluar, 1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank FROM trkasout_ppkd w WHERE w.tanggal between '$tgl1' AND '$tgl2' group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek ,w.tanggal
+          UNION ALL 
+          -- PENERIMAAN NON SP2D
+          SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut,w.tanggal as tanggal,keterangan as ket,'-'kode,'Penerimaan NON SP2D' as nmrek, isnull(SUM(w.nilai), 0) AS terima,0 as keluar, 2 jenis, 0 netto, ''sp,'' as rek_bank FROM penerimaan_non_sp2d w WHERE w.tanggal between '$tgl1' AND '$tgl2' AND w.jenis='2' group by nomor,keterangan, w.tanggal
+          UNION ALL 
+          -- UYHD
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank,a.tgl_kas
+          UNION ALL 
+          SELECT '' no_kas,a.no_kas as urut,'' as tanggal,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='1' 
+          UNION ALL
+          -- PENGELUARAN NON SP2D
+          --   SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut, w.tanggal as tanggal, keterangan+'. Rp. ' as ket,'-' kode, 'PENGELUARAN NON SP2D' as nmrek,0 as terima, isnull(SUM(w.nilai), 0) AS keluar, 2 jenis, isnull(SUM(w.nilai), 0) as netto, '' as sp, '' as rek_bank FROM pengeluaran_non_sp2d w WHERE w.tanggal between '$tgl2' AND '$tgl2' group by nomor,keterangan, w.tanggal
+          SELECT CAST(nomor as VARCHAR) as nokas,CAST(nomor as VARCHAR) as urut,w.tanggal as tanggal,keterangan as ket,'-'kode,'Pengeluaran NON SP2D' as nmrek, 0 AS terima,isnull(SUM(w.nilai), 0) as keluar, 2 jenis, 0 netto, ''sp,'' as rek_bank FROM pengeluaran_non_sp2d w WHERE w.tanggal between '$tgl1' AND '$tgl2' group by nomor,keterangan, w.tanggal
+          UNION ALL
+          -- PENGELUARAN LAIN LAIN 
+          SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.tgl_kas as tanggal,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank , a.tgl_kas
+          UNION ALL 
+          SELECT '' no_kas,a.no_kas as urut,'' as tanggal,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE a.tgl_kas between '$tgl1' AND '$tgl2' AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' 
+          ) a order by urut,kode,jenis";
+
+            // TERBARU 
+            // $sql = "SELECT * from(
+            //     SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
+            //         ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where 
+            //         GROUP BY a.no_kas,keterangan,rek_bank
+            //         UNION ALL
+            //         SELECT '',CAST(a.no_kas as VARCHAR) as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
+            //         ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
+            //         WHERE LEFT(b.kd_rek6,1) IN ('4') AND $where
+            //         UNION ALL
+            //         -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+            //         SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
+            //         ,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where  
+            //         GROUP BY a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+            //         UNION ALL
+            //         SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
+            //         ,b.rupiah as terima,0 as keluar, 1 jenis,0 netto, '' as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND $where 
+            //         UNION ALL
+            //         -- CONTRA POST
+            //         SELECT  CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
+            //         ,SUM(b.rupiah) as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where 
+            //         group by a.no_kas,rek_bank,keterangan,b.kd_sub_kegiatan
+            //         UNION ALL
+            //         SELECT  '' as nokas,CAST(a.no_kas as VARCHAR) as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
+            //         ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, '' as sp, a.rek_bank as rek_bank
+            //         FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            //         WHERE LEFT(b.kd_rek6,1) IN ('5','1') and a.jns_trans!='1' and pot_khusus<>3 AND $where
+            //         UNION ALL
+            //         SELECT CAST(a.no_kas_bud as VARCHAR) as no_kas,CAST(a.no_kas_bud as VARCHAR) as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
+            //         '' AS kode,'' AS nmrek,0 AS terima,SUM(b.nilai) AS keluar,2 AS jenis,
+            //         (SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
+            //         '' as sp, '' as rek_bank
+            //         FROM trhsp2d a 
+            //         INNER JOIN trdspp b ON a.no_spp=b.no_spp
+            //         WHERE a.status_bud = '1' $where2
+            //         AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+            //         GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
+            //         UNION ALL
+            //         SELECT '' AS nokas,CAST(a.no_kas_bud as VARCHAR) AS urut,'' AS ket, case when b.kd_sub_kegiatan is null then a.kd_skpd+'.'+b.kd_rek6 else ( b.kd_sub_kegiatan+'.'+b.kd_rek6)
+            //         END  AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp, '' as rek_bank
+            //         FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud ='1' $where2
+            //         AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
             
-                    $keluarnonsp2d
-                    UNION ALL
-                    SELECT
-                    CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
-                    0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank
-                    FROM
-                    trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-                    WHERE a.jns_trans=3 and $where
-                    group by a.no_kas,keterangan   
-                    UNION ALL
-                    SELECT
-                    '' as nokas,CAST(a.no_kas as VARCHAR) as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
-                    isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank
-                    FROM
-                    trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-                    left join ms_rek6 c on b.kd_rek6=c.kd_rek6 
-                    WHERE a.jns_trans=3
-                    and $where
-                    UNION ALL 
-                    SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
-                    isnull(SUM(w.nilai),0) as terima,0 as keluar,
-                    1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank
-                    FROM trkasout_ppkd w
-                    WHERE
-                    $where4
-                    group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
+            //         $keluarnonsp2d
+            //         UNION ALL
+            //         SELECT
+            //         CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
+            //         0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp, '' as rek_bank
+            //         FROM
+            //         trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+            //         WHERE a.jns_trans=3 and $where
+            //         group by a.no_kas,keterangan   
+            //         UNION ALL
+            //         SELECT
+            //         '' as nokas,CAST(a.no_kas as VARCHAR) as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
+            //         isnull(b.rupiah, 0) AS keluar, 2 jenis,0 netto, ''sp, '' as rek_bank
+            //         FROM
+            //         trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+            //         left join ms_rek6 c on b.kd_rek6=c.kd_rek6 
+            //         WHERE a.jns_trans=3
+            //         and $where
+            //         UNION ALL 
+            //         SELECT CAST(w.no as VARCHAR) as no_kas, CAST(w.no as VARCHAR) as urut,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
+            //         isnull(SUM(w.nilai),0) as terima,0 as keluar,
+            //         1 jenis,isnull(SUM(w.nilai),0) as netto,''sp, '' as rek_bank
+            //         FROM trkasout_ppkd w
+            //         WHERE
+            //         $where4
+            //         group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
                     
-                    $masuknonsp2d
+            //         $masuknonsp2d
                     
-                    $masuknonsp2d2
-                    UNION ALL
-                -- UYHD
-                SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank 
-                UNION ALL 
-                SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1'
-                UNION ALL
-                -- PENGELUARAN LAIN LAIN
-                SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank 
-                UNION ALL 
-                SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk'
-                ) a order by urut,kode,jenis";
+            //         $masuknonsp2d2
+            //         UNION ALL
+            //     -- UYHD
+            //     SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1' GROUP BY a.no_kas,keterangan,rek_bank 
+            //     UNION ALL 
+            //     SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'UYHD' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='1'
+            //     UNION ALL
+            //     -- PENGELUARAN LAIN LAIN
+            //     SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6 ,SUM(b.rupiah) terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk' GROUP BY a.no_kas,keterangan,rek_bank 
+            //     UNION ALL 
+            //     SELECT '' no_kas,a.no_kas as urut,keterangan as uraian,'01' as kode, 'Pengembaliantahunlalu' as nm_rek6 ,b.rupiah as terima,0 as keluar, 1 jenis, 0 netto, ''as sp, a.rek_bank as rek_bank FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd WHERE $where AND a.jns_trans='6' AND a.pot_khusus='0' AND a.rek_bank='$st_renk'
+            //     ) a order by urut,kode,jenis";
 
             // $sql = "SELECT * from(
             //     SELECT CAST(a.no_kas as VARCHAR) as no_kas,CAST(a.no_kas as VARCHAR) as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
@@ -1457,6 +1548,12 @@ class Cetak_b9 extends CI_Controller
             $kode   = $row->kode;
             $uraian = $row->uraian;
             $no_kas = $row->no_kas;
+            if($row->tanggal=='1900-01-01'){
+                $tgl_kas = "";
+            }else{
+                $tgl_kas = $row->tanggal;
+            }
+            
             $netto  = $row->netto;
             $sp     = $row->sp;
             $nama   = $row->nm_rek6;
@@ -1524,7 +1621,10 @@ class Cetak_b9 extends CI_Controller
 
             $cRet .= "
                         <tr>
-                            <td width=\"5%\" align=\"center\" style=\"font-size:12px;border-bottom:none;border-top:none\">$no_kas</TD>";
+                            <td width=\"5%\" align=\"center\" style=\"font-size:12px;border-bottom:none;border-top:none\">$no_kas</TD>
+                            <td width=\"5%\" align=\"center\" style=\"font-size:12px;border-bottom:none;border-top:none\">$tgl_kas</TD>";
+                            
+                            
             if ($no_kas != '') {
                 $totalnet = $totalnet + $row->terima;
                 $totalnet_luar = $totalnet_luar + $row->keluar;
@@ -1592,7 +1692,6 @@ class Cetak_b9 extends CI_Controller
 
             $nilai_x = number_format($nilai_ax, "2", ",", ".");
         }
-
 
         if ($st_renk == '1') {
              $sebelumharini = "SELECT SUM(CASE WHEN jenis IN('1') THEN terima ELSE 0 END) as trm_sbl,
@@ -1685,20 +1784,20 @@ class Cetak_b9 extends CI_Controller
             $cRet .= '
             <tr>
            
-                <TD align="right" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal . '   </TD>
+                <TD align="right" colspan="6">Jumlah Tanggal &nbsp; ' . $tanggal . '   </TD>
                 
                 <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
                 <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
-                <TD  align="right" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggalsbl . '</TD>
+                <TD  align="right" colspan="6">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggalsbl . '</TD>
                 <td  align="right">' . number_format($saldo_awal, "2", ",", ".") . '</td>
                 <TD  align="right" >' . number_format($saldo_awal, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
-                <TD  align="right" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal . '</TD>
+                <TD  align="right" colspan="6">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal . '</TD>
                 <td  align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
                 <TD  align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
@@ -1710,25 +1809,25 @@ class Cetak_b9 extends CI_Controller
             $cRet .= '
             <tr>
                 
-                <TD align="left" colspan="5">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
+                <TD align="left" colspan="6">Jumlah Tanggal &nbsp; ' . $tanggal1 . ' &nbsp; s.d ' . $tanggal2 . ' &nbsp;</TD>
                 
                 <td align="right">' . number_format($totalnet, "2", ",", ".") . '</td>
                 <TD align="right">' . number_format($totalnet_luar, "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
-                <TD style="border-top:hidden;" align="left" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggalsbl . '</TD>
+                <TD style="border-top:hidden;" align="left" colspan="6">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggalsbl . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($saldo_awal , "2", ",", ".") . '</td>
                 <TD style="border-top:hidden;" align="right" >' . number_format($saldo_awal , "2", ",", ".") . '</TD>
             </tr>
             
             <tr>
-                <TD style="border-top:hidden;" align="left" colspan="5">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
+                <TD style="border-top:hidden;" align="left" colspan="6">Jumlah Sampai Dengan Tanggal &nbsp; ' . $tanggal2 . '</TD>
                 <td style="border-top:hidden;" align="right">' . number_format($smp_dgntrm, "2", ",", ".") . '</td>
                 <TD style="border-top:hidden;" align="right">' . number_format($smp_dgnklr, "2", ",", ".") . '</TD>
             </tr>
                 <tr>
-                <TD  align="right" colspan="5">Sisa Kas</TD>
+                <TD  align="right" colspan="6">Sisa Kas</TD>
                 <td  align="right" colspan="2">'.number_format($tot_saldo ,"2",",",".").'</td>
             </tr>';
 
