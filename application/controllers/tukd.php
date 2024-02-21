@@ -15075,12 +15075,12 @@ GROUP BY z.kd_skpd, z.kd_kegiatan, z.kd_rek5,z.nm_rek5
 				
 				<TD align="left" colspan="2"><b>Jumlah Tanggal &nbsp; '.$tanggal1.' &nbsp; s.d '.$tanggal2.' &nbsp;</TD>
 				
-				<td align="right"><b>'.number_format($tot_trm,"2",",",$print <= 1 ? "." : '').'</td>
-				<TD align="right"><b>'.number_format($tot_klr,"2",",",$print <= 1 ? "." : '').'</TD>
+				<td align="right"><b>'.number_format($tot_trm,"2",",",".").'</td>
+				<TD align="right"><b>'.number_format($tot_klr,"2",",",".").'</TD>
 			</tr>';
 		
 		$cRet .='</table>';	
-		
+		$print = $this->uri->segment(3);
 
 		$data['prev']= $cRet; 
 		if($print==0){
