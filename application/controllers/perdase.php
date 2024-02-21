@@ -9823,7 +9823,7 @@ class Perdase extends CI_Controller
 				</thead>";
 
 
-		$sql = "SELECT kd_sub_kegiatan kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,			SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY no_skpd, kode";
+		$sql = "SELECT urut, kd_sub_kegiatan kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,		SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY no_skpd, kd_sub_kegiatan,urut";
 
 		$hasil = $this->db->query($sql);
 		foreach ($hasil->result() as $row) {
@@ -9843,27 +9843,65 @@ class Perdase extends CI_Controller
 			$real_btt = $row->real_btt;
 			$real_mod = $row->real_mod;
 			$real_trf = $row->real_trf;
-
-			$cRet .= '<tr>
-							   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_urus . '</td> 
-							   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_bid . '</td> 
-							   <td align="center" valign="top" width="12%" style="font-size:12px">' . $no_skpd . '</td> 
-							   <td align="center" valign="top" width="3%" style="font-size:12px">' . $no_prog . '</td> 
-							   <td align="center" valign="top" width="4%" style="font-size:12px">' . $no_keg . '</td> 
-							   <td align="center" valign="top" width="4%" style="font-size:12px">' . $no_sub . '</td> 
-							   <td align="left"  valign="top" style="font-size:12px">' . $nm_rek . '</td> 
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
-							   <td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
-							</tr>';
+if($row->urut =='1'){
+	$cRet .= '<tr>
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_urus . '</td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_bid . '</td> 
+	<td align="center" valign="top" width="12%" style="font-size:12px"></td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_prog . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_keg . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_sub . '</td> 
+	<td align="left"  valign="top" style="font-size:12px">' . $nm_rek . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
+ </tr>';
+}else if($row->urut =='2'){
+	$cRet .= '<tr>
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_urus . '</td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_bid . '</td> 
+	<td align="center" valign="top" width="12%" style="font-size:12px"></td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_prog . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_keg . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_sub . '</td> 
+	<td align="left"  valign="top" style="font-size:12px">' . $nm_rek . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
+ </tr>';
+}else{
+	$cRet .= '<tr>
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_urus . '</td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_bid . '</td> 
+	<td align="center" valign="top" width="12%" style="font-size:12px">' . $no_skpd . '</td> 
+	<td align="center" valign="top" width="3%" style="font-size:12px">' . $no_prog . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_keg . '</td> 
+	<td align="center" valign="top" width="4%" style="font-size:12px">' . $no_sub . '</td> 
+	<td align="left"  valign="top" style="font-size:12px">' . $nm_rek . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_opr, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_opr, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_mod, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_mod, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_btt, "2", ",", ".") . '</td>
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_btt, "2", ",", ".") . '</td> 
+	<td align="right" valign="top" style="font-size:12px">' . number_format($ang_trf, "2", ",", ".") . '</td>  
+	<td align="right" valign="top" style="font-size:12px">' . number_format($real_trf, "2", ",", ".") . '</td> 
+ </tr>';
+}
+			
 		}
 
-		$sql = " select sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf from(
+		$sql = "SELECT sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf from(
 						select kd_sub_kegiatan kode,nm_rek,sum(ang_opr) ang_opr,sum(ang_btt) ang_btt,sum(ang_mod) ang_mod,sum(ang_trf) ang_trf,sum(real_opr) real_opr,sum(real_btt) real_btt,sum(real_mod) real_mod,sum(real_trf) real_trf
 						FROM [perda_lampI.3_sub_2_c]($bulan,'$anggaran') where len(kd_sub_kegiatan)=1
 						group by kd_sub_kegiatan , nm_rek
