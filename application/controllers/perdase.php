@@ -9823,7 +9823,7 @@ class Perdase extends CI_Controller
 				</thead>";
 
 
-		$sql = "SELECT kd_sub_kegiatan kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,			SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY kode";
+		$sql = "SELECT kd_sub_kegiatan kode,no_urusan,SUBSTRING (no_bid,3,2) AS no_bid,no_skpd,SUBSTRING (no_program,6,2) no_program,SUBSTRING (no_kegiatan,9,4) no_kegiatan,			SUBSTRING (no_sub_kegiatan,14,2) no_sub_kegiatan,nm_rek,ang_opr,ang_btt,ang_mod,ang_trf,real_opr,real_btt,real_mod,real_trf FROM [perda_lampI.3_sub_2_c_copy1]($bulan,'$anggaran') ORDER BY no_skpd, kode";
 
 		$hasil = $this->db->query($sql);
 		foreach ($hasil->result() as $row) {
