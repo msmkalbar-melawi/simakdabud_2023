@@ -459,4 +459,23 @@ class support extends CI_Model
 
         return $months;
     }
+
+    /**
+    * Currency format
+    *
+    * @param float $number
+    * @param bool $withSymbol default false
+    * @return string
+    * @author Emon Krismon
+    * @link https://github.com/krismonsemanas
+    */
+    public function currencyFormat($number, $withSymbol = false)
+    {
+        $format = number_format($number,2,",",".");
+        if($withSymbol) {
+            return "Rp. ".$format;
+        }
+
+        return $format;
+    }
 }
