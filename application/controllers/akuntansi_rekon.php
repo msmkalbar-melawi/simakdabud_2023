@@ -21,10 +21,12 @@ class Akuntansi_rekon extends CI_Controller
     * @author Emon Krismon 
     * @link https://github.com/krismonsemanas
     */
-    private function _client($kodeSkpd,$bulan)
+    private function _client($kodeSkpd = "",$bulan)
     {
         $tahunAnggaran = $this->session->userdata('pcThang');
-        $skpd =  $this->db->query("SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = ?",[$kodeSkpd])->row();
+        if ($kodeSkpd) {
+            $skpd =  $this->db->query("SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = ?",[$kodeSkpd])->row();
+        }
         $tahun = kopTahun($tahunAnggaran, $bulan, $tahunAnggaran-1);
         $client = $this->akuntansi_model->get_sclient();
 
@@ -34,11 +36,13 @@ class Akuntansi_rekon extends CI_Controller
                     <img src=\"" . base_url() . "/image/kab-sanggau.png\"  width=\"60\" height=\"70\" />
 					</td>
                          <td align=\"center\"><strong>" . $client->kab_kota . "</strong></td>
-                    </tr>
-          <tr>
-            <td align=\"center\"><strong>$skpd->nm_skpd</strong></td>
-          </tr>
-                    <tr>
+                    </tr>";
+        if (isset($skpd)) {
+            $kop .= "<tr>
+                        <td align=\"center\"><strong>$skpd->nm_skpd</strong></td>
+                    </tr>";
+        }
+        $kop .=  "<tr>
                          <td align=\"center\"><strong>LAPORAN OPERASIONAL </strong></td>
                     </tr>
                     <tr>
@@ -1397,6 +1401,414 @@ class Akuntansi_rekon extends CI_Controller
             case 1;
                 echo "<title>LPE KONSOL $cbulan</title>";
                 echo $cRet;
+                break;
+            case 2;
+                header("Cache-Control: no-cache, no-store, must-revalidate");
+                header("Content-Type: application/vnd.ms-excel");
+                header("Content-Disposition: attachment; filename= $judul.xls");
+
+                $this->load->view('anggaran/rka/perkadaII', $data);
+                break;
+            case 3;
+                header("Cache-Control: no-cache, no-store, must-revalidate");
+                header("Content-Type: application/vnd.ms-word");
+                header("Content-Disposition: attachment; filename= $judul.doc");
+                $this->load->view('anggaran/rka/perkadaII', $data);
+                break;
+        }
+    }
+
+    // KONSOL
+    function cetakKonsolidasiJenis()
+    {
+        $bulan = $this->input->get('bulan');
+        $nip = str_replace('n', ' ', $this->input->get('ttd'));
+        $tanggalTtd = $this->input->get('tanggal');
+        $tanggal = $this->tukd_model->tanggal_format_indonesia($tanggalTtd);
+        $cetakLo = "";
+        $cetakLo .= $this->_client("", $bulan);
+        $cetakLo .= $this->_headerTableLo();
+        $tahunAnggaran = $this->session->userdata('pcThang');
+        $tahunAnggaranLalu = $tahunAnggaran-1;
+        $pilih = $this->input->get('pilih');
+
+         // start mapping
+        $mapping  = $this->db->query("SELECT seq, nor, uraian, bold,isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak,parent,kode FROM map_lo_pemda GROUP BY seq, nor, uraian, bold, isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet'),parent, kode ORDER BY seq")
+            ->result();
+
+        $styles = [
+            0 => "",
+            1 => "padding-left: 25px;",
+            2 => "padding-left: 50px;",
+            3 => "padding-left: 75px;",
+            4 => "padding-left: 100px;",
+            5 => "padding-left: 125px;",
+            6 => "padding-left: 125px;",
+            7 => "padding-left: 125px;",
+        ];
+        
+        // surpulus operasi
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ?";
+        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan,$tahunAnggaran])->row();
+        $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $tahunAnggaranLalu])->row();
+        $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
+        $surplusTahunLalu = $resultOperasiTahunLalu ? $resultOperasiTahunLalu->nilai : 0;
+        $kenaikanSurplus = $surplusTahunIni-$surplusTahunLalu;
+        $persenSurplus = ($surplusTahunIni == 0 || $surplusTahunLalu ==0 ) ? 0 : (abs($surplusTahunIni) / abs($surplusTahunLalu)) * 100;
+
+         // non operasional
+        $queryNonOperasi = "SELECT 
+                ISNULL(
+                    -- surplus non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 7 THEN ABS(SUM(kredit-debet)) ELSE 0 END -
+                    -- defisit non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 8 THEN ABS(SUM(debet-kredit)) ELSE 0 END
+                ,0) AS nilai
+            FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) IN (74,83)
+            GROUP BY LEFT(kode_rekening,1)
+        ";
+        $resultNonOperasiTahunIni = $this->db->query($queryNonOperasi,[$bulan, $tahunAnggaran])->row();
+        $resultNonOperasiTahunLalu = $this->db->query($queryNonOperasi,[12, $tahunAnggaranLalu])->row();
+        $nonOperasiTahunIni = $resultNonOperasiTahunIni ? $resultNonOperasiTahunIni->nilai : 0;
+        $nonOperasiTahunLalu = $resultNonOperasiTahunLalu ? $resultNonOperasiTahunLalu->nilai : 0;
+
+        // selisih surplus non operasional dan defisit operasion
+        $sebelumPosTahunIni = $surplusTahunIni + $nonOperasiTahunIni;
+        $sebelumPosTahunLalu = $surplusTahunLalu + $nonOperasiTahunLalu;
+        $kenaikanSebelumPos =abs( $sebelumPosTahunIni)-abs($sebelumPosTahunLalu);
+        $persenSebelumPos = abs( $sebelumPosTahunIni)/abs($sebelumPosTahunLalu) * 100;
+
+        foreach ($mapping as $key => $map) {
+            $tahunIni = "";
+            $tahunLalu ="";
+            $kenaikan = "";
+            $persen= "";
+            $kodeRekening = "";
+
+            if ($map->bold == 5) {
+                $tahunIni = $surplusTahunIni < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunIni)) .")" : $this->support->currencyFormat($surplusTahunIni);
+                $tahunLalu = $surplusTahunLalu < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunLalu)) .")" : $this->support->currencyFormat($surplusTahunLalu);
+                $kenaikan = $this->support->rp_minus($kenaikanSurplus);
+                $persen = $this->support->currencyFormat($persenSurplus);
+            }
+
+            if(in_array($map->bold,[6,7])) {
+                $tahunIni = $this->support->rp_minus($sebelumPosTahunIni);
+                $tahunLalu = $this->support->rp_minus($sebelumPosTahunLalu);
+                $kenaikan = $this->support->rp_minus($kenaikanSebelumPos);
+                $persen = $this->support->currencyFormat(abs($persenSebelumPos));
+            }
+
+            if($map->cetak != "" && in_array($map->bold,[3,4])) {
+                $rekening3 = $map->kode_1 === '-' ? "0" : $map->kode_1;
+                $rekening4 = $map->kode_2 === '-' ? "0" : $map->kode_2;
+                $rekening5 = $map->kode_3 === '-' ? "0" : $map->kode_3;
+                $query = "SELECT ISNULL(ABS(SUM(debet-kredit)),0) AS nilai FROM transaksi_lo 
+                    WHERE (LEFT(kode_rekening,4) IN ($rekening3)  OR LEFT(kode_rekening,6) 
+                    IN ($rekening4)  OR LEFT(kode_rekening,8) IN ($rekening5) ) AND MONTH(tanggal) <= ?  AND YEAR(tanggal) = ? ";
+                $realisasiTahunIni = $this->db->query($query,[$bulan, $tahunAnggaran])->row();
+                $realisasiTahunLalu = $this->db->query($query,[12, $tahunAnggaranLalu])->row();
+                if($map->seq == 410) {
+                    $nilaiTahunIni = $nonOperasiTahunIni;
+                    $nilaiTahunLalu = $nonOperasiTahunLalu;
+                } else {
+                    $nilaiTahunIni = $realisasiTahunIni ? $realisasiTahunIni->nilai : 0; 
+                    $nilaiTahunLalu = $realisasiTahunLalu ? $realisasiTahunLalu->nilai : 0;
+                }
+                $tahunIni = $this->support->rp_minus($nilaiTahunIni);
+                $tahunLalu = $this->support->rp_minus($nilaiTahunLalu);
+                $kenaikan = $this->support->rp_minus($nilaiTahunIni - $nilaiTahunLalu);
+                if($nilaiTahunIni == 0 || $nilaiTahunLalu == 0) {
+                    $persen = "0,00";
+                } else {
+                    $persen = $this->support->currencyFormat($nilaiTahunIni / $nilaiTahunLalu *100);
+                }
+                $kodeRekening = $map->bold == 3 || $rekening3 != 0 ? substr($rekening3, 1,4) : "";
+            }
+
+            if($map->bold != 3) {
+                $no ="<strong>".($key+1)."</strong>";
+                $nama = "<strong>$map->uraian</strong>";
+                $tahunLalu = "<strong>$tahunLalu</strong>";
+                $tahunIni = "<strong>$tahunIni</strong>";
+                $kenaikan = "<strong>$kenaikan</strong>";
+                $persen = "<strong>$persen</strong>";
+            } else {
+                $no = $key+1;
+                $nama = $map->uraian;
+            }
+
+            $style = $styles[$map->bold];
+            $cetakLo .= "<tr>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$no</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$kodeRekening</td>
+                            <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; $style\" width=\"27%\">$nama</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunIni</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunLalu</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$kenaikan</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"7%\" align=\"right\">$persen</td>
+                        </tr>";
+        }
+
+        // end mapping
+
+        $cetakLo .= "</table>";
+        $cetakLo .= $this->_sign($nip, $tanggal);
+        $data['prev'] = $cetakLo;
+        $data['sikap'] = 'preview';
+        $judul  = ("LO KONSOL SKPD $cbulan");
+        $this->template->set('title', 'LO KONSOL UNIT $cbulan');
+        switch ($pilih) {
+            case 0;
+                $this->tukd_model->_mpdf('', $cetakLo, 10, 5, 10, '0');
+                echo $cetakLo;
+                break;
+            case 1;
+                // $this->tukd_model->_mpdf('',$cetakLo,10,10,10,'0');
+                echo "<title>LO KONSOL SKPD $cbulan</title>";
+                echo $cetakLo;
+                break;
+            case 2;
+                header("Cache-Control: no-cache, no-store, must-revalidate");
+                header("Content-Type: application/vnd.ms-excel");
+                header("Content-Disposition: attachment; filename= $judul.xls");
+
+                $this->load->view('anggaran/rka/perkadaII', $data);
+                break;
+            case 3;
+                header("Cache-Control: no-cache, no-store, must-revalidate");
+                header("Content-Type: application/vnd.ms-word");
+                header("Content-Disposition: attachment; filename= $judul.doc");
+                $this->load->view('anggaran/rka/perkadaII', $data);
+                break;
+        }
+    }
+
+    // KONSOL PER SUB RINCI
+    function cetakKonsolidasiSubRinci()
+    {
+        $bulan = $this->input->get('bulan');
+        $nip = str_replace('n', ' ', $this->input->get('ttd'));
+        $tanggalTtd = $this->input->get('tanggal');
+        $tanggal = $this->tukd_model->tanggal_format_indonesia($tanggalTtd);
+        $cetakLo = "";
+        $cetakLo .= $this->_client("", $bulan);
+        $cetakLo .= $this->_headerTableLo();
+        $tahunAnggaran = $this->session->userdata('pcThang');
+        $tahunAnggaranLalu = $tahunAnggaran-1;
+        $pilih = $this->input->get('pilih');
+        $cetakLo = "";
+        $cetakLo .= $this->_client("", $bulan);
+        $cetakLo .= $this->_headerTableLo();
+        // start mapping
+        $mapping  = $this->db->query("SELECT seq, nor, uraian, bold,isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak,parent,kode FROM map_lo_pemda GROUP BY seq, nor, uraian, bold, isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet'),parent, kode ORDER BY seq")
+            ->result();
+
+        $styles = [
+            0 => "",
+            1 => "padding-left: 25px;",
+            2 => "padding-left: 50px;",
+            3 => "padding-left: 75px;",
+            4 => "padding-left: 100px;",
+            5 => "padding-left: 125px;",
+            6 => "padding-left: 125px;",
+            7 => "padding-left: 125px;",
+        ];
+        
+        // surpulus operasi
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ?";
+        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan, $tahunAnggaran])->row();
+        $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $tahunAnggaranLalu])->row();
+        $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
+        $surplusTahunLalu = $resultOperasiTahunLalu ? $resultOperasiTahunLalu->nilai : 0;
+        $kenaikanSurplus = $surplusTahunIni-$surplusTahunLalu;
+        $persenSurplus = ($surplusTahunIni == 0 || $surplusTahunLalu ==0 ) ? 0 : (abs($surplusTahunIni) / abs($surplusTahunLalu)) * 100;
+
+        // non operasional
+        $queryNonOperasi = "SELECT 
+                ISNULL(
+                    -- surplus non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 7 THEN ABS(SUM(kredit-debet)) ELSE 0 END -
+                    -- defisit non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 8 THEN ABS(SUM(debet-kredit)) ELSE 0 END
+                ,0) AS nilai
+            FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) IN (74,83)
+            GROUP BY LEFT(kode_rekening,1)
+        ";
+        $resultNonOperasiTahunIni = $this->db->query($queryNonOperasi,[$bulan, $tahunAnggaran])->row();
+        $resultNonOperasiTahunLalu = $this->db->query($queryNonOperasi,[12, $tahunAnggaranLalu])->row();
+        $nonOperasiTahunIni = $resultNonOperasiTahunIni ? $resultNonOperasiTahunIni->nilai : 0;
+        $nonOperasiTahunLalu = $resultNonOperasiTahunLalu ? $resultNonOperasiTahunLalu->nilai : 0;
+
+        // selisih surplus non operasional dan defisit operasion
+        $sebelumPosTahunIni = $surplusTahunIni + $nonOperasiTahunIni;
+        $sebelumPosTahunLalu = $surplusTahunLalu + $nonOperasiTahunLalu;
+        $kenaikanSebelumPos =abs( $sebelumPosTahunIni)-abs($sebelumPosTahunLalu);
+        $persenSebelumPos = abs( $sebelumPosTahunIni)/abs($sebelumPosTahunLalu) * 100;
+
+        $index = 0;
+        foreach ($mapping as $key => $map) {
+            $index += 1;
+            $tahunIni = "";
+            $tahunLalu ="";
+            $kenaikan = "";
+            $persen= "";
+            $kodeRekening = "";
+
+            if ($map->bold == 5) {
+                $tahunIni = $surplusTahunIni < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunIni)) .")" : $this->support->currencyFormat($surplusTahunIni);
+                $tahunLalu = $surplusTahunLalu < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunLalu)) .")" : $this->support->currencyFormat($surplusTahunLalu);
+                $kenaikan = $this->support->rp_minus($kenaikanSurplus);
+                $persen = $this->support->currencyFormat($persenSurplus);
+            }
+
+            if(in_array($map->bold,[6,7])) {
+                $tahunIni = $this->support->rp_minus($sebelumPosTahunIni);
+                $tahunLalu = $this->support->rp_minus($sebelumPosTahunLalu);
+                $kenaikan = $this->support->rp_minus($kenaikanSebelumPos);
+                $persen = $this->support->currencyFormat(abs($persenSebelumPos));
+            }
+
+            if($map->cetak != "" && in_array($map->bold,[3,4])) {
+                $rekening3 = $map->kode_1 === '-' ? "0" : $map->kode_1;
+                $rekening4 = $map->kode_2 === '-' ? "0" : $map->kode_2;
+                $rekening5 = $map->kode_3 === '-' ? "0" : $map->kode_3;
+                $query = "SELECT ISNULL(ABS(SUM(debet-kredit)),0) AS nilai FROM transaksi_lo 
+                    WHERE (LEFT(kode_rekening,4) IN ($rekening3)  OR LEFT(kode_rekening,6) 
+                    IN ($rekening4)  OR LEFT(kode_rekening,8) IN ($rekening5) ) AND MONTH(tanggal) <= ?  AND YEAR(tanggal) = ? ";
+                $realisasiTahunIni = $this->db->query($query,[$bulan, $tahunAnggaran])->row();
+                $realisasiTahunLalu = $this->db->query($query,[12, $tahunAnggaranLalu])->row();
+                if($map->seq == 410) {
+                    $nilaiTahunIni = $nonOperasiTahunIni;
+                    $nilaiTahunLalu = $nonOperasiTahunLalu;
+                } else {
+                    $nilaiTahunIni = $realisasiTahunIni ? $realisasiTahunIni->nilai : 0; 
+                    $nilaiTahunLalu = $realisasiTahunLalu ? $realisasiTahunLalu->nilai : 0;
+                }
+                $tahunIni = $this->support->rp_minus($nilaiTahunIni);
+                $tahunLalu = $this->support->rp_minus($nilaiTahunLalu);
+                $kenaikan = $this->support->rp_minus($nilaiTahunIni - $nilaiTahunLalu);
+                if($nilaiTahunIni == 0 || $nilaiTahunLalu == 0) {
+                    $persen = "0,00";
+                } else {
+                    $persen = $this->support->currencyFormat($nilaiTahunIni / $nilaiTahunLalu *100);
+                }
+            }
+
+            if($map->bold != 3) {
+                $no ="<strong>".($index)."</strong>";
+                $nama = "<strong>$map->uraian</strong>";
+                $tahunLalu = "<strong>$tahunLalu</strong>";
+                $tahunIni = "<strong>$tahunIni</strong>";
+                $kenaikan = "<strong>$kenaikan</strong>";
+                $persen = "<strong>$persen</strong>";
+            } else {
+                $no = $index;
+                $nama = $map->uraian;
+            }
+            if ($map->bold == 3) {
+                $kodeRekening = substr($rekening3 ? $rekening3 : $rekening4, 1,4) ? substr($rekening3 ? $rekening3 : $rekening4, 1,4) : substr($rekening5, 1,4) ;
+            } else {
+                // $kodeRekening = 0;
+            }
+            $style = $styles[$map->bold];
+            $cetakLo .= "<tr>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$no</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black; padding-left: 10px; padding-left: 10px\" width=\"5%\">$kodeRekening</td>
+                            <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; $style\" width=\"27%\">$nama</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunIni</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunLalu</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$kenaikan</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"7%\" align=\"right\">$persen</td>
+                        </tr>";
+            if ($map->bold == 3) {
+                // objek
+                $queryObject = "SELECT * FROM (
+                    SELECT
+                        rek.kd_rek4 AS kode_rekening,
+                        rek.nm_rek4 as nama_rekening,
+                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        (
+                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,6) = rek.kd_rek4 AND YEAR(tanggal) = ?
+                        ) AS nilaiLalu
+                    FROM transaksi_lo AS lo INNER JOIN ms_rek4 AS rek ON LEFT(kode_rekening,6) = rek.kd_rek4
+                    WHERE MONTH(tanggal) <= ?
+                    AND YEAR(tanggal) = ? AND rek.kd_rek3 = $rekening3
+                    GROUP BY rek.kd_rek4, rek.nm_rek4 UNION ALL
+                    SELECT
+                        rek.kd_rek5 AS kode_rekening,
+                        rek.nm_rek5 as nama_rekening,
+                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        (
+                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,8) = rek.kd_rek5 AND YEAR(tanggal) = ?
+                        ) AS nilaiLalu
+                    FROM transaksi_lo AS lo INNER JOIN ms_rek5 AS rek ON LEFT(kode_rekening,8) = rek.kd_rek5
+                    WHERE MONTH(tanggal) <= ?
+                    AND YEAR(tanggal) = ? AND LEFT(kode_rekening,4) = $rekening3
+                    GROUP BY rek.kd_rek5, rek.nm_rek5
+                    UNION ALL SELECT
+                        rek.kd_rek6 AS kode_rekening,
+                        rek.nm_rek6,
+                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        (
+                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE loLalu.kode_rekening = rek.kd_rek6  AND YEAR(tanggal) = ?
+                        ) AS nilaiLalu
+                    FROM transaksi_lo AS lo
+                        INNER JOIN ms_rek6 AS rek ON rek.kd_rek6 = lo.kode_rekening
+                    WHERE  MONTH(tanggal) <= ?
+                    AND YEAR(tanggal) = ? AND LEFT(kode_rekening,4) = $rekening3
+                    GROUP BY rek.kd_rek6, rek.nm_rek6 
+                ) AS source ORDER BY kode_rekening";
+
+                $result =  $this->db->query($queryObject, [$tahunAnggaranLalu, $bulan, $tahunAnggaran, $tahunAnggaranLalu, $bulan, $tahunAnggaran, $tahunAnggaranLalu, $bulan, $tahunAnggaran])->result();
+
+                foreach ($result as $objek) {
+                    $index += 1;
+                    $objekIni = $this->support->rp_minus($objek->nilai);
+                    $objekLalu = $this->support->rp_minus($objek->nilaiLalu);
+                    $selisihObjek = $this->support->rp_minus($objek->nilai-$objek->nilaiLalu);
+                    $kodeRekening = $objek->kode_rekening;
+                    if(in_array(0,[$objek->nilai, $objek->nilaiLalu])) {
+                        $persenObjek = "0.00";
+                    } else {
+                        $persenObjek = $this->support->currencyFormat($objek->nilai/$objek->nilaiLalu * 100);
+                    }
+
+                    $length = strlen($objek->kode_rekening);
+                    $style = [
+                        12 => '175px;',
+                        8 => '150px;',
+                        6 => '125px;'
+                    ];
+
+                    $cetakLo .= "<tr>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$index</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black; padding-left:10px\" width=\"5%\">$kodeRekening</td>
+                                <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; padding-left: $style[$length] \" width=\"27%\">$objek->nama_rekening</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$objekIni</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$objekLalu</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$selisihObjek</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"7%\" align=\"right\">$persenObjek</td>
+                            </tr>";
+                }
+            }
+        }
+        // end mapping
+        $cetakLo .= "</table>";
+        $cetakLo .= $this->_sign($nip, $tanggal);
+        $data['prev'] = $cetakLo;
+        $data['sikap'] = 'preview';
+        $judul  = ("LO KONSOL SKPD $bulan");
+        $this->template->set('title', 'LO KONSOL UNIT $bulan');
+        switch ($pilih) {
+            case 0;
+                $this->tukd_model->_mpdf('', $cetakLo, 10, 5, 10, '0');
+                echo $cetakLo;
+                break;
+            case 1;
+                // $this->tukd_model->_mpdf('',$cetakLo,10,10,10,'0');
+                echo "<title>LO KONSOL SKPD $bulan</title>";
+                echo $cetakLo;
                 break;
             case 2;
                 header("Cache-Control: no-cache, no-store, must-revalidate");

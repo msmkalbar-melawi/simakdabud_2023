@@ -288,5 +288,8 @@ $route['buku_simpanan_bank']       = "Cetak_bukubank/index";
 $route['buku_tunai']               = "Cetak_buku_tunai/index";
 $route['buku_pajak']               = "Cetak_pajak/index";
 
+$route['konsolidasi-jenis'] = "akuntansi_rekon/cetakKonsolidasiJenis";
+$route['konsolidasi-sub-rinci'] = "akuntansi_rekon/cetakKonsolidasiSubRinci";
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -321,16 +321,19 @@
       var tandatgn = $('#ttd').combogrid('getValue');
 			var ttd1 = tandatgn.split(" ").join("n");
 			var ctglttd = $('#tgl_ttd').datebox('getValue');
+      const base_url = `<?= base_url() ?>`
       if (ctk == 1) {
         if (jns == 1) {
           //alert('Jenis sama dengan 1');
           //exit();
-          urll = '<?php echo base_url(); ?>index.php/akuntansi/ctk_lra_lo_pemda/' + cbulan;
           if (bulan == '') {
             alert("Pilih Bulan dulu");
-            exit();
+            return;
           }
-        } 
+          urll = `${base_url}konsolidasi-jenis?bulan=${cbulan}&ttd=${ttd1}&tanggal=${ctglttd}`;
+          window.open(urll, '_blank');
+          window.focus();
+        }
 
       } else if (ctk == 3) {
         if (jns == 1) {
@@ -443,15 +446,18 @@
       var tandatgn = $('#ttd').combogrid('getValue');
 			var ttd1 = tandatgn.split(" ").join("n");
 			var ctglttd = $('#tgl_ttd').datebox('getValue');
+      const base_url = `<?= base_url() ?>konsolidasi-sub-rinci`
       if (ctk == 1) {
         if (jns == 1) {
           //alert('Jenis sama dengan 1');
           //exit();
-          urll = '<?php echo base_url(); ?>index.php/akuntansi/ctk_lra_lo_pemda_subrincian/' + cbulan;
           if (bulan == '') {
             alert("Pilih Bulan dulu");
             exit();
           }
+          urll = `${base_url}?bulan=${cbulan}&ttd=${ttd1}&tanggal=${ctglttd}&pilih=${pilih}`;
+          window.open(urll, '_blank');
+          window.focus();
         } 
 
       } else if (ctk == 3) {
