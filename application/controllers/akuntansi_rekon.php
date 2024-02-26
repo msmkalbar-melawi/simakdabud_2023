@@ -65,7 +65,8 @@ class Akuntansi_rekon extends CI_Controller
         return "<table style=\"border-collapse:collapse;font-size:12px;font-family:Bookman Old Style\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"4\">
                      <thead>                       
                         <tr>
-                            <td bgcolor=\"#CCCCCC\" width=\"10%\" align=\"center\"><b>NO</b></td>                            
+                            <td bgcolor=\"#CCCCCC\" width=\"10%\" align=\"center\"><b>NO</b></td>
+                            <td bgcolor=\"#CCCCCC\" width=\"10%\" align=\"center\"><b>Kode Rekening</b></td>
                             <td  colspan =\"5\" bgcolor=\"#CCCCCC\" width=\"40%\" align=\"center\"><b>URAIAN</b></td>
                             <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$tahunAnggaran</b></td>
                             <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$tahunAnggaranLalu</b></td>
@@ -74,7 +75,9 @@ class Akuntansi_rekon extends CI_Controller
                         </tr>
                         
                      </thead>                   
-                     <tr><td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"10%\" align=\"center\">&nbsp;</td>                            
+                        <tr>
+                            <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"10%\" align=\"center\">&nbsp;</td>                            
+                            <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"10%\" align=\"center\">&nbsp;</td>                            
                             <td colspan =\"5\" style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"40%\">&nbsp;</td>
                             <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\">&nbsp;</td>
                             <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\">&nbsp;</td>
@@ -772,6 +775,7 @@ class Akuntansi_rekon extends CI_Controller
             $tahunLalu ="";
             $kenaikan = "";
             $persen= "";
+            $kodeRekening = "";
 
             if ($map->bold == 5) {
                 $tahunIni = $surplusTahunIni < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunIni)) .")" : $this->support->currencyFormat($surplusTahunIni);
@@ -811,6 +815,8 @@ class Akuntansi_rekon extends CI_Controller
                 } else {
                     $persen = $this->support->currencyFormat($nilaiTahunIni / $nilaiTahunLalu *100);
                 }
+
+               
             }
 
             if($map->bold != 3) {
@@ -824,10 +830,15 @@ class Akuntansi_rekon extends CI_Controller
                 $no = $index;
                 $nama = $map->uraian;
             }
-
+            if ($map->bold == 3) {
+                $kodeRekening = substr($rekening3 ? $rekening3 : $rekening4, 1,4) ? substr($rekening3 ? $rekening3 : $rekening4, 1,4) : substr($rekening5, 1,4) ;
+            } else {
+                // $kodeRekening = 0;
+            }
             $style = $styles[$map->bold];
             $cetakLo .= "<tr>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$no</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black; padding-left: 10px; padding-left: 10px\" width=\"5%\">$kodeRekening</td>
                             <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; $style\" width=\"27%\">$nama</td>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunIni</td>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunLalu</td>
@@ -860,16 +871,17 @@ class Akuntansi_rekon extends CI_Controller
                     AND YEAR(tanggal) = ? AND LEFT(kode_rekening,4) = $rekening3
                     GROUP BY rek.kd_rek5, rek.nm_rek5,kode_skpd
                     UNION ALL SELECT
-                        kode_rekening,
-                        nama_rekening,
+                        rek.kd_rek6 AS kode_rekening,
+                        rek.nm_rek6,
                         ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
                         (
-                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE loLalu.kode_rekening = lo.kode_rekening  AND kode_skpd =  lo.kode_skpd AND YEAR(tanggal) = ?
+                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE loLalu.kode_rekening = rek.kd_rek6  AND kode_skpd =  lo.kode_skpd AND YEAR(tanggal) = ?
                         ) AS nilaiLalu
                     FROM transaksi_lo AS lo
+                        INNER JOIN ms_rek6 AS rek ON rek.kd_rek6 = lo.kode_rekening
                     WHERE kode_skpd = ? AND MONTH(tanggal) <= ?
                     AND YEAR(tanggal) = ? AND LEFT(kode_rekening,4) = $rekening3
-                    GROUP BY kode_rekening, nama_rekening,kode_skpd 
+                    GROUP BY rek.kd_rek6, rek.nm_rek6,kode_skpd 
                 ) AS source ORDER BY kode_rekening";
 
                 $result =  $this->db->query($queryObject, [$tahunAnggaranLalu, $kd_skpd, $cbulan, $tahunAnggaran, $tahunAnggaranLalu, $kd_skpd, $cbulan, $tahunAnggaran, $tahunAnggaranLalu, $kd_skpd, $cbulan, $tahunAnggaran])->result();
@@ -879,6 +891,7 @@ class Akuntansi_rekon extends CI_Controller
                     $objekIni = $this->support->rp_minus($objek->nilai);
                     $objekLalu = $this->support->rp_minus($objek->nilaiLalu);
                     $selisihObjek = $this->support->rp_minus($objek->nilai-$objek->nilaiLalu);
+                    $kodeRekening = $objek->kode_rekening;
                     if(in_array(0,[$objek->nilai, $objek->nilaiLalu])) {
                         $persenObjek = "0.00";
                     } else {
@@ -894,6 +907,7 @@ class Akuntansi_rekon extends CI_Controller
 
                     $cetakLo .= "<tr>
                                 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$index</td>
+                                <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black; padding-left:10px\" width=\"5%\">$kodeRekening</td>
                                 <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; padding-left: $style[$length] \" width=\"27%\">$objek->nama_rekening</td>
                                 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$objekIni</td>
                                 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$objekLalu</td>
