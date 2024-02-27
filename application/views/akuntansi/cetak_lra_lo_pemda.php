@@ -330,7 +330,7 @@
             alert("Pilih Bulan dulu");
             return;
           }
-          urll = `${base_url}konsolidasi-jenis?bulan=${cbulan}&ttd=${ttd1}&tanggal=${ctglttd}`;
+          urll = `${base_url}konsolidasi-jenis?bulan=${cbulan}&ttd=${ttd1}&tanggal=${ctglttd}&pilih=${pilih}`;
           window.open(urll, '_blank');
           window.focus();
         }
