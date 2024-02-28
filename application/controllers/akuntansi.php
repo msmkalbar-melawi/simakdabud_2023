@@ -12605,8 +12605,18 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$kode_14 = trim($res['kode_14']);
 			$kode_15 = trim($res['kode_15']);
 
+			$konversiLra = substr($kode_1,0,4);
+			if (($konversiLra >= 1301 && $konversiLra < 1307)) {
+				$length = strlen($kode_1);
+				$lra =  "52".substr($kode_1,2);
+				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888')
+				";
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
 
-			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
+			} else {
+				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
 										(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
 										kd_rek6 like '$kode_3%' or kd_rek6 like '$kode_4%'  or 
@@ -12616,6 +12626,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 										kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
 										kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
 										kd_rek6 like '$kode_15%') ");
+			}
+
 
 			foreach ($q->result_array() as $r) {
 				$debet = $r['debet'];
@@ -12675,7 +12687,11 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$sblm001 = "";
 				$mlbs001 = "";
 			}
-			$nl1 = number_format($nl, "2", ",", ".");
+			if(($konversiLra >= 1301 && $konversiLra < 1307)) {
+				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
+			}else {
+				$nl1 = number_format($nl, "2", ",", ".");
+			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
 
 			$no       = $no + 1;
