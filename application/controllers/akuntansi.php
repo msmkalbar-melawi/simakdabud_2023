@@ -12689,7 +12689,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			}
 			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
 				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
-			}else {
+			}elseif (substr($kode_1, 0, 4) == 2106)  {
+				$nl1 = number_format($sblm, "2", ",", ".");
+			}else  {
 				$nl1 = number_format($nl, "2", ",", ".");
 			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
