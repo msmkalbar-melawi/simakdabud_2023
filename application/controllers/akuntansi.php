@@ -12606,7 +12606,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$kode_15 = trim($res['kode_15']);
 
 			$konversiLra = substr($kode_1,0,4);
-			if (($konversiLra >= 1301 && $konversiLra < 1307)) {
+			if (($konversiLra >= 1301 && $konversiLra < 1306)) {
 				$length = strlen($kode_1);
 				$lra =  "52".substr($kode_1,2);
 				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
@@ -12687,7 +12687,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$sblm001 = "";
 				$mlbs001 = "";
 			}
-			if(($konversiLra >= 1301 && $konversiLra < 1307)) {
+			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
 				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
 			}else {
 				$nl1 = number_format($nl, "2", ",", ".");
