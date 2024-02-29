@@ -11424,8 +11424,17 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$kode_14 = trim($res['kode_14']);
 			$kode_15 = trim($res['kode_15']);
 
-
-			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
+			$konversiLra = substr($kode_1,0,4);
+			if (($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$length = strlen($kode_1);
+				$lra =  "52".substr($kode_1,2);
+				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888')
+				";
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
+			} else {
+				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
 										(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
 										kd_rek6 like '$kode_3%' or kd_rek6 like '$kode_4%'  or 
@@ -11435,6 +11444,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 										kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
 										kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
 										kd_rek6 like '$kode_15%') ");
+			}
 
 			foreach ($q->result_array() as $r) {
 				$debet = $r['debet'];
@@ -11494,7 +11504,13 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$sblm001 = "";
 				$mlbs001 = "";
 			}
-			$nl1 = number_format($nl, "2", ",", ".");
+			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
+			}elseif (substr($kode_1, 0, 4) == 2106)  {
+				$nl1 = number_format($sblm, "2", ",", ".");
+			}else  {
+				$nl1 = number_format($nl, "2", ",", ".");
+			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
 
 			$no       = $no + 1;
@@ -13343,29 +13359,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 
 		$nm_skpd  = strtoupper($nmskpd);
-
-		/*           $sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-					 $sqlsclient=$this->db->query($sqlsc);
-					 foreach ($sqlsclient->result() as $rowsc)
-					{
-					   
-						$tgl=$rowsc->tgl_rka;
-						$tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-						$kab     = $rowsc->kab_kota;
-						$daerah  = $rowsc->daerah;
-						$thn     = $rowsc->thn_ang;
-					} 
-	
-		  $sqldns="SELECT a.kd_urusan as kd_u,b.nm_urusan as nm_u,a.kd_skpd as kd_sk,a.nm_skpd as nm_sk FROM ms_skpd a INNER JOIN ms_urusan b ON a.kd_urusan=b.kd_urusan WHERE a.kd_skpd='$skpd'  ";
-					 $sqlskpd=$this->db->query($sqldns);
-					 foreach ($sqlskpd->result() as $rowdns)
-					{
-						$kd_urusan=$rowdns->kd_u;                    
-						$nm_urusan= $rowdns->nm_u;
-						$kd_skpd  = $rowdns->kd_sk;
-						$nm_skpd  = $rowdns->nm_sk;
-					} 
-		*/
 		$modtahun = $thn_ang % 4;
 
 		if ($modtahun = 0) {
@@ -13880,8 +13873,18 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$kode_14 = trim($res['kode_14']);
 			$kode_15 = trim($res['kode_15']);
 
+			$konversiLra = substr($kode_1,0,4);
+			if (($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$length = strlen($kode_1);
+				$lra =  "52".substr($kode_1,2);
+				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') AND trh.kd_skpd = ?
+				";
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kd_skpd]);
 
-			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
+			} else {
+				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 					  and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd' and
 						(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
 						kd_rek6 like '$kode_3%' or kd_rek6 like '$kode_4%'  or 
@@ -13891,6 +13894,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
 						kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
 						kd_rek6 like '$kode_15%') ");
+			}
 
 			foreach ($q->result_array() as $r) {
 				$debet = $r['debet'];
@@ -13950,7 +13954,13 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$sblm001 = "";
 				$mlbs001 = "";
 			}
-			$nl1 = number_format($nl, "2", ",", ".");
+			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
+			}elseif (substr($kode_1, 0, 4) == 2106)  {
+				$nl1 = number_format($sblm, "2", ",", ".");
+			}else  {
+				$nl1 = number_format($nl, "2", ",", ".");
+			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
 
 			$no       = $no + 1;
@@ -14435,29 +14445,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 
 		$nm_skpd  = strtoupper($nmskpd);
-
-		/*           $sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-					 $sqlsclient=$this->db->query($sqlsc);
-					 foreach ($sqlsclient->result() as $rowsc)
-					{
-					   
-						$tgl=$rowsc->tgl_rka;
-						$tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-						$kab     = $rowsc->kab_kota;
-						$daerah  = $rowsc->daerah;
-						$thn     = $rowsc->thn_ang;
-					} 
-	
-		  $sqldns="SELECT a.kd_urusan as kd_u,b.nm_urusan as nm_u,a.kd_skpd as kd_sk,a.nm_skpd as nm_sk FROM ms_skpd a INNER JOIN ms_urusan b ON a.kd_urusan=b.kd_urusan WHERE a.kd_skpd='$skpd'  ";
-					 $sqlskpd=$this->db->query($sqldns);
-					 foreach ($sqlskpd->result() as $rowdns)
-					{
-						$kd_urusan=$rowdns->kd_u;                    
-						$nm_urusan= $rowdns->nm_u;
-						$kd_skpd  = $rowdns->kd_sk;
-						$nm_skpd  = $rowdns->nm_sk;
-					} 
-		*/
 		$modtahun = $thn_ang % 4;
 
 		if ($modtahun = 0) {
@@ -14972,6 +14959,17 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$kode_15 = trim($res['kode_15']);
 
 
+			$konversiLra = substr($kode_1,0,4);
+			if (($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$length = strlen($kode_1);
+				$lra =  "52".substr($kode_1,2);
+				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') AND trh.kd_skpd = ?
+				";
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kd_skpd]);
+
+			} else {
 			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 					  and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd' and
 						(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
@@ -14982,6 +14980,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
 						kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
 						kd_rek6 like '$kode_15%') ");
+			}
+
 
 			foreach ($q->result_array() as $r) {
 				$debet = $r['debet'];
@@ -15041,7 +15041,13 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$sblm001 = "";
 				$mlbs001 = "";
 			}
-			$nl1 = number_format($nl, "2", ",", ".");
+			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
+				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
+			}elseif (substr($kode_1, 0, 4) == 2106)  {
+				$nl1 = number_format($sblm, "2", ",", ".");
+			}else  {
+				$nl1 = number_format($nl, "2", ",", ".");
+			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
 
 			$no       = $no + 1;
