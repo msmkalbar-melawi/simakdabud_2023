@@ -12644,7 +12644,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 										kd_rek6 like '$kode_15%') ");
 			}
 
-
 			foreach ($q->result_array() as $r) {
 				$debet = $r['debet'];
 				$kredit = $r['kredit'];
