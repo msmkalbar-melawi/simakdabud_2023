@@ -10898,28 +10898,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$nm_skpd	= strtoupper($nmskpd);
 
-		/*		       $sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-                 $sqlsclient=$this->db->query($sqlsc);
-                 foreach ($sqlsclient->result() as $rowsc)
-                {
-                   
-                    $tgl=$rowsc->tgl_rka;
-                    $tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-                    $kab     = $rowsc->kab_kota;
-                    $daerah  = $rowsc->daerah;
-                    $thn     = $rowsc->thn_ang;
-                } 
-
-			$sqldns="SELECT a.kd_urusan as kd_u,b.nm_urusan as nm_u,a.kd_skpd as kd_sk,a.nm_skpd as nm_sk FROM ms_skpd a INNER JOIN ms_urusan b ON a.kd_urusan=b.kd_urusan WHERE a.kd_skpd='$skpd'  ";
-                 $sqlskpd=$this->db->query($sqldns);
-                 foreach ($sqlskpd->result() as $rowdns)
-                {
-                    $kd_urusan=$rowdns->kd_u;                    
-                    $nm_urusan= $rowdns->nm_u;
-                    $kd_skpd  = $rowdns->kd_sk;
-                    $nm_skpd  = $rowdns->nm_sk;
-                } 
-     */
 		$modtahun = $thn_ang % 4;
 
 		if ($modtahun = 0) {
@@ -10951,6 +10929,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
                      <thead>                       
                         <tr>
 							<td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>NO</b></td>
+							<td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>KODE REKENING</b></td>
                             <td bgcolor=\"#CCCCCC\" width=\"55%\" align=\"center\"><b>URAIAN</b></td>
                             <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang</b></td>
                             <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang_1</b></td>                            
@@ -10960,13 +10939,16 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
                      <tfoot>
                         <tr>
 							<td style=\"border-top: none;\"></td>
+							<td style=\"border-top: none;\"></td>
                             <td style=\"border-top: none;\"></td>
                             <td style=\"border-top: none;\"></td>
                             <td style=\"border-top: none;\"></td>                                             
                          </tr>
                      </tfoot>
                    
-                     <tr>	<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+                     <tr>	
+					 		<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+					 		<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
 							<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"55%\" align=\"center\">&nbsp;</td>                            
                             <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
                             <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
@@ -11431,8 +11413,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
 					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
 					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888')
+					OR (LEFT(trd.kd_rek6, $length) = ? AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%')
 				";
-				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kode_1]);
 			} else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
@@ -11517,266 +11500,302 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 			switch ($res['seq']) {
 				case 5:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min019$ast1$min020</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min021$ast_lalu1$min022</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min019$ast1$min020</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min021$ast_lalu1$min022</td>
                                  </tr>";
 					break;
 				case 10:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min015$lcr1$min016</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min017$lcr_lalu1$min018</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min015$lcr1$min016</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min017$lcr_lalu1$min018</td>
                                  </tr>";
 					break;
 				case 15:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-                                 </tr>";
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+								</tr>";
 					break;
 				case 60:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 65:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 100:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 105:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
-					/* case 90:
-                          $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-                                 </tr>"; 
-                                  break; 				
-					case 100:
-                         $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-                                 </tr>";
-                        break;*/
 
 				case 110:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
                                      <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                      <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 115:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 120:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 125:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 
 				case 155:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 170:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
                                  </tr>";
 					break;
 				case 175:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
                                  </tr>";
 					break;
 
 				case 180:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-                                 </tr>";
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+								</tr>";
 					break;
 				case 225:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 240:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 245:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
-
-					/*case 250: //di 2020 , ekuitas dan kewajiban
-
-                         $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                      <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
-                                 </tr>";
-                        break;*/
-
-
-
 				case 260:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 265:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td> 
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
                                  </tr>";
 					break;
 				case 270:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                     	<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+                                     	<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+                                     	<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 275:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td> 
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 280:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 				case 281:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 					
 
 				case 285:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
                                  </tr>";
 					break;
 
 				case 286:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                      <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
                                  </tr>";
 					break;
 
 				case 290:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                    <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 
-
-
 				case 295:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 
 
 				case 335:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 // Ekuitas
 				case 365:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min003$eku1$min004</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min001$eku_lalu1$min002</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min003$eku1$min004</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min001$eku_lalu1$min002</td>
                                  </tr>";
 					break;
 				case 400:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
                                  </tr>";
 					break;
 				default:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-                                     <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
 			}
@@ -11990,28 +12009,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$nm_skpd	= strtoupper($nmskpd);
 
-		/*		       $sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-                 $sqlsclient=$this->db->query($sqlsc);
-                 foreach ($sqlsclient->result() as $rowsc)
-                {
-                   
-                    $tgl=$rowsc->tgl_rka;
-                    $tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-                    $kab     = $rowsc->kab_kota;
-                    $daerah  = $rowsc->daerah;
-                    $thn     = $rowsc->thn_ang;
-                } 
-
-			$sqldns="SELECT a.kd_urusan as kd_u,b.nm_urusan as nm_u,a.kd_skpd as kd_sk,a.nm_skpd as nm_sk FROM ms_skpd a INNER JOIN ms_urusan b ON a.kd_urusan=b.kd_urusan WHERE a.kd_skpd='$skpd'  ";
-                 $sqlskpd=$this->db->query($sqldns);
-                 foreach ($sqlskpd->result() as $rowdns)
-                {
-                    $kd_urusan=$rowdns->kd_u;                    
-                    $nm_urusan= $rowdns->nm_u;
-                    $kd_skpd  = $rowdns->kd_sk;
-                    $nm_skpd  = $rowdns->nm_sk;
-                } 
-		*/
 		$modtahun = $thn_ang % 4;
 
 		if ($modtahun = 0) {
@@ -12631,11 +12628,16 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
 					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
 					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') 
-					OR (LEFT(trd.kd_rek6, $length) = ? AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%')
 				";
+				if(strlen($kode_1) == 6) {
+					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%')";
+				}
 
-				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kode_1]);
+				if($kode_1 == 1305) {
+					$query .= " AND trd.kd_rek6 != '520508010005' ";
+				}
 
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
 			} else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
@@ -13483,6 +13485,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						 <thead>                       
 							<tr>
 				  <td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>NO</b></td>
+				  <td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>Kode Rekening</b></td>
 								<td bgcolor=\"#CCCCCC\" width=\"55%\" align=\"center\"><b>URAIAN</b></td>
 								<td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang</b></td>
 								<td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang_1</b></td>                            
@@ -13491,14 +13494,17 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						 </thead>
 						 <tfoot>
 							<tr>
-				  <td style=\"border-top: none;\"></td>
+				  				<td style=\"border-top: none;\"></td>
+				  				<td style=\"border-top: none;\"></td>
 								<td style=\"border-top: none;\"></td>
 								<td style=\"border-top: none;\"></td>
 								<td style=\"border-top: none;\"></td>                                             
 							 </tr>
 						 </tfoot>
 					   
-						 <tr> <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+						 <tr> 
+						 	<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+						 	<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
 				  <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"55%\" align=\"center\">&nbsp;</td>                            
 								<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
 								<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
@@ -13968,9 +13974,10 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$lra =  "52".substr($kode_1,2);
 				$query = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
 					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
-					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') AND trh.kd_skpd = ?
+					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') AND trh.kd_skpd = ? 
+					OR ( LEFT(trd.kd_rek6,$length) = ? AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%' AND trh.kd_skpd  = ? )
 				";
-				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kd_skpd]);
+				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan, $kd_skpd, $kode_1, $kd_skpd]);
 
 			} else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
@@ -14056,10 +14063,12 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 			switch ($res['seq']) {
 				case 5:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min019$ast1$min020</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min021$ast_lalu1$min022</td>
+					$cRet    .= "<tr>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min019$ast1$min020</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min021$ast_lalu1$min022</td>
 									 </tr>";
 					break;
 				case 10:
@@ -14104,20 +14113,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
 									 </tr>";
 					break;
-					/* case 90:
-							  $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>"; 
-									  break;        
-			  case 100:
-							 $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-							break;*/
 
 				case 110:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
@@ -14213,17 +14208,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 									 </tr>";
 					break;
 
-					/*case 250: //di 2020 , ekuitas dan kewajiban
-	
-							 $cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										  <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
-									 </tr>";
-							break;*/
-
-
-
 				case 270:
 					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
@@ -14318,10 +14302,12 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 									 </tr>";
 					break;
 				default:
-					$cRet    .= "<tr><td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
+					$cRet    .= "<tr>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\">$kode_1</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+										<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
 									 </tr>";
 					break;
 			}
