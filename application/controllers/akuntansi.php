@@ -12629,15 +12629,14 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
 					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888') 
 				";
-				if(strlen($kode_1) == 6) {
+				if(strlen($kode_1) == 6 || !in_array($kode_1, [1304,1305]) ) {
 					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%')";
 				}
-
 				if($kode_1 == 1305) {
 					$query .= " AND trd.kd_rek6 != '520508010005' ";
 				}
-
 				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
+
 			} else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
