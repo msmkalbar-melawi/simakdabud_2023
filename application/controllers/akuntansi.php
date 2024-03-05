@@ -12601,7 +12601,10 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$no     = 0;
 
-		foreach ($query10->result_array() as $res) {
+		// Hitung asset tetap
+		$assetTetap = $this->db->query("EXEC assets_tetap ?,? ", [12,2023])->row();
+
+		foreach ($query10->result_array() as $key => $res) {
 			$uraian = $res['uraian'];
 			$normal = $res['normal'];
 
@@ -12709,16 +12712,14 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$mlbs001 = "";
 			}
 			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
-				$nl1 = number_format(($nl+$sblm), "2", ",", ".");
+				$nl1 = number_format(($sblm+$nl), "2", ",", ".");
 			}elseif (substr($kode_1, 0, 4) == 2106)  {
 				$nl1 = number_format($sblm, "2", ",", ".");
 			}else  {
 				$nl1 = number_format($nl, "2", ",", ".");
 			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
-
 			$no       = $no + 1;
-
 			switch ($res['seq']) {
 				case 5:
 					$cRet    .= "<tr>
@@ -12914,7 +12915,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode_1</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">". number_format($assetTetap->nilai,2,',','.') ."</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
                                  </tr>";
 					break;
