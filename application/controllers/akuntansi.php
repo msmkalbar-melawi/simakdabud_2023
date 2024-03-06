@@ -12604,6 +12604,15 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		// Hitung asset tetap
 		$assetTetap = $this->db->query("EXEC assets_tetap ?,? ", [12,2023])->row();
 
+		// Hitung Keseluruhan Nilai Aset
+		$sqlAsset = "SELECT SUM(debet-kredit) AS nilai FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd
+					ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,2) IN (?,?,?,?) AND MONTH(trh.tgl_voucher) <= ?
+				";
+		$asset = $this->db->query($sqlAsset, [11,12,14,15,$xbulan])->row();
+
+		$nilaiAset = number_format(($assetTetap->nilai + $asset->nilai),2,',','.');
+
 		foreach ($query10->result_array() as $key => $res) {
 			$uraian = $res['uraian'];
 			$normal = $res['normal'];
@@ -12719,6 +12728,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$nl1 = number_format($nl, "2", ",", ".");
 			}
 			$sblm1 = number_format($sblm, "2", ",", ".");
+
+			
 			$no       = $no + 1;
 			switch ($res['seq']) {
 				case 5:
@@ -12726,7 +12737,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\"><b>$no</b></td>                                     
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode_1</td>                                     
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\"><b>$uraian</b></td>
-									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$min019$ast1$min020</b></td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$nilaiAset</b></td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\"><b>$min021$ast_lalu1$min022</b></td>
                                  </tr>";
 					break;
