@@ -12700,7 +12700,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$nl = $debet - $kredit;
 			} else {
 				if(substr($kode_1, 0,4) == 2106) {
-					$nl = $debet - $kredit;
+					$nl = abs($kredit - $debet);
 				} else {
 					$nl = $kredit - $debet;
 				}
