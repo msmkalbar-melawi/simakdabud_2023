@@ -12650,7 +12650,32 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				}
 				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
 
-			} else {
+			} else if ($kode_1 == 2106) {
+				$q = $this->db->query("SELECT
+					SUM(debet) as debet,
+					SUM(kredit) as kredit
+				FROM
+					trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+					AND trh.no_voucher = trd.no_voucher
+				WHERE
+					MONTH(trh.tgl_voucher) <= ?
+					AND trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%' AND LEFT(trd.kd_rek6, 4) = ?",[$xbulan,$kode_1]);
+			} else if($kode_1 == 21) {
+				$q = $this->db->query("SELECT 
+						SUM(debet) AS debet,
+						SUM(kredit) AS kredit
+					FROM
+						trhju_pkd AS trh
+						INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+						AND trh.no_voucher = trd.no_voucher 
+					WHERE
+						LEFT ( trd.kd_rek6, 2 ) = ? 
+						AND LEFT(trd.kd_rek6,4) != 2106
+						AND MONTH ( trh.tgl_voucher ) <= ? 
+						AND YEAR ( trh.tgl_voucher ) = ? 
+						OR ( trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%' AND LEFT ( trd.kd_rek6, 4 ) = 2106  )",[$kode_1, $xbulan, $thn_ang]);
+			}  else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
 										(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
@@ -12674,7 +12699,11 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			if ($normal == 1) {
 				$nl = $debet - $kredit;
 			} else {
-				$nl = $kredit - $debet;
+				if(substr($kode_1, 0,4) == 2106) {
+					$nl = $debet - $kredit;
+				} else {
+					$nl = $kredit - $debet;
+				}
 			}
 			if ($nl == '') $nl = 0;
 
@@ -12723,8 +12752,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			}
 			if(($konversiLra >= 1301 && $konversiLra < 1306)) {
 				$nl1 = number_format(($sblm+$nl), "2", ",", ".");
-			}elseif (substr($kode_1, 0, 4) == 2106)  {
-				$nl1 = number_format($sblm, "2", ",", ".");
+			}elseif (substr($kode_1, 0, 4) == 2106 || $kode_1 == 21)  {
+				$nl1 = number_format($sblm - $nl, "2", ",", ".");
 			}else  {
 				$nl1 = number_format($nl, "2", ",", ".");
 			}
@@ -13126,7 +13155,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode_1</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min0151$kpdk1$min0161</td>
+									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl1</td>
 									<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$kpdk_lalu1</td>
 								</tr>";
 					break;
