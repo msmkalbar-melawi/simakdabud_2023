@@ -12642,11 +12642,11 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					WHERE LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888','520508010005') 
 				";
 				if(strlen($kode_1) == 6 || !in_array($kode_1, [1304,1305]) ) {
-					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-Belanja%')";
+					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-%')";
 				} 
 
 				if (in_array($kode_1, [1304,1305])) {
-					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%')";
+					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-%')";
 				}
 				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
 
@@ -12660,7 +12660,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					AND trh.no_voucher = trd.no_voucher
 				WHERE
 					MONTH(trh.tgl_voucher) <= ?
-					AND trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%' AND LEFT(trd.kd_rek6, 4) = ?",[$xbulan,$kode_1]);
+					AND trh.no_voucher LIKE '%-LO-NERACA-%' AND LEFT(trd.kd_rek6, 4) = ?",[$xbulan,$kode_1]);
 			} else if(in_array($kode_1,[2,21])) {
 				$q = $this->db->query("SELECT 
 						SUM(debet) AS debet,
@@ -12674,7 +12674,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						AND LEFT(trd.kd_rek6,4) != 2106
 						AND MONTH ( trh.tgl_voucher ) <= ? 
 						AND YEAR ( trh.tgl_voucher ) = ? 
-						OR ( trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%' AND LEFT ( trd.kd_rek6, 4 ) = 2106  )",[$kode_1, $xbulan, $thn_ang]);
+						OR ( trh.no_voucher LIKE '%-LO-NERACA-%' AND LEFT ( trd.kd_rek6, 4 ) = 2106  )",[$kode_1, $xbulan, $thn_ang]);
 			} else if ($kode_1 >= 210601 && $kode_1 <= 210614) {
 				$q = $this->db->query("SELECT
 						SUM(debet) AS debet , SUM(kredit) AS kredit
@@ -12686,7 +12686,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 						LEFT ( trd.kd_rek6, 6 ) = ? 
 						AND YEAR ( trh.tgl_voucher ) = ?
 						AND MONTH( trh.tgl_voucher ) <= ?
-						AND trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%'",[$kode_1, $thn_ang, $xbulan]);
+						AND trh.no_voucher LIKE '%-LO-NERACA-%'",[$kode_1, $thn_ang, $xbulan]);
 			}  else {
 				$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from $trhju a inner join $trdju b on a.no_voucher=b.no_voucher 
 									and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and
