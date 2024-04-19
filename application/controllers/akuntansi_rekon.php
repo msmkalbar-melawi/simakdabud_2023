@@ -742,7 +742,7 @@ class Akuntansi_rekon extends CI_Controller
         ];
         
         // surpulus operasi
-        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE kode_skpd  = ? AND MONTH(tanggal) <= ? AND YEAR(tanggal) = ?";
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE kode_skpd  = ? AND MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) != 83";
         $resultOperasiTahunIni = $this->db->query($queryOperasi,[$kd_skpd, $cbulan, $tahunAnggaran])->row();
         $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[$kd_skpd, 12, $tahunAnggaranLalu])->row();
         $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
@@ -1616,7 +1616,7 @@ class Akuntansi_rekon extends CI_Controller
         ];
         
         // surpulus operasi
-        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ?";
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) != 83";
         $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan, $tahunAnggaran])->row();
         $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $tahunAnggaranLalu])->row();
         $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;

@@ -12646,7 +12646,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				} 
 
 				if (in_array($kode_1, [1304,1305])) {
-					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-%')";
+					$query .= "OR (LEFT(trd.kd_rek6, $length) = $kode_1 AND trh.no_voucher LIKE '%-LO-NERACA-Belanja-Utang%')";
 				}
 				$q = $this->db->query($query, [$lra, $thn_ang, $xbulan]);
 
