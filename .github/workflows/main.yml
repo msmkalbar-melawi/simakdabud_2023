@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSWORD }}
           source: '.'
-          target: '/var/www/app5/simblud_2024'
+          target: '/var/www/app5/simakdabud_2023'
 
       - name: 🪟 Deploy to windows server
         uses:  appleboy/ssh-action@v1.0.3
