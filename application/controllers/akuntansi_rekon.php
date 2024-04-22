@@ -1727,9 +1727,9 @@ class Akuntansi_rekon extends CI_Controller
                     SELECT
                         rek.kd_rek4 AS kode_rekening,
                         rek.nm_rek4 as nama_rekening,
-                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) AS nilai,
                         (
-                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,6) = rek.kd_rek4 AND YEAR(tanggal) = ?
+                            SELECT ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,6) = rek.kd_rek4 AND YEAR(tanggal) = ?
                         ) AS nilaiLalu
                     FROM transaksi_lo AS lo INNER JOIN ms_rek4 AS rek ON LEFT(kode_rekening,6) = rek.kd_rek4
                     WHERE MONTH(tanggal) <= ?
@@ -1738,9 +1738,9 @@ class Akuntansi_rekon extends CI_Controller
                     SELECT
                         rek.kd_rek5 AS kode_rekening,
                         rek.nm_rek5 as nama_rekening,
-                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) AS nilai,
                         (
-                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,8) = rek.kd_rek5 AND YEAR(tanggal) = ?
+                            SELECT ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) FROM transaksi_lo AS loLalu WHERE LEFT(loLalu.kode_rekening,8) = rek.kd_rek5 AND YEAR(tanggal) = ?
                         ) AS nilaiLalu
                     FROM transaksi_lo AS lo INNER JOIN ms_rek5 AS rek ON LEFT(kode_rekening,8) = rek.kd_rek5
                     WHERE MONTH(tanggal) <= ?
@@ -1749,9 +1749,9 @@ class Akuntansi_rekon extends CI_Controller
                     UNION ALL SELECT
                         rek.kd_rek6 AS kode_rekening,
                         rek.nm_rek6,
-                        ISNULL(ABS(SUM(debet-kredit)),0) AS nilai,
+                        ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) AS nilai,
                         (
-                            SELECT ISNULL(ABS(SUM(debet-kredit)),0) FROM transaksi_lo AS loLalu WHERE loLalu.kode_rekening = rek.kd_rek6  AND YEAR(tanggal) = ?
+                            SELECT ISNULL(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE debet-kredit END ),0) FROM transaksi_lo AS loLalu WHERE loLalu.kode_rekening = rek.kd_rek6  AND YEAR(tanggal) = ?
                         ) AS nilaiLalu
                     FROM transaksi_lo AS lo
                         INNER JOIN ms_rek6 AS rek ON rek.kd_rek6 = lo.kode_rekening
