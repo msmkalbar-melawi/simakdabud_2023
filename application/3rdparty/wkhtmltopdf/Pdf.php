@@ -1,8 +1,8 @@
 <?php
 namespace mikehaertl\wkhtmlto;
 
-require_once('/application/3rdparty/wkhtmltopdf/File.php');
-require_once('/application/3rdparty/wkhtmltopdf/Command.php');
+require_once(__DIR__.'/File.php');
+require_once(__DIR__.'/Command.php');
 
 use mikehaertl\tmp\File;
 use mikehaertl\wkhtmlto\Command;
