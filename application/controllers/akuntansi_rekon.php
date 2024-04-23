@@ -1448,15 +1448,15 @@ class Akuntansi_rekon extends CI_Controller
         ];
         
         // surpulus operasi
-        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ?";
-        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan,$tahunAnggaran])->row();
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) != 83";
+        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan, $tahunAnggaran])->row();
         $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $tahunAnggaranLalu])->row();
         $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
         $surplusTahunLalu = $resultOperasiTahunLalu ? $resultOperasiTahunLalu->nilai : 0;
         $kenaikanSurplus = $surplusTahunIni-$surplusTahunLalu;
         $persenSurplus = ($surplusTahunIni == 0 || $surplusTahunLalu ==0 ) ? 0 : (abs($surplusTahunIni) / abs($surplusTahunLalu)) * 100;
 
-         // non operasional
+        // non operasional
         $queryNonOperasi = "SELECT 
                 ISNULL(
                     -- surplus non operasional
@@ -1556,8 +1556,8 @@ class Akuntansi_rekon extends CI_Controller
         $cetakLo .= $this->_sign($nip, $tanggal);
         $data['prev'] = $cetakLo;
         $data['sikap'] = 'preview';
-        $judul  = ("LO KONSOL SKPD $cbulan");
-        $this->template->set('title', 'LO KONSOL UNIT $cbulan');
+        $judul  = ("LO KONSOL SKPD $bulan");
+        $this->template->set('title', 'LO KONSOL UNIT $bulan');
         switch ($pilih) {
             case 0;
                 $this->tukd_model->_mpdf('', $cetakLo, 10, 5, 10, '0');
@@ -1565,7 +1565,7 @@ class Akuntansi_rekon extends CI_Controller
                 break;
             case 1;
                 // $this->tukd_model->_mpdf('',$cetakLo,10,10,10,'0');
-                echo "<title>LO KONSOL SKPD $cbulan</title>";
+                echo "<title>LO KONSOL SKPD $bulan</title>";
                 echo $cetakLo;
                 break;
             case 2;
