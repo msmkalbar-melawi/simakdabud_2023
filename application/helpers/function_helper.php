@@ -61,3 +61,12 @@ function dd($array)
     print("<pre>" . print_r($array, true) . "</pre>");
     die;
 }
+
+
+function formatPositif($nilai)
+{
+    if ($nilai < 0) {
+        return "(".idr(abs($nilai)).")";
+    }
+    return idr($nilai);
+}
