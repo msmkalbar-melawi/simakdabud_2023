@@ -214,6 +214,7 @@ class Akuntansi_rekon extends CI_Controller
             $tahunLalu ="";
             $kenaikan = "";
             $persen= "";
+            $kodeRekening = "";
 
             if ($map->bold == 5) {
                 $tahunIni = $surplusTahunIni < 0 ? "(". $this->support->currencyFormat(abs($surplusTahunIni)) .")" : $this->support->currencyFormat($surplusTahunIni);
@@ -267,9 +268,14 @@ class Akuntansi_rekon extends CI_Controller
                 $nama = $map->uraian;
             }
 
+            if ($map->bold == 3) {
+                $kodeRekening = substr($rekening3 ? $rekening3 : $rekening4, 1,4) ? substr($rekening3 ? $rekening3 : $rekening4, 1,4) : substr($rekening5, 1,4) ;
+            }
+
             $style = $styles[$map->bold];
             $cetakLo .= "<tr>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"5%\" align=\"center\">$no</td>
+                            <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black; padding-left: 10px; padding-left: 10px\" width=\"5%\">$kodeRekening</td>
                             <td colspan =\"5\" style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;border-left: none;border-right: none; $style\" width=\"27%\">$nama</td>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunIni</td>
                             <td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: solid 1px black;\" width=\"20%\" align=\"right\">$tahunLalu</td>
