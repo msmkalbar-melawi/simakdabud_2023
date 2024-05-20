@@ -11895,7 +11895,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 										isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
 										isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
 										isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15 
-										FROM map_neraca_permen_77_sinergi_2023 ORDER BY seq ";
+										FROM map_neraca_permen_77_sinergi_2023  ORDER BY seq ";
 
 		$query10 = $this->db->query($queryneraca);
 
@@ -12092,6 +12092,10 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 			$saldoAkhir = $saldoTahunIni + $saldoAwal;
 
+			if ($parent == 1 && $kode_1 == 1) {
+				$saldoAset = $saldoAwal;
+			}
+
 			if ($kode_1 == 2 && $parent == 1) {
 				$saldoAwalKewajiban = $saldoAwal;
 				$saldoAkhirKeawijiban = $saldoAkhir;
@@ -12100,18 +12104,17 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			if($parent == 1 && $kode_1 == 1) {
 				$tahunIni = $nilaiAset;
 				$tahunLalu = formatPositif($saldoAwal);
-			} elseif ($parent == 1 && $kode_1 == 3) {
-				$tahunLalu = formatPositif($saldoAwalEkuitas->nilai + $saldoAwalKewajiban);
-				$tahunIni = formatPositif($surplusDefisit+$ekuitas->nilai+$saldoAwalEkuitas->nilai + $saldoAkhirKeawijiban);
 			} elseif($parent == 0) {
 				$tahunIni = "";
 				$tahunLalu = "";
 			} elseif($res['seq'] == 535 )  {
 				$tahunIni = formatPositif($assetTetap->nilai);
 				$tahunLalu = formatPositif($saldoAwal);
-			} else if (in_array($kode_1,[31,3101,310101])) {
-				$tahunIni = formatPositif($surplusDefisit+$ekuitas->nilai+$saldoAwalEkuitas->nilai);
-				$tahunLalu = formatPositif($saldoAwalEkuitas->nilai);
+			} else if (in_array($kode_1,[3,31,3101,310101])) {
+				$ekuitasAwal = $saldoAset-$saldoAwalKewajiban;
+				$ekuitasAkhir = $assetTetap->nilai + $asset->nilai - $saldoAkhirKeawijiban;
+				$tahunLalu = formatPositif($ekuitasAwal);
+				$tahunIni = formatPositif($ekuitasAkhir);
 			} else if ($konversiLra && $konversiLra < 1306) {
 				$tahunIni = $saldoAkhir < 0 ? formatPositif($saldoAkhir) : formatPositif($saldoAkhir);
 				$tahunLalu = $saldoAwal < 0 ? formatPositif($saldoAwal) : formatPositif($saldoAwal);
@@ -12327,13 +12330,12 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 	}
 
-
-
-	// NERACA SKPD TEST
-	function rpt_neraca_pemda_unit_obyek_test($cbulan = "", $kd_skpd = "", $cetak = 1)
+	function rpt_neraca_pemda_unit_obyek_skpd($cbulan = "", $kd_skpd = "", $cetak = 1, $tglttd = "", $ttd = "")
 	{
 		//$bulan   = $_REQUEST['tgl1'];
 		/*$kd_skpd    = $this->session->userdata('kdskpd');*/
+		$tanggal = $this->tukd_model->tanggal_format_indonesia($ttd);
+		$tglttd = str_replace('n', ' ', $tglttd);
 		$thn_ang  = $this->session->userdata('pcThang');
 		$thn_ang_1  = $thn_ang - 1;
 		$bulan   = $cbulan;
@@ -12347,29 +12349,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 
 		$nm_skpd  = strtoupper($nmskpd);
-
-		/*           $sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-					 $sqlsclient=$this->db->query($sqlsc);
-					 foreach ($sqlsclient->result() as $rowsc)
-					{
-					   
-						$tgl=$rowsc->tgl_rka;
-						$tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-						$kab     = $rowsc->kab_kota;
-						$daerah  = $rowsc->daerah;
-						$thn     = $rowsc->thn_ang;
-					} 
-	
-		  $sqldns="SELECT a.kd_urusan as kd_u,b.nm_urusan as nm_u,a.kd_skpd as kd_sk,a.nm_skpd as nm_sk FROM ms_skpd a INNER JOIN ms_urusan b ON a.kd_urusan=b.kd_urusan WHERE a.kd_skpd='$skpd'  ";
-					 $sqlskpd=$this->db->query($sqldns);
-					 foreach ($sqlskpd->result() as $rowdns)
-					{
-						$kd_urusan=$rowdns->kd_u;                    
-						$nm_urusan= $rowdns->nm_u;
-						$kd_skpd  = $rowdns->kd_sk;
-						$nm_skpd  = $rowdns->nm_sk;
-					} 
-	*/
 		$modtahun = $thn_ang % 4;
 
 		if ($modtahun = 0) {
@@ -12382,14 +12361,17 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$cRet = '';
 
-		$cRet = "<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"4\">
+		$sclient = $this->akuntansi_model->get_sclient();
+		$cRet = "<table style=\"border-collapse:collapse;font-size:12px;font-family:Bookman Old Style\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"4\">
 			  <tr>
-							 <td align=\"center\"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></td>                         
+			  <td rowspan=\"4\" align=\"left\" width=\"2%\">
+                    <img src=\"" . base_url() . "/image/logoHP.png\"  width=\"60\" height=\"70\" />
+					</td>
+							 <td align=\"center\"><strong>" . $sclient->kab_kota . "</strong></td>                         
 			  </tr>
 			  <TR>
 							<td align=\"center\"><strong>$nm_skpd</strong></td>
 			  </TR>
-	
 			  <TR>
 				<td align=\"center\"><strong>NERACA</strong></td>
 			  </TR>
@@ -12398,810 +12380,388 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			  </TR>
 			  </TABLE><br>";
 
-		$cRet .= "<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"4\">
-						 <thead>                       
-							<tr>
-				  <td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>NO</b></td>
-								<td bgcolor=\"#CCCCCC\" width=\"55%\" align=\"center\"><b>URAIAN</b></td>
-								<td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang</b></td>
-								<td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang_1</b></td>                            
-							</tr>
-							
-						 </thead>
-						 <tfoot>
-							<tr>
-				  <td style=\"border-top: none;\"></td>
-								<td style=\"border-top: none;\"></td>
-								<td style=\"border-top: none;\"></td>
-								<td style=\"border-top: none;\"></td>                                             
-							 </tr>
-						 </tfoot>
-					   
-						 <tr> <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
-				  <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"55%\" align=\"center\">&nbsp;</td>                            
-								<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
-								<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
-							   
-							</tr>";
-
-
-		//level 1
-
-		// Created by Henri_TB
-
-		$sqllo10 = "SELECT sum(kredit-debet) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)<$thn_ang_1 and left(kd_rek6,1) in ('7') and kd_skpd='$kd_skpd'";
-		$querylo10 = $this->db->query($sqllo10);
-		$pen8 = $querylo10->row();
-		$pen_lalu8 = $pen8->nilai;
-		$pen_lalu81 = number_format($pen8->nilai, "2", ",", ".");
-
-		$sqllo12 = "SELECT sum(debet-kredit) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)<$thn_ang_1 and left(kd_rek6,1) in ('8')and kd_skpd='$kd_skpd'";
-		$querylo12 = $this->db->query($sqllo12);
-		$bel10 = $querylo12->row();
-		$bel_lalu10 = $bel10->nilai;
-		$bel_lalu101 = number_format($bel10->nilai, "2", ",", ".");
-
-		$sql_lalu = "SELECT 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'413'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)<$thn_ang_1 and kd_skpd='$kd_skpd'"; //aba
-
-		$hasil = $this->db->query($sql_lalu);
-		$nawal = 0;
-		foreach ($hasil->result() as $row001) {
-			$kd_rek   = $row001->nor;
-			$parent   = $row001->parent;
-			$nama     = $row001->uraian;
-			$lpe_ll1  = $row001->thn_m1;
-		}
-
-		$sqllpe_lalu1 = "SELECT 4 nor,'KOREKSI NILAI PERSEDIAAN' uraian,3 parent,20 seq,'412'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='2' and kd_rek6='310101010001' and year(a.tgl_voucher)<$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe_lalu1);
-		$nawal = 0;
-		foreach ($hasil->result() as $row002) {
-			$kd_rek   = $row002->nor;
-			$parent   = $row002->parent;
-			$nama     = $row002->uraian;
-			$lpe_ll2  = $row002->thn_m1;
-		}
-
-		$sqllpe_lalu2 = "SELECT 6 nor,'LAIN LAIN' uraian,3 parent,30 seq,'414'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='3' and kd_rek6='310101010001' and year(a.tgl_voucher)<$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe_lalu2);
-		$nawal = 0;
-		foreach ($hasil->result() as $row003) {
-			$kd_rek   = $row003->nor;
-			$parent   = $row003->parent;
-			$nama     = $row003->uraian;
-			$lpe_ll3  = $row003->thn_m1;
-		}
-
-
-		$query3 = $this->db->query(" SELECT SUM(a.debet) AS debet, SUM(a.kredit) AS kredit FROM trdju_pkd a INNER JOIN trhju_pkd b 
-		  ON a.no_voucher = b.no_voucher and a.kd_unit=b.kd_skpd WHERE a.kd_rek6='310101010001' AND YEAR(b.tgl_voucher)<'$thn_ang'
-		  and b.tabel=1 and reev=0 and kd_skpd='$kd_skpd'");
-		foreach ($query3->result_array() as $res2) {
-			$debet3 = $res2['debet'];
-			$kredit3 = $res2['kredit'];
-		}
-
-		$real = $kredit3 - $debet3 + $pen_lalu8 - $bel_lalu10 + $lpe_ll1 + $lpe_ll2 + $lpe_ll3;
-
-		//    created by henri_tb
-		$sqllo9 = "SELECT sum(kredit-debet) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') and kd_skpd='$kd_skpd' ";
-		$querylo9 = $this->db->query($sqllo9);
-		$penlo7 = $querylo9->row();
-		$pen_lo7 = $penlo7->nilai;
-		$pen_lo71 = number_format($penlo7->nilai, "2", ",", ".");
-
-		$sqllo10 = "SELECT sum(kredit-debet) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang_1 and left(kd_rek6,1) in ('7') and kd_skpd='$kd_skpd'";
-		$querylo10 = $this->db->query($sqllo10);
-		$penlo8 = $querylo10->row();
-		$pen_lo_lalu8 = $penlo8->nilai;
-		$pen_lo_lalu81 = number_format($penlo8->nilai, "2", ",", ".");
-
-		$sqllo11 = "SELECT sum(debet-kredit) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('8') and kd_skpd='$kd_skpd'";
-		$querylo11 = $this->db->query($sqllo11);
-		$bello9 = $querylo11->row();
-		$bel_lo9 = $bello9->nilai;
-		$bel_lo91 = number_format($bello9->nilai, "2", ",", ".");
-
-		$sqllo12 = "SELECT sum(debet-kredit) as nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang_1 and left(kd_rek6,1) in ('8') and kd_skpd='$kd_skpd'";
-		$querylo12 = $this->db->query($sqllo12);
-		$bello10 = $querylo12->row();
-		$bel_lo_lalu10 = $bello10->nilai;
-		$bel_lo_lalu101 = number_format($bello10->nilai, "2", ",", ".");
-
-		$surplus_lo3 = $pen_lo7 - $bel_lo9;
-
-		$surplus_lo_lalu3 = $pen_lo_lalu8 - $bel_lo_lalu10;
-
-		$selisih_surplus_lo3 = $surplus_lo3 - $surplus_lo_lalu3;
-
-		$sql_lalu = "SELECT 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'413'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang_1 and kd_skpd='$kd_skpd'"; //aba
-
-		$hasil = $this->db->query($sql_lalu);
-		$nawal = 0;
-		foreach ($hasil->result() as $row001) {
-			$kd_rek   = $row001->nor;
-			$parent   = $row001->parent;
-			$nama     = $row001->uraian;
-			$lpe_lalu1  = $row001->thn_m1;
-		}
-
-		$sqllpe_lalu1 = "SELECT 4 nor,'KOREKSI NILAI PERSEDIAAN' uraian,3 parent,20 seq,'412'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='2' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe_lalu1);
-		$nawal = 0;
-		foreach ($hasil->result() as $row002) {
-			$kd_rek   = $row002->nor;
-			$parent   = $row002->parent;
-			$nama     = $row002->uraian;
-			$lpe_lalu2  = $row002->thn_m1;
-		}
-
-		$sqllpe_lalu2 = "SELECT 6 nor,'LAIN LAIN' uraian,3 parent,30 seq,'414'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='3' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe_lalu2);
-		$nawal = 0;
-		foreach ($hasil->result() as $row003) {
-			$kd_rek   = $row003->nor;
-			$parent   = $row003->parent;
-			$nama     = $row003->uraian;
-			$lpe_lalu3  = $row003->thn_m1;
-		}
-
-		$sal_awal = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3;
-
-		$sql = "SELECT 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'413'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and kd_skpd='$kd_skpd'"; //aba
-
-		$hasil = $this->db->query($sql);
-		$nawal = 0;
-		foreach ($hasil->result() as $row001) {
-			$kd_rek   = $row001->nor;
-			$parent   = $row001->parent;
-			$nama     = $row001->uraian;
-			$nilaiDR  = $row001->thn_m1;
-		}
-
-		$sqllpe1 = "SELECT 4 nor,'KOREKSI NILAI PERSEDIAAN' uraian,3 parent,20 seq,'412'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='2' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe1);
-		$nawal = 0;
-		foreach ($hasil->result() as $row002) {
-			$kd_rek   = $row002->nor;
-			$parent   = $row002->parent;
-			$nama     = $row002->uraian;
-			$nilailpe1  = $row002->thn_m1;
-		}
-
-		$sqllpe2 = "SELECT 6 nor,'LAIN LAIN' uraian,3 parent,30 seq,'414'kode_1,isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a
-			  inner join trdju_pkd b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='3' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllpe2);
-		$nawal = 0;
-		foreach ($hasil->result() as $row003) {
-			$kd_rek   = $row003->nor;
-			$parent   = $row003->parent;
-			$nama     = $row003->uraian;
-			$nilailpe2  = $row003->thn_m1;
-		}
-
-		$sal_akhir = $sal_awal + $surplus_lo3 + $nilaiDR + $nilailpe1 + $nilailpe2;
-
-
-		$sqlutang_lalu = "SELECT isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where left(b.kd_rek6,1)=2 and year(a.tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlutang_lalu);
-		foreach ($hasil->result() as $row) {
-			$nilaiutang_lalu  = $row->thn_m1;
-		}
-
-		$sqlkas_lalu = "SELECT isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where kd_rek6='310301010001' and year(a.tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlkas_lalu);
-		foreach ($hasil->result() as $row) {
-			$rk_ppkd_lalu  = $row->thn_m1;
-		}
-
-		$sqlskpd_lalu = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where kd_rek6='111301010001' and year(a.tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlskpd_lalu);
-		foreach ($hasil->result() as $row) {
-			$rk_skpd_lalu  = $row->thn_m1;
-		}
-
-		$sqllcr_lalu = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where left(kd_rek6,2)=11 and year(a.tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllcr_lalu);
-		foreach ($hasil->result() as $row) {
-			$lcrx_lalu  = $row->thn_m1;
-		}
-
-		$sqlast_lalu = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where left(kd_rek6,1)=1 and year(a.tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlast_lalu);
-		foreach ($hasil->result() as $row) {
-			$astx_lalu  = $row->thn_m1;
-		}
-
-		$lcr_lalu   = $lcrx_lalu - $rk_skpd_lalu;
-		$ast_lalu   = $astx_lalu - $rk_skpd_lalu;
-		$eku_lalu     = $sal_awal + $rk_ppkd_lalu - $rk_skpd_lalu;
-		$eku_tang_lalu  = $sal_awal + $nilaiutang_lalu + $rk_ppkd_lalu - $rk_skpd_lalu;
-
-		$sqlutang = "SELECT isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher
-		  and b.kd_unit=a.kd_skpd where left(b.kd_rek6,1)=2 and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlutang);
-		foreach ($hasil->result() as $row) {
-			$nilaiutang  = $row->thn_m1;
-		}
-
-		$sqlkas = "SELECT isnull(sum(kredit-debet),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where kd_rek6='310301010001' and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlkas);
-		foreach ($hasil->result() as $row) {
-			$rk_ppkd  = $row->thn_m1;
-		}
-
-		$sqlskpd = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where kd_rek6='111301010001' and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlskpd);
-		foreach ($hasil->result() as $row) {
-			$rk_skpd  = $row->thn_m1;
-		}
-
-		$sqllcr = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where left(kd_rek6,2)=11 and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqllcr);
-		foreach ($hasil->result() as $row) {
-			$lcrx = $row->thn_m1;
-		}
-
-		$sqlast = "SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-		  and b.kd_unit=a.kd_skpd where left(kd_rek6,1)=1 and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd'"; //Henri_TB
-
-		$hasil = $this->db->query($sqlast);
-		foreach ($hasil->result() as $row) {
-			$astx  = $row->thn_m1;
-		}
-
-		/*  $lcr      = $lcrx-$rk_skpd;
-		  $ast      = $astx-$rk_skpd;
-		  $eku      = $sal_akhir - $rk_ppkd + $rk_skpd;         
-		  $eku_tang     = $sal_akhir + $nilaiutang - $rk_ppkd +$rk_skpd; */
-
-		$lcr		= $lcrx - $rk_skpd;
-		$ast		= $astx - $rk_skpd;
-		$eku 		= $sal_akhir + $rk_ppkd;
-		$eku_tang 	= $sal_akhir + $nilaiutang + $rk_ppkd;
-
-		if ($sal_akhir < 0) {
-			$c = "(";
-			$sal_akhir = $sal_akhir * -1;
-			$d = ")";
-		} else {
-			$c = "";
-			$sal_akhir;
-			$d = "";
-		}
-
-		$sal_akhir1 = number_format($sal_akhir, "2", ",", ".");
-
-		if ($sal_awal < 0) {
-			$c1 = "(";
-			$sal_awal = $sal_awal * -1;
-			$d1 = ")";
-		} else {
-			$c1 = "";
-			$sal_awal;
-			$d1 = "";
-		}
-
-		$sal_awal1 = number_format($sal_awal, "2", ",", ".");
-
-
-		if ($eku_lalu < 0) {
-			$min001 = "(";
-			$eku_lalu = $eku_lalu * -1;
-			$min002 = ")";
-		} else {
-			$min001 = "";
-			$eku_lalu;
-			$min002 = "";
-		}
-
-		$eku_lalu1 = number_format($eku_lalu, "2", ",", ".");
-
-		if ($eku < 0) {
-			$min003 = "(";
-			$eku = $eku * -1;
-			$min004 = ")";
-		} else {
-			$min003 = "";
-			$eku;
-			$min004 = "";
-		}
-
-		$eku1 = number_format($eku, "2", ",", ".");
-
-		if ($eku_tang_lalu < 0) {
-			$min005 = "(";
-			$eku_tang_lalu = $eku_tang_lalu * -1;
-			$min006 = ")";
-		} else {
-			$min005 = "";
-			$eku_tang_lalu;
-			$min006 = "";
-		}
-
-		$eku_tang_lalu1 = number_format($eku_tang_lalu, "2", ",", ".");
-
-		if ($eku_tang < 0) {
-			$min007 = "(";
-			$eku_tang = $eku_tang * -1;
-			$min008 = ")";
-		} else {
-			$min007 = "";
-			$eku_tang;
-			$min008 = "";
-		}
-
-		$eku_tang1 = number_format($eku_tang, "2", ",", ".");
-
-		if ($rk_ppkd_lalu < 0) {
-			$min009 = "(";
-			$rk_ppkd_lalu = $rk_ppkd_lalu * -1;
-			$min010 = ")";
-		} else {
-			$min009 = "";
-			$rk_ppkd_lalu;
-			$min010 = "";
-		}
-
-		$rk_ppkd_lalu1 = number_format($rk_ppkd_lalu, "2", ",", ".");
-
-		if ($rk_ppkd < 0) {
-			$min013 = "(";
-			$rk_ppkd = $rk_ppkd * -1;
-			$min014 = ")";
-		} else {
-			$min013 = "";
-			$rk_ppkd;
-			$min014 = "";
-		}
-
-		$rk_ppkd1 = number_format($rk_ppkd, "2", ",", ".");
-
-		if ($lcr < 0) {
-			$min015 = "(";
-			$lcr = $lcr * -1;
-			$min016 = ")";
-		} else {
-			$min015 = "";
-			$lcr;
-			$min016 = "";
-		}
-
-		$lcr1 = number_format($lcr, "2", ",", ".");
-
-		if ($lcr_lalu < 0) {
-			$min017 = "(";
-			$lcr_lalu = $lcr_lalu * -1;
-			$min018 = ")";
-		} else {
-			$min017 = "";
-			$lcr_lalu;
-			$min018 = "";
-		}
-
-		$lcr_lalu1 = number_format($lcr_lalu, "2", ",", ".");
-
-		if ($ast < 0) {
-			$min019 = "(";
-			$ast = $ast * -1;
-			$min020 = ")";
-		} else {
-			$min019 = "";
-			$ast;
-			$min020 = "";
-		}
-
-		$ast1 = number_format($ast, "2", ",", ".");
-
-		if ($ast_lalu < 0) {
-			$min021 = "(";
-			$ast_lalu = $ast_lalu * -1;
-			$min022 = ")";
-		} else {
-			$min021 = "";
-			$ast_lalu;
-			$min022 = "";
-		}
-
-		$ast_lalu1 = number_format($ast_lalu, "2", ",", ".");
-
-		$queryneraca = " SELECT kode, uraian, seq, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
-						isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
-						isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
-						isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15 
-						FROM map_neraca_permen_77_2023 ORDER BY seq ";
+				$cRet .= "<table style=\"border-collapse:collapse;font-size:12px;font-family:Bookman Old Style\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"4\">
+                     <thead>                       
+                        <tr>
+							<td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>NO</b></td>
+							<td bgcolor=\"#CCCCCC\" width=\"5%\" align=\"center\"><b>KODE REKENING</b></td>
+                            <td bgcolor=\"#CCCCCC\" width=\"55%\" align=\"center\"><b>URAIAN</b></td>
+                            <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang</b></td>
+                            <td bgcolor=\"#CCCCCC\" width=\"20%\" align=\"center\"><b>$thn_ang_1</b></td>                            
+                        </tr>
+                        
+                     </thead>
+                     <tfoot>
+                        <tr>
+							<td style=\"border-top: none;\"></td>
+							<td style=\"border-top: none;\"></td>
+                            <td style=\"border-top: none;\"></td>
+                            <td style=\"border-top: none;\"></td>
+                            <td style=\"border-top: none;\"></td>                                             
+                         </tr>
+                     </tfoot>
+                   
+                     <tr>	<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+							<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"5%\" align=\"center\">&nbsp;</td>
+							<td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"55%\" align=\"center\">&nbsp;</td>                            
+                            <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
+                            <td style=\"vertical-align:top;border-top: none;border-bottom: none;\" width=\"20%\" align=\"center\">&nbsp;</td>
+                           
+                        </tr>";
+		
+		$trhju = 'trhju_pkd';
+		$trdju = 'trdju_pkd';
+		$ekuitas = '310101010001';
+
+		$queryneraca = "SELECT kode, uraian, seq,parent, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+										isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
+										isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+										isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15 
+										FROM map_neraca_permen_77_2023  ORDER BY seq ";
 
 		$query10 = $this->db->query($queryneraca);
 
 		$no     = 0;
 
-		foreach ($query10->result_array() as $res) {
+		// Hitung asset tetap
+		$assetTetap = $this->db->query("EXEC assets_tetap_skpd ?,?,? ", [$bulan,2023,$kd_skpd])->row();
+
+		// Hitung Keseluruhan Nilai Aset
+		$sqlAsset = "SELECT SUM(debet-kredit) AS nilai FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd
+					ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+					WHERE LEFT(trd.kd_rek6,2) IN (?,?,?,?) AND MONTH(trh.tgl_voucher) <= ? AND trh.kd_skpd = '$kd_skpd'
+				";
+		$asset = $this->db->query($sqlAsset, [11,12,14,15,$xbulan])->row();
+
+		$nilaiAset = number_format(($assetTetap->nilai + $asset->nilai),2,',','.');
+
+		$querySaldoAwalEkuitas = "SELECT SUM
+					( kredit - debet ) AS nilai 
+				FROM
+					trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+					AND trd.no_voucher = trh.no_voucher 
+				WHERE
+					trh.kd_skpd = ?
+					AND LEFT ( trd.kd_rek6, 4 ) IN (3101,3103) 
+					AND YEAR ( trh.tgl_voucher ) = ? 
+					AND trh.tabel= 1 
+					AND reev IN (0,3) 
+					AND nm_rek6 NOT LIKE '%Surplus/Defisit-LO%'";
+		$saldoAwalEkuitas = $this->db->query($querySaldoAwalEkuitas,[$kd_skpd,$thn_ang_1])->row();
+
+		// surpulus operasi
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) != 83 AND kode_skpd = '$kd_skpd'";
+        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan, $thn_ang])->row();
+        $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $thn_ang-1])->row();
+        $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
+        $surplusTahunLalu = $resultOperasiTahunLalu ? $resultOperasiTahunLalu->nilai : 0;
+
+		// non operasional
+        $queryNonOperasi = "SELECT 
+                ISNULL(
+                    -- surplus non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 7 THEN ABS(SUM(kredit-debet)) ELSE 0 END -
+                    -- defisit non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 8 THEN ABS(SUM(debet-kredit)) ELSE 0 END
+                ,0) AS nilai
+            FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) IN (74,83)
+			AND kode_skpd = '$kd_skpd'
+            GROUP BY LEFT(kode_rekening,1)
+        ";
+        $resultNonOperasiTahunLalu = $this->db->query($queryNonOperasi,[12, $thn_ang-1])->row();
+        $nonOperasiTahunLalu = $resultNonOperasiTahunLalu ? $resultNonOperasiTahunLalu->nilai : 0;
+
+		$resultNonOperasiTahunIni = $this->db->query($queryNonOperasi,[$bulan, $thn_ang])->row();
+        $resultNonOperasiTahunLalu = $this->db->query($queryNonOperasi,[12, $thn_ang-1])->row();
+        $nonOperasiTahunIni = $resultNonOperasiTahunIni ? $resultNonOperasiTahunIni->nilai : 0;
+        $nonOperasiTahunLalu = $resultNonOperasiTahunLalu ? $resultNonOperasiTahunLalu->nilai : 0;
+
+        // selisih surplus non operasional dan defisit operasion
+        $surplusDefisit = $surplusTahunLalu + $nonOperasiTahunLalu;
+		$surplusDefisitIni = $surplusTahunIni + $nonOperasiTahunIni;
+
+		$queryeEkuitas = "SELECT SUM
+					( kredit - debet ) AS nilai
+				FROM
+					trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+					AND trh.no_voucher = trd.no_voucher 
+				WHERE
+					trh.kd_skpd = '$kd_skpd'
+					AND LEFT ( trd.kd_rek6, 4 ) = '3101' 
+					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' 
+					AND YEAR ( trh.tgl_voucher ) = 2023 
+					AND MONTH(trh.tgl_voucher) <= $bulan
+					OR ( trh.kd_skpd = '$kd_skpd' AND LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
+		
+		$ekuitas = $this->db->query($queryeEkuitas)->row();
+
+		$queryKewajiban = "SELECT 
+						SUM(debet) AS debet,
+						SUM(kredit) AS kredit
+					FROM
+						trhju_pkd AS trh
+						INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+						AND trh.no_voucher = trd.no_voucher 
+					WHERE
+						trh.kd_skpd = ?
+						AND LEFT ( trd.kd_rek6, 1 ) =?
+						AND LEFT(trd.kd_rek6,4) != 2106
+						AND YEAR ( trh.tgl_voucher ) = ?
+						AND MONTH ( trh.tgl_voucher ) <= ? 
+						OR ( trh.kd_skpd = '$kd_skpd' AND trh.no_voucher LIKE '%-LO-NERACA-%' AND LEFT ( trd.kd_rek6, 4 ) = 2106  )";
+		$queryKewajibanLalu = "SELECT SUM(kredit) AS kredit, SUM(debet) AS debet FROM trdju_pkd AS trd INNER JOIN trhju_pkd AS trh ON trh.kd_skpd = trd.kd_unit AND trh.no_voucher = trd.no_voucher WHERE trh.kd_skpd = ? AND LEFT(trd.kd_rek6,2) = ? AND YEAR(trh.tgl_voucher) = ?";
+		$kewajiban = $this->db->query($queryKewajiban,[$kd_skpd,2,$thn_ang,$bulan])->row();
+		$kewajibanLalu = $this->db->query($queryKewajibanLalu,[$kd_skpd,21,2022])->row();
+		$saldoKewajiban = $kewajiban->kredit - $kewajiban->debet;
+		$saldoKewajibanLalu = $kewajibanLalu->kredit - $kewajibanLalu->debet;
+
+
+		$saldoAwalEkuitas = $surplusDefisit + $saldoAwalEkuitas->nilai;
+
+		
+		foreach ($query10->result_array() as $key => $res) {
 			$uraian = $res['uraian'];
 			$normal = $res['normal'];
+			$parent = $res['parent'];
+			$kode = $res['kode_1'];
 
-			$kode_1 = trim($res['kode_1']);
-			$kode_2 = trim($res['kode_2']);
-			$kode_3 = trim($res['kode_3']);
-			$kode_4 = trim($res['kode_4']);
-			$kode_5 = trim($res['kode_5']);
-			$kode_6 = trim($res['kode_6']);
-			$kode_7 = trim($res['kode_7']);
-			$kode_8 = trim($res['kode_8']);
-			$kode_9 = trim($res['kode_9']);
-			$kode_10 = trim($res['kode_10']);
-			$kode_11 = trim($res['kode_11']);
-			$kode_12 = trim($res['kode_12']);
-			$kode_13 = trim($res['kode_13']);
-			$kode_14 = trim($res['kode_14']);
-			$kode_15 = trim($res['kode_15']);
+			if ($kode != 'xxx') {
+
+				$querySaldoAwal = "SELECT SUM(debet) AS debet, SUM(kredit) AS kredit FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON
+				trd.no_voucher = trh.no_voucher AND trh.kd_skpd = trd.kd_unit WHERE trh.kd_skpd = ? AND YEAR(trh.tgl_voucher) = ? AND LEFT(trd.kd_rek6,len($kode)) = ? ";
+				$konversiLra = substr($kode,0,4);
+				if (($konversiLra >= 1301 && $konversiLra < 1306)) {
+					$length = strlen($kode);
+					$querySaldo = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
+						INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
+						WHERE trh.kd_skpd = ? AND LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888','520508010005','520499999999', '5488888888') 
+						OR (trh.kd_skpd = '$kd_skpd' AND LEFT(trd.kd_rek6, $length) = $kode AND trh.no_voucher LIKE '%-LO-NERACA-%')
+					";
+				} elseif($kode == 2106) {
+					$querySaldo = "SELECT
+						SUM(debet) as debet,
+						SUM(kredit) as kredit
+					FROM
+						trhju_pkd AS trh
+						INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+						AND trh.no_voucher = trd.no_voucher
+					WHERE
+						trh.kd_skpd = ? AND 
+						trh.no_voucher LIKE '%-LO-NERACA-%' AND LEFT(trd.kd_rek6, 4) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher) <= ?";
+				}  else {
+					$querySaldo = "SELECT SUM(kredit) AS kredit, SUM(debet) AS debet FROM trdju_pkd AS trd INNER JOIN trhju_pkd AS trh ON trh.kd_skpd = trd.kd_unit AND trh.no_voucher = trd.no_voucher WHERE trh.kd_skpd = ? AND LEFT(trd.kd_rek6,len($kode)) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher) <= ? ";
+				}
+				
+				$saldoAwal =  $this->db->query($querySaldoAwal,[$kd_skpd, $thn_ang_1, $kode])->row();
+				$saldo =  $this->db->query($querySaldo,[$kd_skpd, $kode, $thn_ang,$bulan])->row();
+				$nilaiAwal = $normal == 1 ? $saldoAwal->debet - $saldoAwal->kredit :  $saldoAwal->kredit - $saldoAwal->debet;
+				$nilaiAkhir = ($normal == 1 ? $saldo->debet - $saldo->kredit :  $saldo->kredit - $saldo->debet) + $nilaiAwal;
 
 
-			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-					  and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$xbulan' and kd_skpd='$kd_skpd' and
-						(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
-						kd_rek6 like '$kode_3%' or kd_rek6 like '$kode_4%'  or 
-						kd_rek6 like '$kode_5%' or kd_rek6 like '$kode_6%'  or 
-						kd_rek6 like '$kode_7%' or kd_rek6 like '$kode_8%'  or 
-						kd_rek6 like '$kode_9%' or kd_rek6 like '$kode_10%' or 
-						kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
-						kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
-						kd_rek6 like '$kode_15%') ");
+				if($kode == 2 && $parent == 1) {
+					$saldoAkhirKeawijiban = $nilaiAwal + $saldoKewajiban;
+				}
 
-			foreach ($q->result_array() as $r) {
-				$debet = $r['debet'];
-				$kredit = $r['kredit'];
-			}
+				if ($kode == 1 && $parent == 1) {
+					$tahunIni = $nilaiAset;
+					$tahunLalu = formatPositif($nilaiAwal);
+				} else if($parent == 2 && $kode == 13) {
+					$tahunIni = formatPositif($assetTetap->nilai);
+					$tahunLalu = formatPositif($nilaiAwal) ;
+				} else if($kode == 3101)  {
+					$tahunIni = formatPositif(($assetTetap->nilai + $asset->nilai) - $saldoAkhirKeawijiban );
+					$tahunLalu = formatPositif($saldoAwalEkuitas);
+				} elseif(in_array($kode,[2,21])) {
+					$tahunIni = formatPositif($saldoAkhirKeawijiban);
+					$tahunLalu = formatPositif($nilaiAwal);
+				} else {
+					$tahunIni = formatPositif($nilaiAkhir);
+					$tahunLalu = formatPositif($nilaiAwal);
+				}
 
-			if ($debet == '') $debet = 0;
-			if ($kredit == '') $kredit = 0;
-
-			if ($normal == 1) {
-				$nl = $debet - $kredit;
 			} else {
-				$nl = $kredit - $debet;
+				$tahunIni = "";
+				$tahunLalu = "";
 			}
-			if ($nl == '') $nl = 0;
-
-			// Jurnal Tahun lalu
-			$q = $this->db->query(" SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
-					  and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang_1 and kd_skpd='$kd_skpd' and
-						(kd_rek6 like '$kode_1%' or kd_rek6 like '$kode_2%'  or 
-						kd_rek6 like '$kode_3%' or kd_rek6 like '$kode_4%'  or 
-						kd_rek6 like '$kode_5%' or kd_rek6 like '$kode_6%'  or 
-						kd_rek6 like '$kode_7%' or kd_rek6 like '$kode_8%'  or 
-						kd_rek6 like '$kode_9%' or kd_rek6 like '$kode_10%' or 
-						kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
-						kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
-						kd_rek6 like '$kode_15%') ");
-
-			foreach ($q->result_array() as $rx) {
-				$debet_lalu = $rx['debet'];
-				$kredit_lalu = $rx['kredit'];
-			}
-
-			if ($debet_lalu == '') $debet_lalu = 0;
-			if ($kredit_lalu == '') $kredit_lalu = 0;
-
-			if ($normal == 1) {
-				$sblm = $debet_lalu - $kredit_lalu;
-			} else {
-				$sblm = $kredit_lalu - $debet_lalu;
-			}
-			if ($sblm == '') $sblm = 0;
-
-			if ($nl < 0) {
-				$nl001 = "(";
-				$nl = $nl * -1;
-				$ln001 = ")";
-			} else {
-				$nl001 = "";
-				$ln001 = "";
-			}
-			if ($sblm < 0) {
-				$sblm001 = "(";
-				$sblm = $sblm * -1;
-				$mlbs001 = ")";
-			} else {
-				$sblm001 = "";
-				$mlbs001 = "";
-			}
-			$nl1 = number_format($nl, "2", ",", ".");
-			$sblm1 = number_format($sblm, "2", ",", ".");
-
+			
 			$no       = $no + 1;
 
-			switch ($res['seq']) {
-				case 5:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min019$ast1$min020</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min021$ast_lalu1$min022</td>
-									 </tr>";
-					break;
-				case 10:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min015$lcr1$min016</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$min017$lcr_lalu1$min018</td>
-									 </tr>";
-					break;
-				case 15:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										<td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 60:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 65:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 100:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 105:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-					/* case 90:
-							  $cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>"; 
-									  break;        
-			  case 100:
-							 $cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										<td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-							break;*/
+			$padding = [
+				0 => '',
+				1 => 'padding-left: 15px',
+				2 => 'padding-left: 30px',
+				3 => 'padding-left: 45px',
+				4 => 'padding-left: 60px',
+			];
 
-				case 110:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 115:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 120:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 125:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-				case 155:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 170:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-									 </tr>";
-					break;
-				case 175:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-									 </tr>";
-					break;
-
-				case 180:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 225:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 240:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 245:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-					/*case 250: //di 2020 , ekuitas dan kewajiban
-	
-							 $cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										  <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
-									 </tr>";
-							break;*/
-
-
-
-				case 260:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 265:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 270:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 275:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-				case 280:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-				case 285:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\"></td>
-									 </tr>";
-					break;
-
-				case 286:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										  <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
-									 </tr>";
-					break;
-
-				case 290:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-
-
-				case 295:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-
-				case 335:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-
-				case 365:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min003$eku1$min004</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min001$eku_lalu1$min002</td>
-									 </tr>";
-					break;
-				case 400:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min007$eku_tang1$min008</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$min005$eku_tang_lalu1$min006</td>
-									 </tr>";
-					break;
-				default:
-					$cRet    .= "<tr><td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"60%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$uraian</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$nl001$nl1$ln001</td>
-										 <td style=\"vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"15%\" align=\"right\">$sblm001$sblm1$mlbs001</td>
-									 </tr>";
-					break;
-			}
+			$cRet    .= "<tr>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$padding[$parent]\" width=\"60%\">$uraian</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunIni</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunLalu</td>
+						</tr>";
 		}
 
 
 		$cRet .= '</table>';
+
+		$sqlttd1 = "SELECT nama as nm,nip as nip,jabatan as jab,pangkat as pangkat FROM ms_ttd where nip='$tglttd' and (kode ='agr' or kode='wk' or kode='pa' or kode='ppkd' or kode='SETDA' or kode ='BUPATI')";
+		$sqlttd = $this->db->query($sqlttd1);
+		foreach ($sqlttd->result() as $rowttd) {
+			$nip = $rowttd->nip;
+			$namax = $rowttd->nm;
+			$jabatan  = $rowttd->jab;
+			$pangkat  = $rowttd->pangkat;
+		}
+
+
+
+		if ($nip == '00000000 000000 0 000') {
+			$cRet .= '<br><br>
+				<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+							
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" > Melawi , ' . $tanggal . '</TD>
+							</TR>
+							
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" ><b>' . $jabatan . '</b></TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>   
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>                       
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" ><b>' . $namax . '</b></TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" >' . $pangkat . '</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" > </TD>
+							</TR>
+							</TABLE><br/>';
+		} else if ($nip == '19671126 199503 2 004') {
+			$cRet .= '<br><br>
+					<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+											
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" > Melawi , ' . $tanggal . '</TD>
+							</TR>
+							
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" >' . strtoupper($jabatan) . '</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b></TD>
+								<TD width="50%" align="center" >selaku <br>PEJABAT PENGELOLA KEUANGAN DAERAH</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>   
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>                       
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" ><b><u>' . $namax . '</b></u></TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" >' . $pangkat . '</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center">NIP. ' . $nip . '</TD>
+							</TR>
+							</TABLE><br/>';
+		} else {
+			$cRet .= '<br><br>
+				<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
+							
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" > Melawi , ' . $tanggal . '</TD>
+							</TR>
+							
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" ><b>' . $jabatan . '</b></TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>   
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+							</TR>                       
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" ><b>' . $namax . '</b></TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" >' . $pangkat . '</TD>
+							</TR>
+							<TR>
+								<TD width="50%" align="center" ><b>&nbsp;</TD>
+								<TD align="center" >' . $nip . '</TD>
+							</TR>
+							</TABLE><br/>';
+		}
 
 		$data['prev'] = $cRet;
 		$data['sikap'] = 'preview';
@@ -13231,5 +12791,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				break;
 		}
 	}
-	// END
+	
+
 }
