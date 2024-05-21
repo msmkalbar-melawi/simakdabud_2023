@@ -11948,7 +11948,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$no     = 0;
 
 		// Hitung asset tetap
-		$assetTetap = $this->db->query("EXEC assets_tetap_skpd ?,?,? ", [12,2023,$kd_skpd])->row();
+		$assetTetap = $this->db->query("EXEC assets_tetap_skpd ?,?,? ", [$xbulan,2023,$kd_skpd])->row();
+		// dd($assetTetap);
 
 		// Hitung Keseluruhan Nilai Aset
 		$sqlAsset = "SELECT SUM(debet-kredit) AS nilai FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd
@@ -12004,6 +12005,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
         // selisih surplus non operasional dan defisit operasion
         $surplusDefisit = $surplusTahunIni + $nonOperasiTahunIni;
+		
 
 		$queryeEkuitas = "SELECT SUM
 					( kredit - debet ) AS nilai
@@ -12020,6 +12022,10 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					OR ( trh.kd_skpd = '$kd_skpd' AND LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
 		
 		$ekuitas = $this->db->query($queryeEkuitas)->row();
+
+		$saldoAwalKewajibanEkuitas = 0;
+		$saldoAkhirKewajibanEkuitas = 0;
+
 		foreach ($query10->result_array() as $key => $res) {
 			$uraian = $res['uraian'];
 			$normal = $res['normal'];
@@ -12153,12 +12159,19 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			} elseif($parent == 0) {
 				$tahunIni = "";
 				$tahunLalu = "";
-			} elseif($res['seq'] == 535 )  {
+			} elseif($parent == 2 && $kode_1 == 13)  {
 				$tahunIni = formatPositif($assetTetap->nilai);
 				$tahunLalu = formatPositif($saldoAwal);
-			} else if (in_array($kode_1,[3,31,3101,310101])) {
+			} elseif($parent == 1 && $kode_1 == 3) {
+				$tahunIni = formatPositif($saldoAkhirKewajibanEkuitas);
+				$tahunLalu = formatPositif($saldoAwalKewajibanEkuitas);
+			} else if (in_array($kode_1,[31,3101,310101])) {
 				$ekuitasAwal = $saldoAset-$saldoAwalKewajiban;
 				$ekuitasAkhir = $assetTetap->nilai + $asset->nilai - $saldoAkhirKeawijiban;
+				if ($kode_1 == 31) {
+					$saldoAwalKewajibanEkuitas += $ekuitasAwal;
+					$saldoAkhirKewajibanEkuitas += $ekuitasAkhir;
+				}
 				$tahunLalu = formatPositif($ekuitasAwal);
 				$tahunIni = formatPositif($ekuitasAkhir);
 			} else if ($konversiLra && $konversiLra < 1306) {
@@ -12172,20 +12185,30 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			
 			$no       = $no + 1;
 
-			$padding = [
+			$bold = [
 				0 => '',
-				1 => 'padding-left: 15px',
-				2 => 'padding-left: 30px',
-				3 => 'padding-left: 45px',
-				4 => 'padding-left: 60px',
+				1 => 'font-weight: bold;',
+				2 => 'font-weight: semi-bold;',
+				3 => 'font-weight: normal;',
+				4 => 'font-weight: normal;',
 			];
 
+			$padding = [
+				0 => '',
+				1 => 'padding-left: 15px;'.$bold[$parent],
+				2 => 'padding-left: 30px;'.$bold[$parent],
+				3 => 'padding-left: 45px;',
+				4 => 'padding-left: 60px;',
+			];
+
+			$cetakKode = $kode_1 == "xxx" ? "" : $kode_1;
+
 			$cRet    .= "<tr>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode_1</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"10%\" align=\"center\">$no</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"5%\">$cetakKode</td>                                     
 							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$padding[$parent]\" width=\"60%\">$uraian</td>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunIni</td>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunLalu</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"20%\" align=\"right\">$tahunIni</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"20%\" align=\"right\">$tahunLalu</td>
 						</tr>";
 		}
 
@@ -12585,7 +12608,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$length = strlen($kode);
 					$querySaldo = "SELECT SUM(trd.debet) AS debet, SUM(trd.kredit) AS kredit FROM trhju_pkd AS trh
 						INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher
-						WHERE trh.kd_skpd = ? AND LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888','520508010005','520499999999', '5488888888') 
+						WHERE trh.kd_skpd = ? AND LEFT(trd.kd_rek6,$length) = ? AND YEAR(trh.tgl_voucher) = ? AND MONTH(trh.tgl_voucher)  <= ? AND trd.kd_rek6 NOT IN ('520399999999','520288888888','520299999999','520388888888','520508010005','520499999999', '520488888888') 
 						OR (trh.kd_skpd = '$kd_skpd' AND LEFT(trd.kd_rek6, $length) = $kode AND trh.no_voucher LIKE '%-LO-NERACA-%')
 					";
 				} elseif($kode == 2106) {
@@ -12604,7 +12627,12 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				}
 				
 				$saldoAwal =  $this->db->query($querySaldoAwal,[$kd_skpd, $thn_ang_1, $kode])->row();
-				$saldo =  $this->db->query($querySaldo,[$kd_skpd, $kode, $thn_ang,$bulan])->row();
+				if($konversiLra >= 1301 && $konversiLra < 1306) {
+					$lra = "52".substr($kode,2,2);
+					$saldo =  $this->db->query($querySaldo,[$kd_skpd, $lra, $thn_ang,$bulan])->row();
+				} else {
+					$saldo =  $this->db->query($querySaldo,[$kd_skpd, $kode, $thn_ang,$bulan])->row();
+				}
 				$nilaiAwal = $normal == 1 ? $saldoAwal->debet - $saldoAwal->kredit :  $saldoAwal->kredit - $saldoAwal->debet;
 				$nilaiAkhir = ($normal == 1 ? $saldo->debet - $saldo->kredit :  $saldo->kredit - $saldo->debet) + $nilaiAwal;
 
