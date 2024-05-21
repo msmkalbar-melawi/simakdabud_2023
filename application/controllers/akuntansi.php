@@ -9946,7 +9946,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 								<TD align="center" > </TD>
 							</TR>
 							</TABLE><br/>';
-	} else if ($nip == '19671126 199503 2 004'){
+		} else if ($nip == '19671126 199503 2 004'){
 			$cRet .= '<br><br>
 				<TABLE style="border-collapse:collapse; font-size:13px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
 							
@@ -9996,7 +9996,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 								<TD align="center">NIP. '.$nip.'</TD>
 							</TR>
 							</TABLE><br/>';
-			} else {
+		} else {
 			$cRet .= '<br><br>
 				<TABLE style="border-collapse:collapse; font-size:12px; font-family: Bookman Old Style;"  width="100%" border="0" cellspacing="0" cellpadding="0" align=center>
 							
@@ -10042,7 +10042,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 								<TD align="center" >'.$nip.'</TD>
 							</TR>
 							</TABLE><br/>';
-			}
+		}
 
 		$data['prev'] = $cRet;
 		$data['sikap'] = 'preview';
@@ -10631,6 +10631,52 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$hasil = $this->db->query($sql);
 		$nawal = 0;
+		// surpulus operasi
+        $queryOperasi = "SELECT ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 7 THEN kredit-debet ELSE 0 END )),0) - ISNULL(ABS(SUM(CASE WHEN LEFT(kode_rekening,1) = 8 THEN debet-kredit ELSE 0 END )),0) AS nilai FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) != 83 AND kode_skpd = ?";
+        $resultOperasiTahunIni = $this->db->query($queryOperasi,[$bulan, $thn_ang,$kd_skpd])->row();
+        $resultOperasiTahunLalu =  $this->db->query($queryOperasi,[12, $thn_ang-1,$kd_skpd])->row();
+        $surplusTahunIni = $resultOperasiTahunIni ? $resultOperasiTahunIni->nilai : 0;
+        $surplusTahunLalu = $resultOperasiTahunLalu ? $resultOperasiTahunLalu->nilai : 0;
+        $kenaikanSurplus = $surplusTahunIni-$surplusTahunLalu;
+
+		// non operasional
+        $queryNonOperasi = "SELECT 
+                ISNULL(
+                    -- surplus non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 7 THEN ABS(SUM(kredit-debet)) ELSE 0 END -
+                    -- defisit non operasional
+                    CASE WHEN LEFT(kode_rekening,1) = 8 THEN ABS(SUM(debet-kredit)) ELSE 0 END
+                ,0) AS nilai
+            FROM transaksi_lo WHERE MONTH(tanggal) <= ? AND YEAR(tanggal) = ? AND LEFT(kode_rekening,2) IN (74,83) AND kode_skpd = ?
+            GROUP BY LEFT(kode_rekening,1)
+        ";
+        $resultNonOperasiTahunIni = $this->db->query($queryNonOperasi,[$bulan, $thn_ang,$kd_skpd])->row();
+        $resultNonOperasiTahunLalu = $this->db->query($queryNonOperasi,[12, $thn_ang-1,$kd_skpd])->row();
+        $nonOperasiTahunIni = $resultNonOperasiTahunIni ? $resultNonOperasiTahunIni->nilai : 0;
+        $nonOperasiTahunLalu = $resultNonOperasiTahunLalu ? $resultNonOperasiTahunLalu->nilai : 0;
+
+        // selisih surplus non operasional dan defisit operasion
+        $surplusDefisit = $surplusTahunIni + $nonOperasiTahunIni;
+        $surplusDefisitLalu = $surplusTahunLalu + $nonOperasiTahunLalu;
+
+		$queryeEkuitas = "SELECT SUM
+					( kredit - debet ) AS nilai
+				FROM
+					trhju_pkd AS trh
+					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
+					AND trh.no_voucher = trd.no_voucher 
+				WHERE
+					LEFT ( trd.kd_rek6, 4 ) = '3101' 
+					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' 
+					AND YEAR ( trh.tgl_voucher ) = 2023 
+					AND MONTH(trh.tgl_voucher) <= $bulan
+					AND trh.kd_skpd = '$kd_skpd'
+					OR ( trh.kd_skpd = '$kd_skpd' AND LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
+		
+		$ekuitas = $this->db->query($queryeEkuitas)->row();
+
+		$nilaiEkuitas = formatPositif($ekuitas->nilai);
+		$ekuitasAkhir = $ekuitas->nilai + $sal_awal + $surplusDefisit;
 		foreach ($hasil->result() as $row) {
 
 			$kd_rek   = $row->nor;
@@ -10664,8 +10710,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet .= "<tr>
                                                       <td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
                                                       <td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$nama</td>
-                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\"> $lo13" . number_format($surplus_lo3, "2", ",", ".") . "$lo14</td>
-                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$lo15" . number_format($surplus_lo_lalu3, "2", ",", ".") . "$lo16</td>
+                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". formatPositif($surplusDefisit) ." </td>
+                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". formatPositif($surplusDefisitLalu) ."</td>
                                                      </tr>";
 
 					break;
@@ -10698,7 +10744,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet .= "<tr>
                                                       <td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
                                                       <td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$nama</td>
-                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l002" . number_format($nilailpe2, "2", ",", ".") . "$p002</td>
+                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". $nilaiEkuitas ."</td>
                                                       <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l0021" . number_format($nilailpe2_lalu, "2", ",", ".") . "$p0021</td>
                                                      </tr>";
 					break;
@@ -10706,8 +10752,8 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
                         $cRet .= "<tr>
                                                               <td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
                                                               <td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$nama</td>
-                                                              <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l099" . number_format($nilaiEKU, "2", ",", ".") . "$p099</td>
-                                                              <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$lalu5" . number_format($lpe_lalu3, "2", ",", ".") . "$lalu5</td>
+                                                              <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">0,00</td>
+                                                              <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">0,00</td>
                                                              </tr>";
                         break;
 				case 8:
@@ -10722,7 +10768,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet .= "<tr>
 													<td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
 													<td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$nama</td>
-													<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$c" . number_format($sal_akhir, "2", ",", ".") . "$d</td>
+													<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". formatPositif($ekuitasAkhir) ."</td>
 													<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$c1" . number_format($sal_awal, "2", ",", ".") . "$d1</td>
 													</tr>";
 			}
@@ -12520,6 +12566,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$saldoAwalEkuitas = $surplusDefisit + $saldoAwalEkuitas->nilai;
 
+		$saldoAwalKewajibanEkuitas = $saldoAwalEkuitas;
+		$saldoAkhirKewajibanEkuitas = 0;
+
 		
 		foreach ($query10->result_array() as $key => $res) {
 			$uraian = $res['uraian'];
@@ -12562,6 +12611,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 				if($kode == 2 && $parent == 1) {
 					$saldoAkhirKeawijiban = $nilaiAwal + $saldoKewajiban;
+
+					$saldoAwalKewajibanEkuitas += $nilaiAwal;
+					$saldoAkhirKewajibanEkuitas += $saldoAkhirKeawijiban;
 				}
 
 				if ($kode == 1 && $parent == 1) {
@@ -12571,7 +12623,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$tahunIni = formatPositif($assetTetap->nilai);
 					$tahunLalu = formatPositif($nilaiAwal) ;
 				} else if($kode == 3101)  {
-					$tahunIni = formatPositif(($assetTetap->nilai + $asset->nilai) - $saldoAkhirKeawijiban );
+					$temp = ($assetTetap->nilai + $asset->nilai) - $saldoAkhirKeawijiban;
+					$saldoAkhirKewajibanEkuitas += $temp;
+					$tahunIni = formatPositif($temp);
 					$tahunLalu = formatPositif($saldoAwalEkuitas);
 				} elseif(in_array($kode,[2,21])) {
 					$tahunIni = formatPositif($saldoAkhirKeawijiban);
@@ -12582,26 +12636,41 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				}
 
 			} else {
-				$tahunIni = "";
-				$tahunLalu = "";
+				if ($res['seq'] == 370) {
+					$tahunIni = formatPositif($saldoAkhirKewajibanEkuitas);
+					$tahunLalu = formatPositif($saldoAwalKewajibanEkuitas);
+				} else {
+					$tahunIni = "";
+					$tahunLalu = "";
+				}
 			}
 			
 			$no       = $no + 1;
 
 			$padding = [
 				0 => '',
-				1 => 'padding-left: 15px',
-				2 => 'padding-left: 30px',
-				3 => 'padding-left: 45px',
-				4 => 'padding-left: 60px',
+				1 => 'padding-left: 15px;',
+				2 => 'padding-left: 30px;',
+				3 => 'padding-left: 45px;',
+				4 => 'padding-left: 60px;',
 			];
 
+			$bold = [
+				0 => '',
+				1 => 'font-weight: bold',
+				2 => '',
+				3 => '',
+				4 => '',
+			];
+
+			$cetakKode = $kode != "xxx" ? $kode : "";
+
 			$cRet    .= "<tr>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"10%\" align=\"center\">$no</td>                                     
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"5%\">$kode</td>                                     
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$padding[$parent]\" width=\"60%\">$uraian</td>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunIni</td>
-							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;\" width=\"20%\" align=\"right\">$tahunLalu</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"10%\" align=\"center\">$no</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"5%\">$cetakKode</td>                                     
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$padding[$parent]$bold[$parent]\" width=\"60%\">$uraian</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"20%\" align=\"right\">$tahunIni</td>
+							<td style=\"font-size:12px;font-family:Arial;vertical-align:top;border-top: solid 1px black;border-bottom: none;$bold[$parent]\" width=\"20%\" align=\"right\">$tahunLalu</td>
 						</tr>";
 		}
 
