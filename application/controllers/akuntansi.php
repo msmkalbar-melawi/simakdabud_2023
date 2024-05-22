@@ -10666,17 +10666,28 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd 
 					AND trh.no_voucher = trd.no_voucher 
 				WHERE
-					LEFT ( trd.kd_rek6, 4 ) = '3101' 
-					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' 
+					LEFT ( trd.kd_rek6, 2 ) = '31' 
+					AND trh.no_voucher LIKE '%-LO-NERACA-%' 
 					AND YEAR ( trh.tgl_voucher ) = 2023 
 					AND MONTH(trh.tgl_voucher) <= $bulan
 					AND trh.kd_skpd = '$kd_skpd'
-					OR ( trh.kd_skpd = '$kd_skpd' AND LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
+					";
 		
 		$ekuitas = $this->db->query($queryeEkuitas)->row();
 
+		// LRA
+		$queryLra = "SELECT 
+			ISNULL(SUM(CASE WHEN LEFT(trd.kd_rek6, 1) = 4 THEN kredit-debet ELSE debet-kredit END ), 0) AS nilai FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON trh.kd_skpd = trd.kd_unit AND 
+			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND LEFT(trd.kd_rek6,1) = ? ";
+		$pendapatan = $this->db->query($queryLra,[$bulan,$kd_skpd, 4])->row();
+		$belanja = $this->db->query($queryLra,[$bulan,$kd_skpd, 5])->row();
+
+		$tempLra = $belanja->nilai - $pendapatan->nilai;
+		$lra = formatPositif($tempLra);
+
 		$nilaiEkuitas = formatPositif($ekuitas->nilai);
-		$ekuitasAkhir = $ekuitas->nilai + $sal_awal + $surplusDefisit;
+		$ekuitasAkhir =  $sal_awal + $tempLra + $surplusDefisit + $ekuitas->nilai;
+		
 		foreach ($hasil->result() as $row) {
 
 			$kd_rek   = $row->nor;
@@ -10760,7 +10771,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					$cRet .= "<tr>
 					<td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
 					<td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$nama</td>
-					<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l098" . number_format($nilaiRKPPKD, "2", ",", ".") . "$p098</td>
+					<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$lra</td>
 					<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l0981" . number_format($nilaiRKPPKD_lalu, "2", ",", ".") . "$p0981</td>
 				   </tr>";
 				break;
