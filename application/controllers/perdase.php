@@ -5073,10 +5073,7 @@ class Perdase extends CI_Controller
         $anggaran=$_POST['anggaran'];
         $tgl_ttd=$_POST['tgl_ttd'];
         $ttd=$_POST['ttd'];
-        //$jlampiran=$_POST['jlampiran'];
-        $pdf=$_REQUEST['c'];  
-
-		
+        $pdf=  $this->input->get('c');
         $dt=$this->db->query("SELECT top 1 daerah,thn_ang tahun from sclient")->row();
         $kota=$dt->daerah;
         $tahun=$dt->tahun;
