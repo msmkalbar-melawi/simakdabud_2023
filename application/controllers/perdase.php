@@ -5084,6 +5084,15 @@ class Perdase extends CI_Controller
         NOMOR &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TAHUN ".$tahun1."<br>
         TENTANG PERTANGGUNGJAWABAN PELAKSANAAN ANGGARAN PENDAPATAN DAN BELANJA DAERAH <br>
         KABUPATEN MELAWI TAHUN ANGGARAN ".$tahun."</td>";
+
+		$lra = "SELECT ISNULL(SUM(
+			CASE WHEN LEFT(trd.kd_rek6,1) = 4 THEN kredit-debet ELSE debet-kredit END
+		),0) AS realisasi, (SELECT ISNULL(SUM(rka.nilai),0) FROM trdrka AS rka WHERE LEFT(rka.kd_rek6,1) = ? AND rka.jns_ang = ? ) AS anggaran FROM trhju_pkd AS trh 
+			INNER JOIN trdju_pkd AS trd ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher 
+			WHERE MONTH(trh.tgl_voucher) <= ? AND LEFT(trd.kd_rek6,1) = ? ";
+
+		$data['pen'] = $this->db->query($lra,[4,$anggaran,$bulan, 4])->row();
+		$data['bel'] = $this->db->query($lra,[5,$anggaran,$bulan, 5])->row();
        
         $config=$this->db->query("SELECT top 1 * from trkonfig_anggaran where lampiran='perda' ORDER by jenis_anggaran desc ")->row();
         $data['judul']  ="LAMPIRAN I.1";

@@ -59,10 +59,10 @@
 				<td></td>
 				<td></td>
 				<td><b>Pendapatan</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td style="font-weight: bold; text-align: right"><?= formatPositif($pen->anggaran) ?></td>
+				<td style="font-weight: bold; text-align: right"><?= formatPositif($pen->realisasi) ?></td>
+				<td style="font-weight: bold; text-align: right"><?= formatPositif($pen->anggaran - $pen->realisasi) ?></td>
+				<td style="font-weight: bold; text-align: center"><?= formatPositif($pen->realisasi/$pen->anggaran * 100) ?> </td>
 			</tr>
 		<?php $belanja=0; $pendapatan=0; $belanjar=0; $pendapatanr=0; $tot=0; $tot1=0 ;$totsur=0?>	
 		<?php foreach($rek4->result() as $oke) :
@@ -110,10 +110,10 @@
 				<td></td>
 				<td></td>
 				<td><b>Belanja</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<<td style="font-weight: bold; text-align: right"><?= formatPositif($bel->anggaran) ?></td>
+				<td style="font-weight: bold; text-align: right"><?= formatPositif($bel->realisasi) ?></td>
+				<td style="font-weight: bold; text-align: right"><?= formatPositif($bel->anggaran - $bel->realisasi) ?></td>
+				<td style="font-weight: bold; text-align: center"><?= formatPositif($bel->realisasi/$bel->anggaran * 100) ?> </td>
 			</tr>
 		<?php foreach($rek5->result() as $oke) :
 			$urutan=array(4,5); 
@@ -161,11 +161,11 @@
 			 
 			 ?>
 			<tr >
-				<td align="center" colspan="4">SURPLUS/ DEFISIT</td>
-				<td align="right" ><?php echo $this->support->rp_minus($suplus_anggaran)?></td>
-				<td align="right" ><?php echo $this->support->rp_minus($suplus_realisasi)?></td>
-				<td align="right" ><?php echo $this->support->rp_minus($suplus_anggaran-$suplus_realisasi)?></td>
-				<td align="center"><?php echo $this->support->rp_minus($totsur)?></td>
+				<td align="center" style="font-weight: bold;" colspan="4">SURPLUS/ DEFISIT</td>
+				<td align="right" style="font-weight: bold;" ><?php echo $this->support->rp_minus($suplus_anggaran)?></td>
+				<td align="right" style="font-weight: bold;" ><?php echo $this->support->rp_minus($suplus_realisasi)?></td>
+				<td align="right" style="font-weight: bold;" ><?php echo $this->support->rp_minus($suplus_anggaran-$suplus_realisasi)?></td>
+				<td align="center" style="font-weight: bold;"><?php echo $this->support->rp_minus($totsur)?></td>
 			</tr>
 		</table>
 		<table style="margin-top:10px; border-collapse:collapse;font-size:13px;font-family:Bookman Old Style" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">	
