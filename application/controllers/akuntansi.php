@@ -10667,10 +10667,11 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					AND trh.no_voucher = trd.no_voucher 
 				WHERE
 					LEFT ( trd.kd_rek6, 2 ) = '31' 
-					AND trh.no_voucher LIKE '%-LO-NERACA-%' 
+					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' 
 					AND YEAR ( trh.tgl_voucher ) = 2023 
 					AND MONTH(trh.tgl_voucher) <= $bulan
 					AND trh.kd_skpd = '$kd_skpd'
+					OR ( LEFT ( trd.kd_rek6, 2 ) = '31' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) AND trh.kd_skpd = '$kd_skpd' )
 					";
 		
 		$ekuitas = $this->db->query($queryeEkuitas)->row();
@@ -10753,11 +10754,11 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					break;
 				case 6:
 					$cRet .= "<tr>
-                                                      <td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
-                                                      <td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$nama</td>
-                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". $nilaiEkuitas ."</td>
-                                                      <td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l0021" . number_format($nilailpe2_lalu, "2", ",", ".") . "$p0021</td>
-                                                     </tr>";
+								<td valign=\"top\"  width=\"5%\" align=\"center\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$kd_rek</td>
+								<td valign=\"top\"  width=\"65%\"  align=\"left\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$nama</td>
+								<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">". $nilaiEkuitas ."</td>
+								<td valign=\"top\"  width=\"15%\" align=\"right\" style=\"font-size:12px;font-family:Arial;border-bottom:none;border-top:none\">$l0021" . number_format($nilailpe2_lalu, "2", ",", ".") . "$p0021</td>
+							</tr>";
 					break;
 					case 7:
                         $cRet .= "<tr>
