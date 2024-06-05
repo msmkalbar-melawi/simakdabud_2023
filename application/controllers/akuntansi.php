@@ -9779,7 +9779,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					AND trh.no_voucher = trd.no_voucher 
 				WHERE
 					LEFT ( trd.kd_rek6, 4 ) = '3101' 
-					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' 
+					AND (trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' OR trh.no_voucher LIKE '%-LO-NERACA-Jurnal Koreksi BPK-2023%')
 					AND YEAR ( trh.tgl_voucher ) = 2023 
 					AND MONTH(trh.tgl_voucher) <= $bulan
 					OR ( LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
@@ -10687,7 +10687,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$lainLainLra = "SELECT
 				ISNULL(SUM(trd.kredit-trd.debet),0) AS nilai
 			FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON trh.kd_skpd = trd.kd_unit AND 
-			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND trh.no_voucher LIKE '%-Ekuitas-LPE-2023%'";
+			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND (trh.no_voucher LIKE '%-Ekuitas-LPE-2023%' OR trh.no_voucher LIKE '%-LO-NERACA-Jurnal Koreksi BPK-2023%' ) ";
 		
 		$lainnya = $this->db->query($lainLainLra,[$bulan, $kd_skpd])->row()->nilai;
 
