@@ -10683,7 +10683,15 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$pendapatan = $this->db->query($queryLra,[$bulan,$kd_skpd, 4])->row();
 		$belanja = $this->db->query($queryLra,[$bulan,$kd_skpd, 5])->row();
 
-		$tempLra = $belanja->nilai - $pendapatan->nilai;
+		// lra lain-lain
+		$lainLainLra = "SELECT
+				ISNULL(SUM(trd.kredit-trd.debet),0) AS nilai
+			FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON trh.kd_skpd = trd.kd_unit AND 
+			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND trh.no_voucher LIKE '%-Ekuitas-LPE-2023%'";
+		
+		$lainnya = $this->db->query($lainLainLra,[$bulan, $kd_skpd])->row()->nilai;
+
+		$tempLra = $belanja->nilai - $pendapatan->nilai + $lainnya;
 		$lra = formatPositif($tempLra);
 
 		$nilaiEkuitas = formatPositif($ekuitas->nilai);
