@@ -10502,11 +10502,12 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$auditedEkuitas = $this->db->query($jurnalAuditedEkuitas,[$bulan,$kd_skpd])->row()->nilai;
 
-		$tempLra = $belanja->nilai - $pendapatan->nilai + $lainnya + $auditedEkuitas;
+		$tempLra = $belanja->nilai - $pendapatan->nilai + $lainnya ;
 		$lra = formatPositif($tempLra);
 
-		$nilaiEkuitas = formatPositif($ekuitas->nilai);
-		$ekuitasAkhir =  $sal_awal + $tempLra + $surplusDefisit + $ekuitas->nilai;
+		$tempEkuitas = $ekuitas->nilai + $auditedEkuitas;
+		$nilaiEkuitas = formatPositif($tempEkuitas);
+		$ekuitasAkhir =  $sal_awal + $tempLra + $surplusDefisit + $ekuitas->nilai + $nilaiEkuitas;
 		
 		foreach ($hasil->result() as $row) {
 
@@ -10515,18 +10516,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$nama     = $row->uraian;
 			$nilai_1    = $row->thn_m1;
 
-
-			/*        if ($nilai_1 < 0)
-        {
-            $tx = "(";
-            $nilai_1 = $nilai_1 * -1;
-            $ty = ")";
-        } else
-        {
-            $tx = "";
-            $ty = "";
-        }
-*/
 			switch ($kd_rek) {
 				case 1:
 					$cRet .= "<tr>
