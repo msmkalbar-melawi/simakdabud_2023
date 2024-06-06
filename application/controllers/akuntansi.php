@@ -9979,18 +9979,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$nm_skpd = strtoupper($nmskpd);
 		$thn_ang_1 = $thn_ang - 1;
 
-		/*$sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-                 $sqlsclient=$this->db->query($sqlsc);
-                 foreach ($sqlsclient->result() as $rowsc)
-                {
-                   
-                    $tgl=$rowsc->tgl_rka;
-                    $tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-                    $kab     = $rowsc->kab_kota;
-                    $daerah  = $rowsc->daerah;
-                    $thn     = $rowsc->thn_ang;
-                }
-        */
 		$skpd = "AND kd_skpd='$id1'";
 		$skpd1 = "AND b.kd_skpd='$id1'";
 
@@ -10507,7 +10495,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
 		$tempEkuitas = $ekuitas->nilai + $auditedEkuitas;
 		$nilaiEkuitas = formatPositif($tempEkuitas);
-		$ekuitasAkhir =  $sal_awal + $tempLra + $surplusDefisit + $ekuitas->nilai + $nilaiEkuitas;
+		$ekuitasAkhir =  $sal_awal + $tempLra + $surplusDefisit + $tempEkuitas;
 		
 		foreach ($hasil->result() as $row) {
 
