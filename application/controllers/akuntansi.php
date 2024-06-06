@@ -9196,22 +9196,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$tanggal = $this->tukd_model->tanggal_format_indonesia($ttd);
 		$tglttd = str_replace('n', ' ', $tglttd);
 		$id1     = $this->session->userdata('kdskpd');
-		//$nmskpd = $this->tukd_model->get_nama($kd_skpd, 'nm_skpd', 'ms_skpd', 'kd_skpd');
-		//$nm_skpd = strtoupper($nmskpd);
+
 		$thn_ang_1 = $thn_ang - 1;
 
-		/*$sqlsc="SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient";
-                 $sqlsclient=$this->db->query($sqlsc);
-                 foreach ($sqlsclient->result() as $rowsc)
-                {
-                   
-                    $tgl=$rowsc->tgl_rka;
-                    $tanggal = $this->tukd_model->tanggal_format_indonesia($tgl);
-                    $kab     = $rowsc->kab_kota;
-                    $daerah  = $rowsc->daerah;
-                    $thn     = $rowsc->thn_ang;
-                }
-        */
 		$skpd = "AND kd_skpd='$id1'";
 		$skpd1 = "AND b.kd_skpd='$id1'";
 
@@ -9277,62 +9264,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 
 		$real = $kredit - $debet + $pen_lalu8 - $bel_lalu10 + $lpe_ll1 + $lpe_ll2 + $lpe_ll3;
-		//        $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$real' WHERE nor = '1' ");
-		//          }
-		/*          
-            
-            $query3 = $this->db->query(" SELECT
-                                        SUM(a.debet) AS debet, SUM(a.kredit) AS kredit
-                                    FROM
-                                        $trdju_pkd a
-                                    INNER JOIN $trhju_pkd b ON a.no_voucher = b.no_voucher and a.kd_unit=b.kd_skpd
-                                    WHERE
-                                        b.kd_skpd = '$kd_skpd'
-                                    AND left(a.kd_rek6,1) = '9'
-                                    AND YEAR (b.tgl_voucher) < '$thn'");  
-            foreach($query3->result_array() as $res21){
-                 $debet9=$res21['debet'];
-                 $kredit9=$res21['kredit'];
-                                 
-             }
-             
-        $query3 = $this->db->query(" SELECT
-                                        SUM(a.debet) AS debet, SUM(a.kredit) AS kredit
-                                    FROM
-                                        $trdju_pkd a
-                                    INNER JOIN $trhju_pkd b ON a.no_voucher = b.no_voucher and a.kd_unit=b.kd_skpd
-                                    WHERE
-                                        b.kd_skpd = '$kd_skpd'
-                                    AND left(a.kd_rek6,1) = '8'
-                                    AND YEAR (b.tgl_voucher) < '$thn'");  
-            foreach($query3->result_array() as $res22){
-                 $debet8=$res22['debet'];
-                 $kredit8=$res22['kredit'];
-                                 
-             }   
-             
-        $surplus1_1=($kredit8-$debet8)-($debet9-$kredit9);
-        $surplus1=number_format($surplus1_1, "2", ".", "");
-*/
-		//        $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$surplus1' WHERE nor = '2'");
-
-		//      $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$akhir' WHERE nor = '7'");
-
-
-		// end tahun lalu         
-
-		/*        $sqlsawal = "SELECT * FROM map_lpe_skpd where nor='7'";
-        $queryawal = $this->db->query($sqlsawal);
-        $jmlsaldo = $queryawal->row();
-        $jmlsal = $jmlsaldo->thn_m1;
-        
-        $sql41 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='8' $skpd";
-        $query41 = $this->db->query($sql41);
-        $jmlp = $query41->row();
-        $jmlpendapatan = $jmlp->nilai;
-        $jmlpendapatan1 = number_format($jmlp->nilai, "2", ".", ",");
-*/
-		//      created by henri_tb
+		
 		$sqllo9 = "select sum(kredit-debet) as nilai from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7')";
 		$querylo9 = $this->db->query($sqllo9);
 		$penlo7 = $querylo9->row();
@@ -9423,29 +9355,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
             $nilaiRKPPKD_lalu  = $row005->thn_m1;
         }
 
-        // $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
         $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
-		/*      
-        $sql51 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='9'";
-        $query51 = $this->db->query($sql51);
-        $jmlb = $query51->row();
-        $jmlbelanja = $jmlb->nilai;
-        $jmlbelanja1 = number_format($jmlb->nilai, "2", ".", ",");
-        $sql523 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,3)='923'";
-        $query523 = $this->db->query($sql523);
-        $jmlbm = $query523->row();
-        $jmlbmbelanja = $jmlbm->nilai;
-        $jmlbmbelanja1 = number_format($jmlbmbelanja, "2", ".", ",");
-        $sql61 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,2)='71'";
-        $query61 = $this->db->query($sql61);
-        $jmlpm = $query61->row();
-        $jmlpmasuk = $jmlpm->nilai;
-        $sql62 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,2)='72'";
-        $query62 = $this->db->query($sql62);
-        $jmlpk = $query62->row();
-        $jmlpkeluar = $jmlpk->nilai;
-        $surplus = $jmlpendapatan - $jmlbelanja;
-*/
 		$sql = "select 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'4103'kode_1,isnull(sum(kredit-debet),0) thn_m1 from $trhju a
                     inner join $trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='$ekuitas' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan"; //aba
 
@@ -9505,20 +9415,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
             $nama     = $row005->uraian;
             $nilaiRKPPKD  = $row005->thn_m1;
         }
-		/*        $biaya_net = $jmlpmasuk - $jmlpkeluar;        
-        $silpa = ($jmlpendapatan + $jmlpmasuk) - ($jmlbelanja + $jmlpkeluar);
-        if ($silpa < 0)
-        {
-            $a = "(";
-            $silpa1 = $silpa * -1;
-            $b = ")";
-        } else
-        {
-            $a = "";
-            $silpa1 = $silpa;
-            $b = "";
-        }
-*/
+		
 		$sal_akhir = $sal_awal + $surplus_lo3 + $nilaiDR + $nilailpe1 + $nilailpe2 + $nilaiEKU + $nilaiRKPPKD;
 
 		if ($surplus_lo_lalu3 < 0) {
@@ -9779,16 +9676,23 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 					AND trh.no_voucher = trd.no_voucher 
 				WHERE
 					LEFT ( trd.kd_rek6, 4 ) = '3101' 
-					AND (trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%' OR trh.no_voucher LIKE '%-LO-NERACA-Jurnal Koreksi BPK-2023%')
+					AND trh.no_voucher LIKE '%-LO-NERACA-Pergerakan Aset%'
 					AND YEAR ( trh.tgl_voucher ) = 2023 
 					AND MONTH(trh.tgl_voucher) <= $bulan
-					OR ( LEFT ( trd.kd_rek6, 4 ) = '3101' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023' ) )";
-		
+					OR ( LEFT ( trd.kd_rek6, 2 ) = '31' AND trh.no_voucher IN ( 'Saldo_Awal_02', 'Saldo_Awal_03', '002-LO-NERACA-PIUTANG 2023', '00004-LO-NERACA-2023') )";
+
+		$jurnalAuditedEkuitas = "SELECT ISNULL(SUM(kredit-debet),0) AS nilai FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd 
+			ON trd.kd_unit = trh.kd_skpd AND trd.no_voucher = trh.no_voucher WHERE LEFT(trd.kd_rek6,4) = 3101
+			AND trh.no_voucher LIKE '%-LO-NERACA-Jurnal koreksi BPK-2023%'
+		";
+
+		$auditedEkuitas = $this->db->query($jurnalAuditedEkuitas)->row()->nilai;
+
 		$ekuitas = $this->db->query($queryeEkuitas)->row();
 
-		$nilaiEkuitas = formatPositif($ekuitas->nilai);
+		$nilaiEkuitas = formatPositif($ekuitas->nilai + $auditedEkuitas );
 
-		$ekuitasAkhir = $ekuitas->nilai + $sal_awal + $surplusDefisit;
+		$ekuitasAkhir = $ekuitas->nilai + $sal_awal + $surplusDefisit + $auditedEkuitas;
 
 		foreach ($hasil->result() as $row) {
 
@@ -9797,18 +9701,6 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			$nama     = $row->uraian;
 			$nilai_1    = $row->thn_m1;
 
-
-			/*        if ($nilai_1 < 0)
-        {
-            $tx = "(";
-            $nilai_1 = $nilai_1 * -1;
-            $ty = ")";
-        } else
-        {
-            $tx = "";
-            $ty = "";
-        }
-*/
 			switch ($kd_rek) {
 				case 1:
 					$cRet .= "<tr>
@@ -10164,62 +10056,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		}
 
 		$real = $kredit - $debet + $pen_lalu8 - $bel_lalu10 + $lpe_ll1 + $lpe_ll2 + $lpe_ll3;
-		//        $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$real' WHERE nor = '1' ");
-		//          }
-		/*          
-            
-            $query3 = $this->db->query(" SELECT
-                                        SUM(a.debet) AS debet, SUM(a.kredit) AS kredit
-                                    FROM
-                                        $trdju_pkd a
-                                    INNER JOIN $trhju_pkd b ON a.no_voucher = b.no_voucher and a.kd_unit=b.kd_skpd
-                                    WHERE
-                                        b.kd_skpd = '$kd_skpd'
-                                    AND left(a.kd_rek6,1) = '9'
-                                    AND YEAR (b.tgl_voucher) < '$thn'");  
-            foreach($query3->result_array() as $res21){
-                 $debet9=$res21['debet'];
-                 $kredit9=$res21['kredit'];
-                                 
-             }
-             
-        $query3 = $this->db->query(" SELECT
-                                        SUM(a.debet) AS debet, SUM(a.kredit) AS kredit
-                                    FROM
-                                        $trdju_pkd a
-                                    INNER JOIN $trhju_pkd b ON a.no_voucher = b.no_voucher and a.kd_unit=b.kd_skpd
-                                    WHERE
-                                        b.kd_skpd = '$kd_skpd'
-                                    AND left(a.kd_rek6,1) = '8'
-                                    AND YEAR (b.tgl_voucher) < '$thn'");  
-            foreach($query3->result_array() as $res22){
-                 $debet8=$res22['debet'];
-                 $kredit8=$res22['kredit'];
-                                 
-             }   
-             
-        $surplus1_1=($kredit8-$debet8)-($debet9-$kredit9);
-        $surplus1=number_format($surplus1_1, "2", ".", "");
-*/
-		//        $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$surplus1' WHERE nor = '2'");
-
-		//      $this->db->query(" UPDATE map_lpe_skpd SET thn_m1 = '$akhir' WHERE nor = '7'");
-
-
-		// end tahun lalu         
-
-		/*        $sqlsawal = "SELECT * FROM map_lpe_skpd where nor='7'";
-        $queryawal = $this->db->query($sqlsawal);
-        $jmlsaldo = $queryawal->row();
-        $jmlsal = $jmlsaldo->thn_m1;
-        
-        $sql41 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='8' $skpd";
-        $query41 = $this->db->query($sql41);
-        $jmlp = $query41->row();
-        $jmlpendapatan = $jmlp->nilai;
-        $jmlpendapatan1 = number_format($jmlp->nilai, "2", ".", ",");
-*/
-		//      created by henri_tb
+		
 		$sqllo9 = "select sum(kredit-debet) as nilai from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') and kd_skpd='$kd_skpd'";
 		$querylo9 = $this->db->query($sqllo9);
 		$penlo7 = $querylo9->row();
@@ -10312,27 +10149,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 
         // $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $lpe_lalu3 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
         $sal_awal    = $real + $surplus_lo_lalu3 + $lpe_lalu1 + $lpe_lalu2 + $nilailpe2_lalu + $nilaiRKPPKD_lalu;
-		/*      
-        $sql51 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,1)='9'";
-        $query51 = $this->db->query($sql51);
-        $jmlb = $query51->row();
-        $jmlbelanja = $jmlb->nilai;
-        $jmlbelanja1 = number_format($jmlb->nilai, "2", ".", ",");
-        $sql523 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,3)='923'";
-        $query523 = $this->db->query($sql523);
-        $jmlbm = $query523->row();
-        $jmlbmbelanja = $jmlbm->nilai;
-        $jmlbmbelanja1 = number_format($jmlbmbelanja, "2", ".", ",");
-        $sql61 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,2)='71'";
-        $query61 = $this->db->query($sql61);
-        $jmlpm = $query61->row();
-        $jmlpmasuk = $jmlpm->nilai;
-        $sql62 = "SELECT SUM(real_spj) as nilai FROM realisasi WHERE left(kd_rek6,2)='72'";
-        $query62 = $this->db->query($sql62);
-        $jmlpk = $query62->row();
-        $jmlpkeluar = $jmlpk->nilai;
-        $surplus = $jmlpendapatan - $jmlbelanja;
-*/
+		
 		$sql = "select 5 nor,'SELISIH REVALUASI ASET TETAP' uraian,3 parent,25 seq,'4103'kode_1,isnull(sum(kredit-debet),0) thn_m1 from $trhju a
                     inner join $trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit where  reev='1' and kd_rek6='$ekuitas' and year(a.tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and kd_skpd='$kd_skpd'"; //aba
 
@@ -10392,20 +10209,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
             $nama     = $row005->uraian;
             $nilaiRKPPKD  = $row005->thn_m1;
         }
-		/*        $biaya_net = $jmlpmasuk - $jmlpkeluar;        
-        $silpa = ($jmlpendapatan + $jmlpmasuk) - ($jmlbelanja + $jmlpkeluar);
-        if ($silpa < 0)
-        {
-            $a = "(";
-            $silpa1 = $silpa * -1;
-            $b = ")";
-        } else
-        {
-            $a = "";
-            $silpa1 = $silpa;
-            $b = "";
-        }
-*/
+
 		$sal_akhir = $sal_awal + $surplus_lo3 + $nilaiDR + $nilailpe1 + $nilailpe2 + $nilaiEKU + $nilaiRKPPKD;
 
 		if ($surplus_lo_lalu3 < 0) {
@@ -10687,11 +10491,18 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$lainLainLra = "SELECT
 				ISNULL(SUM(trd.kredit-trd.debet),0) AS nilai
 			FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON trh.kd_skpd = trd.kd_unit AND 
-			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND (trh.no_voucher LIKE '%-Ekuitas-LPE-2023%' OR trh.no_voucher LIKE '%-LO-NERACA-Jurnal Koreksi BPK-2023%' ) ";
+			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND trh.no_voucher LIKE '%-Ekuitas-LPE-2023%'";
+		
+		$jurnalAuditedEkuitas = "SELECT
+				ISNULL(SUM(trd.kredit-trd.debet),0) AS nilai
+			FROM trhju_pkd AS trh INNER JOIN trdju_pkd AS trd ON trh.kd_skpd = trd.kd_unit AND 
+			trh.no_voucher = trd.no_voucher WHERE MONTH(trh.tgl_voucher) <= ? AND YEAR(trh.tgl_voucher) = 2023 AND trh.kd_skpd = ? AND trh.no_voucher LIKE '%-LO-NERACA-Jurnal koreksi BPK-2023%' AND LEFT(trd.kd_rek6,4) = 3101";
 		
 		$lainnya = $this->db->query($lainLainLra,[$bulan, $kd_skpd])->row()->nilai;
 
-		$tempLra = $belanja->nilai - $pendapatan->nilai + $lainnya;
+		$auditedEkuitas = $this->db->query($jurnalAuditedEkuitas,[$bulan,$kd_skpd])->row()->nilai;
+
+		$tempLra = $belanja->nilai - $pendapatan->nilai + $lainnya + $auditedEkuitas;
 		$lra = formatPositif($tempLra);
 
 		$nilaiEkuitas = formatPositif($ekuitas->nilai);
