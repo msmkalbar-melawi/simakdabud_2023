@@ -11175,6 +11175,9 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 		$kewajibanLalu = $this->db->query($queryKewajibanLalu,[21,2022])->row();
 		$saldoKewajiban = $kewajiban->kredit - $kewajiban->debet;
 		$saldoKewajibanLalu = $kewajibanLalu->kredit - $kewajibanLalu->debet;
+		$ekuitas =0;
+		$nilaiAsset = 0;
+		$nilaiKewajiban= 0;
 
 		foreach ($query10->result_array() as $res) {
 			$uraian = $res['uraian'];
@@ -11220,16 +11223,22 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$saldoIni = (substr($kode,0,1) == 1 ? ($saldo->debet - $saldo->kredit) :  ($saldo->kredit - $saldo->debet)) + $saldoLalu;
 
 				if($parent == 1 && $kode == 1) {
+					$nilaiAsset = $assetTetap->nilai + $asset->nilai;
 					$tahunIni = $nilaiAset;
 					$tahunLalu = formatPositif($saldoLalu);
+					$ekuitas += $nilaiAset;
 				} else if($parent == 2 && $kode == 13) {
 					$tahunIni = formatPositif($assetTetap->nilai);
 					$tahunLalu = formatPositif($saldoLalu);
 				} else if($kode == 3101)  {
-					$tahunIni = formatPositif($surplusDefisit+$ekuitas->nilai+$saldoAwalEkuitas->nilai);
+					$ekuitas = $nilaiAsset - $nilaiKewajiban;
+					$tahunIni = formatPositif($ekuitas);
 					$tahunLalu = formatPositif($saldoAwalEkuitas->nilai);
 				} elseif(in_array($kode,[2,21])) {
-					$tahunIni = formatPositif($saldoLalu + $saldoKewajiban);
+					if($kode == 2) {
+						$nilaiKewajiban = $saldoLalu + $saldoKewajiban;
+					}
+					$tahunIni = formatPositif($nilaiKewajiban);
 					$tahunLalu = formatPositif($saldoLalu);
 				}   else {
 					$tahunLalu = formatPositif($saldoLalu);
@@ -11238,7 +11247,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 			} else {
 				if($res['kode'] == 75) {
 					$saldoAwal = $saldoAwalEkuitas->nilai + $saldoKewajibanLalu;
-					$saldoIni = $saldoAwal + $ekuitas->nilai + $saldoKewajiban + $surplusDefisit;
+					$saldoIni = $ekuitas + $nilaiKewajiban;
 					$tahunLalu = formatPositif($saldoAwal);
 					$tahunIni = formatPositif($saldoIni);
 				}else {
@@ -11746,7 +11755,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$tahunLalu = formatPositif($saldoAwal);
 			} elseif ($parent == 1 && $kode_1 == 3) {
 				$tahunLalu = formatPositif($saldoAwalEkuitas->nilai + $saldoAwalKewajiban);
-				$tahunIni = formatPositif($surplusDefisit+$ekuitas->nilai+$saldoAwalEkuitas->nilai + $saldoAkhirKeawijiban);
+				$tahunIni = $nilaiAset;
 			} elseif($parent == 0) {
 				$tahunIni = "";
 				$tahunLalu = "";
@@ -11754,7 +11763,7 @@ function ctk_lra_lo_pemda_subrincian($cbulan = "", $pilih = "",$tglttd = "", $tt
 				$tahunIni = formatPositif($assetTetap->nilai);
 				$tahunLalu = formatPositif($saldoAwal);
 			} else if (in_array($kode_1,[31,3101,310101])) {
-				$tahunIni = formatPositif($surplusDefisit+$ekuitas->nilai+$saldoAwalEkuitas->nilai);
+				$tahunIni = formatPositif(($assetTetap->nilai + $asset->nilai) - $saldoAkhirKeawijiban);
 				$tahunLalu = formatPositif($saldoAwalEkuitas->nilai);
 			} else if ($konversiLra && $konversiLra < 1306) {
 				$tahunIni = $saldoAkhir < 0 ? formatPositif($saldoAkhir) : formatPositif($saldoAkhir);
