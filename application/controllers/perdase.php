@@ -8154,7 +8154,7 @@ class Perdase extends CI_Controller
 				echo $cRet;
 				break;
 			case 1;
-				$this->tukd_model->_mpdf_lamp('', $cRet, 10, 10, 10, 'L');
+				$this->tukd_model->_mpdf('', $cRet, 10, 10, 10, 'L');
 				break;
 			case 2;
 				header("Cache-Control: no-cache, no-store, must-revalidate");
